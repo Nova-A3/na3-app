@@ -1,0 +1,31 @@
+.Card {
+  border-radius: 6px;
+}
+
+.CardBody {
+  padding: 0;
+}
+
+.Content {
+  padding: 12px;
+}
+
+.Details {
+  margin-top: 6px;
+}
+
+.DetailsItem {
+  display: flex;
+  align-items: center;
+}
+
+.DetailsIcon {
+  display: flex;
+  align-items: center;
+  width: 24px;
+}
+
+.Actions {
+  text-align: right;
+  padding-right: 18px;
+}

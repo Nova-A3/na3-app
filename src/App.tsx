@@ -1,26 +1,28 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import { Layout } from "antd";
+import React from "react";
+import classes from "./App.module.css";
+import { Content, Footer, Header, Helmet, Sider, Spinner } from "./components";
+import { RouteHandler } from "./components/pages/RouteHandler";
+import { useAppReady } from "./modules/na3-react";
 
-function App() {
+export function App(): JSX.Element {
+  const appIsReady = useAppReady();
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <>
+      <Helmet />
+      <Spinner spinning={!appIsReady}>
+        <Layout className={classes.App}>
+          <Sider />
+          <Layout>
+            <Header />
+            <Content>
+              <RouteHandler />
+            </Content>
+            <Footer />
+          </Layout>
+        </Layout>
+      </Spinner>
+    </>
   );
 }
-
-export default App;

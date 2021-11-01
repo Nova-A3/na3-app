@@ -1,0 +1,13 @@
+.Container {
+  display: flex;
+  flex-flow: column;
+  height: 100%;
+  margin: 0 16px;
+}
+
+.Screen {
+  background: #fff;
+  height: 100%;
+  overflow: hidden;
+  padding: 24;
+}
