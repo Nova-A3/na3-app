@@ -9,7 +9,7 @@ type FormStatus = "loading" | "ready";
 
 type FormikTyped<Original, Values> = Omit<
   Original,
-  "status" | "setStatus" | "setFieldValue" | "setFieldTouched" | "setFieldError"
+  "setFieldError" | "setFieldTouched" | "setFieldValue" | "setStatus" | "status"
 > & {
   status?: FormStatus;
   setStatus: (status: FormStatus | undefined) => void;
@@ -44,7 +44,7 @@ export type FormChildrenProps<Values> = FormikTyped<
   Values
 >;
 
-type FormProps<Values> = { horizontal?: boolean } & {
+type FormProps<Values> = {
   initialValues: Values;
   onSubmit: HandleSubmit<Values>;
   onValidate?: HandleValidate<Values>;
@@ -52,11 +52,11 @@ type FormProps<Values> = { horizontal?: boolean } & {
   initialValid?: boolean;
 
   children: (props: FormChildrenProps<Values>) => React.ReactNode;
-};
+} & { horizontal?: boolean };
 
 const defaultProps: Omit<
   FormProps<Record<string, never>>,
-  "initialValues" | "onSubmit" | "children"
+  "children" | "initialValues" | "onSubmit"
 > = {
   horizontal: false,
   initialTouched: undefined,

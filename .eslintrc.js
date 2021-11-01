@@ -42,7 +42,7 @@ module.exports = {
     "@typescript-eslint/method-signature-style": "warn",
     // "@typescript-eslint/no-unnecessary-condition": "warn",
     "@typescript-eslint/prefer-optional-chain": "warn",
-    "@typescript-eslint/prefer-reduce-type-parameter": "warn",
+    // "@typescript-eslint/prefer-reduce-type-parameter": "warn",
     "@typescript-eslint/sort-type-union-intersection-members": "warn",
     "@typescript-eslint/switch-exhaustiveness-check": "warn",
     "@typescript-eslint/dot-notation": "warn",

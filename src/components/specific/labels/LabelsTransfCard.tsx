@@ -34,10 +34,7 @@ export function LabelsTransfCard({
 
   const handleSelect = useCallback(() => onSelect(data), [data, onSelect]);
 
-  const handleDelete = useCallback(
-    () => onDelete && onDelete(data),
-    [data, onDelete]
-  );
+  const handleDelete = useCallback(() => onDelete?.(data), [data, onDelete]);
 
   const handleToggleTopLevelTooltip = useCallback(
     (delButtonVisible) => setShowTopLevelTooltip(!delButtonVisible),

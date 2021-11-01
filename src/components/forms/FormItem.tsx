@@ -47,17 +47,17 @@ type FormItemProps = {
       Omit<InputProps, "name" | "placeholder" | "type"> & {
         type: "decimal" | "integer";
       })
-  | (Omit<InputProps, "name" | "placeholder" | "type"> & {
-      type: "input" | "password";
-    })
   | (Omit<InputMaskProps, "name"> & {
       type: "mask";
       mask: (RegExp | string)[];
       maskPlaceholder?: string;
     })
+  | (Omit<InputProps, "name" | "placeholder" | "type"> & {
+      type: "input" | "password";
+    })
 );
 
-const defaultProps: Omit<FormItemProps, "name" | "label" | "type"> = {
+const defaultProps: Omit<FormItemProps, "label" | "name" | "type"> = {
   autoCapitalize: false,
   disabled: false,
   help: undefined,
@@ -145,7 +145,7 @@ export function FormItem({
   );
 
   useEffect(() => {
-    onValueChange && onValueChange(field.value);
+    onValueChange?.(field.value);
   }, [field.value, onValueChange]);
 
   process.env.NODE_ENV === "development" && console.log(name, field);
