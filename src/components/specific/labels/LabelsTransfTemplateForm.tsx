@@ -224,6 +224,7 @@ export function LabelsTransfTemplateForm({
               />
 
               <FormItem
+                autoCapitalize={true}
                 disabled={productCustomers.loading}
                 help={productCustomers.loading && "Buscando clientes..."}
                 label="Cliente"
@@ -262,7 +263,7 @@ export function LabelsTransfTemplateForm({
                 />
               </FormCollapse>
 
-              <SubmitButton>
+              <SubmitButton disableShowInvalidFields={!!editingTemplate}>
                 {editingTemplate ? "Salvar alterações" : "Criar modelo"}
               </SubmitButton>
             </>

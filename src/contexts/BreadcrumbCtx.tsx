@@ -22,10 +22,9 @@ export function BreadcrumbProvider({
       if (!updatedExtra) return setExtra([]);
       const extraArray =
         typeof updatedExtra === "string" ? [updatedExtra] : [...updatedExtra];
-      if (extraArray.every((item, index) => item === extra[index])) return;
       setExtra(extraArray);
     },
-    [extra]
+    []
   );
 
   return (

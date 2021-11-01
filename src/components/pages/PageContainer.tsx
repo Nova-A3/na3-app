@@ -42,6 +42,8 @@ export function PageContainer({
     [authorized, auth.department, departments.helpers]
   );
 
+  console.log(appIsReady);
+
   if (!appIsReady) {
     return null;
   }

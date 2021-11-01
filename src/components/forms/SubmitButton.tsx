@@ -7,14 +7,17 @@ import { isTouchDevice } from "../../utils";
 
 type SubmitButtonProps = ButtonProps & {
   horizontal?: boolean;
+  disableShowInvalidFields?: boolean;
 };
 
 const defaultProps: SubmitButtonProps = {
+  disableShowInvalidFields: false,
   horizontal: false,
 };
 
 export function SubmitButton({
   horizontal,
+  disableShowInvalidFields,
   children,
 }: SubmitButtonProps): JSX.Element {
   const { initialValues, isValid, isSubmitting, setTouched } =
@@ -24,13 +27,13 @@ export function SubmitButton({
 
   const handleTooltipVisibleChange = useCallback(
     (visible: boolean) => {
-      if (!visible || isValid) {
+      if (disableShowInvalidFields || !visible || isValid) {
         setTooltipIsVisible(false);
         return;
       }
       setTooltipIsVisible(true);
     },
-    [isValid]
+    [disableShowInvalidFields, isValid]
   );
 
   const handleClick = useCallback(
@@ -54,20 +57,20 @@ export function SubmitButton({
   );
 
   return (
-    <Tooltip
-      color="#ff4d4f"
-      onVisibleChange={handleTooltipVisibleChange}
-      title={`Alguns campos estão inválidos. ${
-        isTouchDevice() ? "Toque" : "Clique"
-      } para mostrar.`}
-      visible={tooltipIsVisible}
+    <Form.Item
+      wrapperCol={
+        horizontal
+          ? { sm: { offset: 6, span: 18 }, xs: { span: 24 } }
+          : { span: 24 }
+      }
     >
-      <Form.Item
-        wrapperCol={
-          horizontal
-            ? { sm: { offset: 6, span: 18 }, xs: { span: 24 } }
-            : { span: 24 }
-        }
+      <Tooltip
+        color="#ff4d4f"
+        onVisibleChange={handleTooltipVisibleChange}
+        title={`Alguns campos estão inválidos. ${
+          isTouchDevice() ? "Toque" : "Clique"
+        } para mostrar.`}
+        visible={tooltipIsVisible}
       >
         <Button
           block={true}
@@ -80,8 +83,8 @@ export function SubmitButton({
         >
           {tooltipIsVisible ? "Mostrar campos inválidos" : children}
         </Button>
-      </Form.Item>
-    </Tooltip>
+      </Tooltip>
+    </Form.Item>
   );
 }
 

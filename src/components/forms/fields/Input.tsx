@@ -1,28 +1,30 @@
-import { Input as AntdInput } from "antd";
+import { Input as AntdInput, Typography } from "antd";
 import { useField } from "formik";
-import React, { useCallback } from "react";
+import React, { useCallback, useMemo } from "react";
 
 export type InputNumberProps = {
   min?: number | null;
   max?: number | null;
 };
 
-export type InputProps = {
-  name: string;
-  placeholder?: string;
-  addonBefore?: React.ReactNode;
-  addonAfter?: React.ReactNode;
-  prefix?: React.ReactNode;
-  suffix?: React.ReactNode;
-  allowClear?: boolean;
-  autoFocus?: boolean;
-  maxLength?: number | null;
-  autoCapitalize?: boolean;
-  disabled?: boolean;
-} & (
-  | { type?: "input" | "password" }
-  | (InputNumberProps & { type: "decimal" | "integer" })
-);
+export type InputProps = Readonly<
+  {
+    name: string;
+    placeholder?: string;
+    addonBefore?: React.ReactNode;
+    addonAfter?: React.ReactNode;
+    prefix?: React.ReactNode;
+    suffix?: React.ReactNode;
+    allowClear?: boolean;
+    autoFocus?: boolean;
+    maxLength?: number | null;
+    autoCapitalize?: boolean;
+    disabled?: boolean;
+  } & (
+    | { type?: "input" | "password" }
+    | (InputNumberProps & { type: "decimal" | "integer" })
+  )
+>;
 
 export function Input({
   name,
@@ -39,7 +41,9 @@ export function Input({
   disabled,
   ...props
 }: InputProps): JSX.Element {
-  const [field] = useField<string>(name);
+  const [
+    { onBlur: handleFieldBlur, onChange: handleFieldChange, value: fieldValue },
+  ] = useField<string>(name);
 
   const handleChange = useCallback(
     (ev: React.ChangeEvent<HTMLInputElement>) => {
@@ -74,9 +78,33 @@ export function Input({
         ev.target.value = ev.target.value.toUpperCase();
       }
 
-      field.onChange(ev);
+      handleFieldChange(ev);
     },
-    [field, type, autoCapitalize, props, maxLength]
+    [handleFieldChange, type, autoCapitalize, props, maxLength]
+  );
+
+  const formatPreOrSuffix = useCallback(
+    (preOrSuffix?: React.ReactNode): React.ReactNode => {
+      if (typeof preOrSuffix === "string") {
+        return (
+          <Typography.Text italic={true} type="secondary">
+            {preOrSuffix}
+          </Typography.Text>
+        );
+      }
+      return preOrSuffix;
+    },
+    []
+  );
+
+  const formattedPrefix = useMemo(
+    () => formatPreOrSuffix(prefix),
+    [formatPreOrSuffix, prefix]
+  );
+
+  const formattedSuffix = useMemo(
+    () => formatPreOrSuffix(suffix),
+    [formatPreOrSuffix, suffix]
   );
 
   return type === "password" ? (
@@ -87,11 +115,13 @@ export function Input({
       autoComplete="off"
       autoFocus={autoFocus}
       disabled={disabled}
+      name={name}
+      onBlur={handleFieldBlur}
       onChange={handleChange}
       placeholder={placeholder}
-      prefix={prefix}
-      suffix={suffix}
-      value={field.value}
+      prefix={formattedPrefix}
+      suffix={formattedSuffix}
+      value={fieldValue}
     />
   ) : (
     <AntdInput
@@ -101,11 +131,13 @@ export function Input({
       autoComplete="off"
       autoFocus={autoFocus}
       disabled={disabled}
+      name={name}
+      onBlur={handleFieldBlur}
       onChange={handleChange}
       placeholder={placeholder}
-      prefix={prefix}
-      suffix={suffix}
-      value={field.value}
+      prefix={formattedPrefix}
+      suffix={formattedSuffix}
+      value={fieldValue}
     />
   );
 }

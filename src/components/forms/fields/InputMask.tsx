@@ -26,29 +26,31 @@ export function InputMask({
   autoCapitalize,
   disabled,
 }: InputMaskProps): JSX.Element {
-  const [field] = useField<string>(name);
+  const [
+    { onBlur: handleFieldBlur, onChange: handleFieldChange, value: fieldValue },
+  ] = useField<string>(name);
 
   const handleChange = useCallback(
     (value: string) => {
       if (autoCapitalize) value = value.toUpperCase();
-      field.onChange(field.name)(value);
+      handleFieldChange(name)(value);
     },
-    [field, autoCapitalize]
+    [name, autoCapitalize, handleFieldChange]
   );
 
   const {
     "data-value": maskDataValue,
     onChange: handleMaskChange,
-    onFocus: handleFocus,
-    onKeyDown: handleKeyDown,
-    onKeyUp: handleKeyUp,
+    onFocus: hadleMaskFocus,
+    onKeyDown: handleMaskKeyDown,
+    onKeyUp: handleMaskKeyUp,
     placeholder,
     value,
   } = useMask({
     mask: mask,
     onChange: handleChange,
     placeholder: maskPlaceholder || "_",
-    value: field.value,
+    value: fieldValue,
   });
 
   return (
@@ -60,10 +62,12 @@ export function InputMask({
       autoFocus={autoFocus}
       data-value={maskDataValue}
       disabled={disabled}
+      name={name}
+      onBlur={handleFieldBlur}
       onChange={handleMaskChange}
-      onFocus={handleFocus}
-      onKeyDown={handleKeyDown}
-      onKeyUp={handleKeyUp}
+      onFocus={hadleMaskFocus}
+      onKeyDown={handleMaskKeyDown}
+      onKeyUp={handleMaskKeyUp}
       placeholder={placeholder}
       prefix={prefix}
       suffix={suffix}

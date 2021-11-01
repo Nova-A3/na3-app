@@ -10,5 +10,8 @@ export const globalReducer: Reducer<GlobalState, GlobalAction> = (
   state = initialState,
   action
 ) => {
-  return { ...state, loading: action.loading };
+  if (action.type === "GLOBAL_SET_LOADING") {
+    return { ...state, loading: action.loading };
+  }
+  return state;
 };

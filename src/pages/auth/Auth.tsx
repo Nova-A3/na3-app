@@ -105,7 +105,11 @@ export function AuthPage({ authorizedDpts }: AuthProps): JSX.Element {
               type="password"
             />
 
-            <SubmitButton horizontal={true} icon={<LoginOutlined />}>
+            <SubmitButton
+              disableShowInvalidFields={true}
+              horizontal={true}
+              icon={<LoginOutlined />}
+            >
               {isSubmitting ? "Entrando..." : "Entrar"}
             </SubmitButton>
           </>

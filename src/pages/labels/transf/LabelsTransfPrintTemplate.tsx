@@ -20,7 +20,7 @@ export function LabelsTransfPrintTemplatePage({
   templateId,
 }: PageProps): JSX.Element {
   const history = useHistory();
-  const breadcrumb = useBreadcrumb();
+  const { setExtra: setBreadcrumbExtra } = useBreadcrumb();
   const {
     helpers: { getById: getTemplate },
   } = useNa3TransfLabelTemplates();
@@ -39,8 +39,9 @@ export function LabelsTransfPrintTemplatePage({
   }, []);
 
   useEffect(() => {
-    breadcrumb.setExtra(template?.name.trim().toUpperCase());
-  }, [template, breadcrumb]);
+    console.log("USE EFFECT");
+    setBreadcrumbExtra(template?.name.trim().toUpperCase());
+  }, [template, setBreadcrumbExtra]);
 
   return template ? (
     <>

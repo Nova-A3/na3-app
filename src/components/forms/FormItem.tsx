@@ -65,7 +65,7 @@ const defaultProps: Omit<FormItemProps, "name" | "label" | "type"> = {
   loading: false,
   noFeedback: false,
   notRequired: false,
-  onValueChange: () => undefined,
+  onValueChange: undefined,
   placeholder: "",
   tooltip: null,
 };
@@ -148,7 +148,7 @@ export function FormItem({
     onValueChange && onValueChange(field.value);
   }, [field.value, onValueChange]);
 
-  // process.env.NODE_ENV === "development" && console.log(name, field);
+  process.env.NODE_ENV === "development" && console.log(name, field);
 
   return (
     <Form.Item

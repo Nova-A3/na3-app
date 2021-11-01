@@ -59,9 +59,9 @@ const defaultProps: Omit<
   "initialValues" | "onSubmit" | "children"
 > = {
   horizontal: false,
-  initialTouched: {},
+  initialTouched: undefined,
   initialValid: false,
-  onValidate: () => ({}),
+  onValidate: undefined,
 };
 
 export function Form<Values extends Record<string, boolean | number | string>>({
@@ -83,17 +83,21 @@ export function Form<Values extends Record<string, boolean | number | string>>({
       validate={onValidate}
     >
       {(formikProps): JSX.Element => (
-        <Spinner spinning={formikProps.status === "loading"}>
-          <AntdForm
-            colon={false}
-            labelAlign="left"
-            labelCol={{ span: horizontal ? 6 : 24 }}
-            onFinish={formikProps.handleSubmit}
-            wrapperCol={{ span: horizontal ? 18 : 24 }}
-          >
-            {children(formikProps)}
-          </AntdForm>
-        </Spinner>
+        <>
+          {console.log(formikProps)}
+
+          <Spinner spinning={formikProps.status === "loading"}>
+            <AntdForm
+              colon={false}
+              labelAlign="left"
+              labelCol={{ span: horizontal ? 6 : 24 }}
+              onFinish={formikProps.handleSubmit}
+              wrapperCol={{ span: horizontal ? 18 : 24 }}
+            >
+              {children(formikProps)}
+            </AntdForm>
+          </Spinner>
+        </>
       )}
     </Formik>
   );
