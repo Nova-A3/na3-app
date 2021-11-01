@@ -1,7 +1,8 @@
 import { PlusCircleOutlined } from "@ant-design/icons";
 import { Button, Modal, notification } from "antd";
 import React, { useCallback, useState } from "react";
-import { useHistory } from "react-router";
+import { useHistory } from "react-router-dom";
+
 import {
   LabelsTransfList,
   LabelsTransfTemplateForm,
@@ -36,7 +37,7 @@ export function LabelsTransfManagePage(): JSX.Element {
 
   const handleDeleteTemplate = useCallback(
     (template: Na3TransfLabelTemplate) => {
-      const onConfirmDelete = async () => {
+      const onConfirmDelete = async (): Promise<void> => {
         const deletionResult = await transfLabelTemplates.helpers.delete(
           template.id
         );

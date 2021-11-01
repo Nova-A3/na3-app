@@ -1,6 +1,7 @@
 import { red } from "@ant-design/colors";
 import React from "react";
 import { IoPricetags } from "react-icons/io5";
+
 import type { StaticListItemProps } from "../../components";
 import { MenuPage } from "../../components";
 

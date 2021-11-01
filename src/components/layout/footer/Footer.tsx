@@ -1,6 +1,7 @@
 import { Layout } from "antd";
 import dayjs from "dayjs";
 import React from "react";
+
 import classes from "./Footer.module.css";
 
 export function Footer(): JSX.Element {

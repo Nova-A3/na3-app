@@ -3,6 +3,7 @@ import { useEffect } from "react";
 import { useAuthState } from "react-firebase-hooks/auth";
 import { useCollectionData } from "react-firebase-hooks/firestore";
 import { useDispatch } from "react-redux";
+
 import type { Na3Department } from "../../../na3-types";
 import {
   setAuthDepartment,

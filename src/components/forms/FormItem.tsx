@@ -3,6 +3,7 @@ import type { LabelTooltipType } from "antd/lib/form/FormItemLabel";
 import { useField } from "formik";
 import { nanoid } from "nanoid";
 import React, { useCallback, useEffect, useMemo } from "react";
+
 import { isTouchDevice } from "../../utils";
 import type { InputNumberProps, InputProps } from "./fields/Input";
 import { Input } from "./fields/Input";
@@ -56,23 +57,35 @@ type FormItemProps = {
     })
 );
 
-export function FormItem(props: FormItemProps): JSX.Element {
-  const {
-    type,
-    name,
-    label,
-    placeholder: placeholderProperty,
-    tooltip,
-    help,
-    helpDefault,
-    loading,
-    onValueChange,
-    autoCapitalize,
-    disabled,
-    noFeedback,
-    notRequired,
-  } = props;
+const defaultProps: Omit<FormItemProps, "name" | "label" | "type"> = {
+  autoCapitalize: false,
+  disabled: false,
+  help: undefined,
+  helpDefault: undefined,
+  loading: false,
+  noFeedback: false,
+  notRequired: false,
+  onValueChange: () => undefined,
+  placeholder: "",
+  tooltip: null,
+};
 
+export function FormItem({
+  type,
+  name,
+  label,
+  placeholder: placeholderProperty,
+  tooltip,
+  help,
+  helpDefault,
+  loading,
+  onValueChange,
+  autoCapitalize,
+  disabled,
+  noFeedback,
+  notRequired,
+  ...props
+}: FormItemProps): JSX.Element {
   const [field, meta] = useField<string>(name);
 
   const handleChange = useCallback(
@@ -172,34 +185,36 @@ export function FormItem(props: FormItemProps): JSX.Element {
       type === "integer" ||
       type === "decimal" ? (
         <Input
-          addonAfter={props.addonAfter}
-          addonBefore={props.addonBefore}
-          allowClear={props.allowClear}
-          autoCapitalize={props.autoCapitalize}
-          autoFocus={props.autoFocus}
-          disabled={props.disabled}
+          addonAfter={"addonAfter" in props && props.addonAfter}
+          addonBefore={"addonBefore" in props && props.addonBefore}
+          allowClear={"allowClear" in props && props.allowClear}
+          autoCapitalize={autoCapitalize}
+          autoFocus={"autoFocus" in props && props.autoFocus}
+          disabled={disabled}
           max={"max" in props ? props.max : null}
-          maxLength={props.maxLength}
+          maxLength={"maxLength" in props ? props.maxLength : null}
           min={"min" in props ? props.min : null}
           name={name}
           placeholder={placeholder}
-          prefix={props.prefix}
-          suffix={props.suffix}
+          prefix={"prefix" in props && props.prefix}
+          suffix={"suffix" in props && props.suffix}
           type={type}
         />
       ) : type === "mask" ? (
         <InputMask
-          addonAfter={props.addonAfter}
-          addonBefore={props.addonBefore}
-          allowClear={props.allowClear}
-          autoCapitalize={props.autoCapitalize}
-          autoFocus={props.autoFocus}
-          disabled={props.disabled}
-          mask={props.mask}
-          maskPlaceholder={props.maskPlaceholder}
+          addonAfter={"addonAfter" in props && props.addonAfter}
+          addonBefore={"addonBefore" in props && props.addonBefore}
+          allowClear={"allowClear" in props && props.allowClear}
+          autoCapitalize={autoCapitalize}
+          autoFocus={"autoFocus" in props && props.autoFocus}
+          disabled={disabled}
+          mask={"mask" in props ? props.mask : []}
+          maskPlaceholder={
+            "maskPlaceholder" in props ? props.maskPlaceholder : null
+          }
           name={name}
-          prefix={props.prefix}
-          suffix={props.suffix}
+          prefix={"prefix" in props && props.prefix}
+          suffix={"suffix" in props && props.suffix}
         />
       ) : type === "select" ? (
         <Select<string>
@@ -209,24 +224,27 @@ export function FormItem(props: FormItemProps): JSX.Element {
           placeholder={placeholder}
           value={field.value || undefined}
         >
-          {props.options.map(({ value, label }) => (
-            <Select.Option key={nanoid()} value={value}>
-              {label}
-            </Select.Option>
-          ))}
+          {"options" in props &&
+            props.options.map(({ value, label }) => (
+              <Select.Option key={nanoid()} value={value}>
+                {label}
+              </Select.Option>
+            ))}
         </Select>
-      ) : type === "autoComplete" ? (
+      ) : (
         <AutoComplete
           defaultActiveFirstOption={false}
           disabled={disabled}
           filterOption={handleAutoCompleteFilterOption}
           onBlur={handleBlur}
           onChange={handleChange}
-          options={props.options}
+          options={"options" in props ? props.options : undefined}
           placeholder={placeholder}
           value={field.value}
         />
-      ) : null}
+      )}
     </Form.Item>
   );
 }
+
+FormItem.defaultProps = defaultProps;

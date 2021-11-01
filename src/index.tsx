@@ -1,13 +1,15 @@
-import { ConfigProvider as AntdConfigProvider } from "antd";
 import "antd/dist/antd.css";
+import "./index.css";
+
+import { ConfigProvider as AntdConfigProvider } from "antd";
 import ptBR from "antd/lib/locale/pt_BR";
 import firebase from "firebase";
 import React from "react";
 import ReactDOM from "react-dom";
 import { BrowserRouter } from "react-router-dom";
+
 import { App } from "./App";
 import { BreadcrumbProvider } from "./contexts";
-import "./index.css";
 import { Na3Provider } from "./modules/na3-react";
 import reportWebVitals from "./reportWebVitals";
 

@@ -1,4 +1,5 @@
 import React, { useCallback } from "react";
+
 import { useNa3TransfLabelTemplates } from "../../../modules/na3-react";
 import type { Na3TransfLabelTemplate } from "../../../modules/na3-types";
 import type { ListRenderItem } from "../../lists/List";
@@ -9,6 +10,11 @@ type LabelsTransfListProps = {
   onSelectTemplate: (template: Na3TransfLabelTemplate) => void;
   onDeleteTemplate?: (template: Na3TransfLabelTemplate) => void;
   cardTooltipActionText?: string;
+};
+
+const defaultProps: Omit<LabelsTransfListProps, "onSelectTemplate"> = {
+  cardTooltipActionText: undefined,
+  onDeleteTemplate: () => undefined,
 };
 
 export function LabelsTransfList({
@@ -34,9 +40,11 @@ export function LabelsTransfList({
     <List
       data={transfLabelTemplates.data}
       error={transfLabelTemplates.error?.message}
-      loading={transfLabelTemplates.loading}
+      isLoading={transfLabelTemplates.loading}
       renderItem={handleRenderItem}
       verticalSpacing={8}
     />
   );
 }
+
+LabelsTransfList.defaultProps = defaultProps;

@@ -1,6 +1,7 @@
 import { Col, Divider, Row } from "antd";
 import dayjs from "dayjs";
 import React, { useCallback } from "react";
+
 import { na3 } from "../../../modules/na3";
 import type {
   ApiLabel,
@@ -111,7 +112,7 @@ export function LabelsTransfPrintForm({
       onSubmit={onSubmit}
       onValidate={handleValidate}
     >
-      {({ values }) => (
+      {({ values }): JSX.Element => (
         <>
           <PrintFormHeader />
 
@@ -248,7 +249,7 @@ export function LabelsTransfPrintForm({
   );
 }
 
-function PrintFormHeader() {
+function PrintFormHeader(): JSX.Element {
   return (
     <>
       <Row gutter={16}>

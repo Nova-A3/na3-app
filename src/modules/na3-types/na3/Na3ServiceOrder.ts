@@ -56,7 +56,18 @@ type LegacyTicket = {
   events: {
     id: string;
     type:
-      "LegacyTicketClosed" | "LegacyTicketConfirmed" | "LegacyTicketCreated" | "LegacyTicketEdited" | "LegacyTicketReopened" | "maintainerChanged" | "poke" | "priorityChanged" | "solutionAccepted" | "solutionRefused" | "solutionStepAdded" | "solutionTransmitted";
+      | "LegacyTicketClosed"
+      | "LegacyTicketConfirmed"
+      | "LegacyTicketCreated"
+      | "LegacyTicketEdited"
+      | "LegacyTicketReopened"
+      | "maintainerChanged"
+      | "poke"
+      | "priorityChanged"
+      | "solutionAccepted"
+      | "solutionRefused"
+      | "solutionStepAdded"
+      | "solutionTransmitted";
     timestamp: string;
     device: {
       name: string | null;
@@ -73,7 +84,10 @@ type LegacyTicket = {
       poke?: { from: string; to: string };
       solutionStep?: {
         type:
-          "solutionAccepted" | "solutionRefused" | "solutionTransmitted" | "step";
+          | "solutionAccepted"
+          | "solutionRefused"
+          | "solutionTransmitted"
+          | "step";
         content?: string;
         who?: string;
       };

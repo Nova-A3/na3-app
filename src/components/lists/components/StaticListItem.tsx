@@ -1,6 +1,7 @@
 import { Avatar, Card, Row, Typography } from "antd";
 import React, { useCallback, useMemo } from "react";
-import { useHistory } from "react-router";
+import { useHistory } from "react-router-dom";
+
 import classes from "./StaticListItem.module.css";
 
 export type StaticListItemProps = {

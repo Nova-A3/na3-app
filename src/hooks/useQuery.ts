@@ -1,4 +1,4 @@
-import { useLocation } from "react-router";
+import { useLocation } from "react-router-dom";
 
 export const useQuery = <Param extends string>(
   params: Param | Param[]

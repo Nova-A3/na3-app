@@ -1,5 +1,6 @@
 import firebase from "firebase";
 import { useCallback } from "react";
+
 import type { Na3Department } from "../../na3-types";
 import { useStateSlice } from "./useStateSlice";
 

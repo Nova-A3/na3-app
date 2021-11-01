@@ -1,17 +1,18 @@
 import React, { useCallback } from "react";
+
 import type { StaticListItemProps } from "./components/StaticListItem";
 import { StaticListItem } from "./components/StaticListItem";
 import type { ListProps, ListRenderItem } from "./List";
 import { List } from "./List";
 
 type StaticListProps<Item> =
-  | (Omit<ListProps<Item>, "data" | "error" | "loading" | "renderItem"> & {
+  | (Omit<ListProps<Item>, "data" | "error" | "isLoading" | "renderItem"> & {
       data: Item[];
       renderItem: ListRenderItem<Item>;
     })
   | (Omit<
       ListProps<StaticListItemProps>,
-      "data" | "error" | "loading" | "renderItem"
+      "data" | "error" | "isLoading" | "renderItem"
     > & { data: StaticListItemProps[]; renderItem: null });
 
 export function StaticList<Item extends Record<string, unknown>>({
@@ -43,7 +44,7 @@ export function StaticList<Item extends Record<string, unknown>>({
     <List<Item>
       data={props.data}
       error={null}
-      loading={false}
+      isLoading={false}
       renderItem={props.renderItem}
       verticalSpacing={verticalSpacing || 8}
     />
@@ -51,7 +52,7 @@ export function StaticList<Item extends Record<string, unknown>>({
     <List<StaticListItemProps>
       data={props.data}
       error={null}
-      loading={false}
+      isLoading={false}
       renderItem={handleRenderDefaultItem}
       verticalSpacing={verticalSpacing || 8}
     />

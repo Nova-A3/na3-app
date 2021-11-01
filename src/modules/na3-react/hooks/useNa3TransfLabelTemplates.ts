@@ -1,5 +1,6 @@
 import firebase from "firebase";
 import { useCallback, useMemo } from "react";
+
 import type { Na3TransfLabelTemplate } from "../../na3-types";
 import { resolveCollectionId } from "../utils";
 import { useStateSlice } from "./useStateSlice";

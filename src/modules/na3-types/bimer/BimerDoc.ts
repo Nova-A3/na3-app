@@ -53,7 +53,15 @@ export type BimerDoc = {
   Numero: string;
   IdentificadorLoteEstoque: string;
   StatusNotaFiscalEletronica:
-    "A" | "C" | "D" | "E" | "I" | "N" | "R" | "S" | "X";
+    | "A"
+    | "C"
+    | "D"
+    | "E"
+    | "I"
+    | "N"
+    | "R"
+    | "S"
+    | "X";
   StatusDocumentoTelecomunicacao: string;
   TipoFinalidade: string;
   TipoDocumento: "C" | "F" | "N" | "O" | "S" | "T";

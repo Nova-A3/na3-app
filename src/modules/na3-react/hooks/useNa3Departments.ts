@@ -1,5 +1,6 @@
 import type firebase from "firebase";
 import { useCallback } from "react";
+
 import type {
   Na3Department,
   Na3DepartmentId,

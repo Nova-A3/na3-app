@@ -16,14 +16,25 @@ export type ApiError = {
 };
 
 export type ApiData =
-  ApiCompany | ApiCompany[] | ApiDepartment | ApiDepartment[] | ApiDocument | ApiDocument[] | ApiLabelPrintResponse | ApiPerson | ApiProduct | ApiScheduledResult | ApiStatus;
+  | ApiCompany
+  | ApiCompany[]
+  | ApiDepartment
+  | ApiDepartment[]
+  | ApiDocument
+  | ApiDocument[]
+  | ApiLabelPrintResponse
+  | ApiPerson
+  | ApiProduct
+  | ApiScheduledResult
+  | ApiStatus;
 
 export type ApiResponseSuccess<T extends ApiData> = { error: null; data: T };
 
 export type ApiResponseFail = { error: ApiError; data: null };
 
 export type ApiResponse<T extends ApiData> =
-  ApiResponseFail | ApiResponseSuccess<T>;
+  | ApiResponseFail
+  | ApiResponseSuccess<T>;
 
 export type ApiResponseArray<T extends ApiData> = {
   data: (T | null)[];
@@ -31,7 +42,8 @@ export type ApiResponseArray<T extends ApiData> = {
 };
 
 type MakeApiResponseConfig<T extends ApiData = ApiData> =
-  { type: "fail"; error: unknown } | { type: "success"; data: T };
+  | { type: "fail"; error: unknown }
+  | { type: "success"; data: T };
 
 export type MakeApiResponse = <T extends ApiData>(
   config: MakeApiResponseConfig<T>

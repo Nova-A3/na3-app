@@ -1,4 +1,5 @@
 import React from "react";
+
 import type { StaticListItemProps } from "../lists/components/StaticListItem";
 import { StaticList } from "../lists/StaticList";
 import { PageDescription } from "./components/PageDescription";
@@ -9,6 +10,11 @@ type MenuPageProps = {
   title: string;
   description?: string;
   icon?: React.ReactNode;
+};
+
+const defaultProps: Omit<MenuPageProps, "items" | "title"> = {
+  description: undefined,
+  icon: null,
 };
 
 export function MenuPage({
@@ -26,3 +32,5 @@ export function MenuPage({
     </>
   );
 }
+
+MenuPage.defaultProps = defaultProps;

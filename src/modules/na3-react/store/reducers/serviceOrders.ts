@@ -1,4 +1,5 @@
 import type { Reducer } from "redux";
+
 import type { ServiceOrdersAction, ServiceOrdersState } from "../../types";
 
 const initialState: ServiceOrdersState = {

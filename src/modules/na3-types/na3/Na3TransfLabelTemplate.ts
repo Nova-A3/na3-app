@@ -3,7 +3,12 @@ import type { ApiProduct } from "../api/ApiProduct";
 
 export type Na3TransfLabelTemplate = Pick<
   ApiLabel<"transf">,
-  "batchIdFormat" | "customerName" | "productCode" | "productName" | "productUnitAbbreviation" | "productUnitName"
+  | "batchIdFormat"
+  | "customerName"
+  | "productCode"
+  | "productName"
+  | "productUnitAbbreviation"
+  | "productUnitName"
 > & {
   id: string;
   name: string;

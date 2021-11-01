@@ -2,6 +2,7 @@ import { Form as AntdForm } from "antd";
 import type { FormikHelpers, FormikProps, FormikTouched } from "formik";
 import { Formik } from "formik";
 import React from "react";
+
 import { Spinner } from "../ui/Spinner";
 
 type FormStatus = "loading" | "ready";
@@ -53,6 +54,16 @@ type FormProps<Values> = { horizontal?: boolean } & {
   children: (props: FormChildrenProps<Values>) => React.ReactNode;
 };
 
+const defaultProps: Omit<
+  FormProps<Record<string, never>>,
+  "initialValues" | "onSubmit" | "children"
+> = {
+  horizontal: false,
+  initialTouched: {},
+  initialValid: false,
+  onValidate: () => ({}),
+};
+
 export function Form<Values extends Record<string, boolean | number | string>>({
   initialValues,
   initialTouched,
@@ -71,21 +82,21 @@ export function Form<Values extends Record<string, boolean | number | string>>({
       onSubmit={onSubmit}
       validate={onValidate}
     >
-      {(formikProps) => (
-        <>
-          <Spinner spinning={formikProps.status === "loading"}>
-            <AntdForm
-              colon={false}
-              labelAlign="left"
-              labelCol={{ span: horizontal ? 6 : 24 }}
-              onFinish={formikProps.handleSubmit}
-              wrapperCol={{ span: horizontal ? 18 : 24 }}
-            >
-              {children(formikProps)}
-            </AntdForm>
-          </Spinner>
-        </>
+      {(formikProps): JSX.Element => (
+        <Spinner spinning={formikProps.status === "loading"}>
+          <AntdForm
+            colon={false}
+            labelAlign="left"
+            labelCol={{ span: horizontal ? 6 : 24 }}
+            onFinish={formikProps.handleSubmit}
+            wrapperCol={{ span: horizontal ? 18 : 24 }}
+          >
+            {children(formikProps)}
+          </AntdForm>
+        </Spinner>
       )}
     </Formik>
   );
 }
+
+Form.defaultProps = defaultProps;

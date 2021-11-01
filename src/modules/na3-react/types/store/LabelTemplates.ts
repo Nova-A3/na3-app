@@ -1,4 +1,5 @@
 import type firebase from "firebase";
+
 import type { Na3TransfLabelTemplate } from "../../../na3-types";
 
 type LabelTemplateState<Data extends Na3TransfLabelTemplate> = {

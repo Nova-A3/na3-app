@@ -1,4 +1,5 @@
 import type firebase from "firebase";
+
 import type { Na3ServiceOrder } from "../../../na3-types";
 
 export type ServiceOrdersState = {

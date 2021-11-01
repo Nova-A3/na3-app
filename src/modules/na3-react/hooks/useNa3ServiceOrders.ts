@@ -1,5 +1,6 @@
 import firebase from "firebase";
 import { useMemo } from "react";
+
 import type { Na3ServiceOrder } from "../../na3-types";
 import { resolveCollectionId } from "../utils";
 import { useStateSlice } from "./useStateSlice";

@@ -1,7 +1,8 @@
 import { LeftCircleOutlined } from "@ant-design/icons";
 import { Button, Result } from "antd";
 import React, { useCallback, useEffect, useMemo } from "react";
-import { useHistory } from "react-router";
+import { useHistory } from "react-router-dom";
+
 import {
   Centered,
   LabelsTransfPrintForm,

@@ -1,4 +1,5 @@
 import React from "react";
+
 import classes from "./Centered.module.css";
 
 type CenteredProps = {

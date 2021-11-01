@@ -2,6 +2,7 @@ import useMask from "@ryuuji3/react-mask-hook";
 import { Input } from "antd";
 import { useField } from "formik";
 import React, { useCallback } from "react";
+
 import type { InputProps } from "./Input";
 
 export type InputMaskProps = Omit<
@@ -9,7 +10,7 @@ export type InputMaskProps = Omit<
   "maxLength" | "placeholder" | "type"
 > & {
   mask: (RegExp | string)[];
-  maskPlaceholder?: string;
+  maskPlaceholder?: string | null;
 };
 
 export function InputMask({

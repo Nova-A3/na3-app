@@ -8,7 +8,9 @@ export class Na3 {
   private static _people?: Na3People;
   private static _validator?: Na3Validator;
 
-  private constructor() {}
+  private constructor() {
+    return;
+  }
 
   static get(): Na3 {
     if (!Na3._instance) Na3._instance = new Na3();

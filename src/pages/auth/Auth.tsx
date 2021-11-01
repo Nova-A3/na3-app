@@ -1,6 +1,7 @@
 import { LockOutlined, LoginOutlined, UserOutlined } from "@ant-design/icons";
 import { message } from "antd";
 import React, { useCallback } from "react";
+
 import type { HandleSubmit } from "../../components";
 import {
   Form,
@@ -24,7 +25,7 @@ export function AuthPage({ authorizedDpts }: AuthProps): JSX.Element {
 
   const handleSubmit: HandleSubmit<FormValues> = useCallback(
     async ({ department, password }, helpers) => {
-      function setSignInError(message: string) {
+      function setSignInError(message: string): void {
         helpers.setFieldError("password", message);
       }
 
@@ -65,7 +66,7 @@ export function AuthPage({ authorizedDpts }: AuthProps): JSX.Element {
         }}
         onSubmit={handleSubmit}
       >
-        {({ isSubmitting }) => (
+        {({ isSubmitting }): JSX.Element => (
           <>
             <FormItem
               autoCapitalize={true}

@@ -5,6 +5,10 @@ type PageDescriptionProps = {
   children?: React.ReactNode;
 };
 
+const defaultProps: PageDescriptionProps = {
+  children: null,
+};
+
 export function PageDescription({
   children,
 }: PageDescriptionProps): JSX.Element {
@@ -14,3 +18,5 @@ export function PageDescription({
     </Typography.Paragraph>
   );
 }
+
+PageDescription.defaultProps = defaultProps;

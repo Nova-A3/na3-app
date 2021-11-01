@@ -2,6 +2,7 @@ import { Breadcrumb as AntdBreadcrumb, Col, Row } from "antd";
 import { nanoid } from "nanoid";
 import React, { useMemo } from "react";
 import { Link, useLocation } from "react-router-dom";
+
 import type { AppRoute, RoutePath } from "../../../constants";
 import { ROUTES } from "../../../constants";
 import { useBreadcrumb } from "../../../hooks";
@@ -30,13 +31,11 @@ export function Breadcrumb(): JSX.Element {
             .join("/")}`;
           const chunkRoute: AppRoute | undefined = ROUTES[chunkPath];
 
-          return !chunkRoute
-            ? null
-            : {
-                content: chunkRoute.title,
-                icon: chunkRoute.icon,
-                path: chunkPath,
-              };
+          return {
+            content: chunkRoute.title,
+            icon: chunkRoute.icon,
+            path: chunkPath,
+          };
         })
         .filter((item): item is BreadcrumbItem => !!item),
       ...breadcrumb.extra.map((extra) => ({ content: extra })),
@@ -48,28 +47,25 @@ export function Breadcrumb(): JSX.Element {
       <Col md={24} xs={0}>
         <AntdBreadcrumb className={classes.Breadcrumb}>
           {breadcrumbItems.length > 1 &&
-            breadcrumbItems.map(
-              (breadcrumbItem) =>
-                breadcrumbItem && (
-                  <AntdBreadcrumb.Item key={nanoid()}>
-                    <Link
-                      className={!breadcrumbItem.path ? classes.Disabled : ""}
-                      to={breadcrumbItem.path || ""}
+            breadcrumbItems.map((breadcrumbItem) => (
+              <AntdBreadcrumb.Item key={nanoid()}>
+                <Link
+                  className={!breadcrumbItem.path ? classes.Disabled : ""}
+                  to={breadcrumbItem.path || ""}
+                >
+                  {breadcrumbItem.icon && (
+                    <span
+                      className={
+                        breadcrumbItem.content ? classes.Icon : undefined
+                      }
                     >
-                      {breadcrumbItem.icon && (
-                        <span
-                          className={
-                            breadcrumbItem.content ? classes.Icon : undefined
-                          }
-                        >
-                          {breadcrumbItem.icon}
-                        </span>
-                      )}
-                      {breadcrumbItem.content}
-                    </Link>
-                  </AntdBreadcrumb.Item>
-                )
-            )}
+                      {breadcrumbItem.icon}
+                    </span>
+                  )}
+                  {breadcrumbItem.content}
+                </Link>
+              </AntdBreadcrumb.Item>
+            ))}
         </AntdBreadcrumb>
       </Col>
     </Row>

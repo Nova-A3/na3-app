@@ -10,8 +10,5 @@ export const configReducer: Reducer<ConfigState, ConfigAction> = (
   state = initialState,
   action
 ) => {
-  if (action.type === "CONFIG_SET_ENVIRONMENT") {
-    return { ...state, environment: action.environment };
-  }
-  return state;
+  return { ...state, environment: action.environment };
 };

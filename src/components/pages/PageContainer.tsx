@@ -1,4 +1,5 @@
 import React, { useMemo } from "react";
+
 import {
   useAppReady,
   useNa3Auth,
@@ -14,6 +15,11 @@ import classes from "./PageContainer.module.css";
 type PageContainerProps = {
   authorized?: (Na3DepartmentId | Na3DepartmentType)[];
   children?: React.ReactNode;
+};
+
+const defaultProps: PageContainerProps = {
+  authorized: undefined,
+  children: null,
 };
 
 export function PageContainer({
@@ -53,3 +59,5 @@ export function PageContainer({
     </div>
   );
 }
+
+PageContainer.defaultProps = defaultProps;

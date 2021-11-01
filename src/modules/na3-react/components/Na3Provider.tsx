@@ -1,5 +1,6 @@
 import React from "react";
 import { Provider as StoreProvider } from "react-redux";
+
 import { store } from "../store";
 import type { ConfigState } from "../types";
 import { Na3MainController } from "./controllers/MainController";

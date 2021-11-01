@@ -2,10 +2,15 @@ import { LoadingOutlined } from "@ant-design/icons";
 import type { SpinProps } from "antd";
 import { Spin } from "antd";
 import React from "react";
+
 import classes from "./Spinner.module.css";
 
 type SpinnerProps = SpinProps & {
   children?: React.ReactNode;
+};
+
+const defaultProps: SpinnerProps = {
+  children: null,
 };
 
 export function Spinner({
@@ -40,3 +45,5 @@ export function Spinner({
     </Spin>
   );
 }
+
+Spinner.defaultProps = defaultProps;

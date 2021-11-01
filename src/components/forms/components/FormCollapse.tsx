@@ -1,10 +1,15 @@
 import { Collapse } from "antd";
 import React from "react";
+
 import classes from "./FormCollapse.module.css";
 
 type FormCollapseProps = {
   title: string;
   children?: React.ReactNode;
+};
+
+const defaultProps: Omit<FormCollapseProps, "title"> = {
+  children: null,
 };
 
 export function FormCollapse({
@@ -19,3 +24,5 @@ export function FormCollapse({
     </Collapse>
   );
 }
+
+FormCollapse.defaultProps = defaultProps;

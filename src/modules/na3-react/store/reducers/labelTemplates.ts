@@ -1,4 +1,5 @@
 import type { Reducer } from "redux";
+
 import type { LabelTemplatesAction, LabelTemplatesState } from "../../types";
 
 const initialState: LabelTemplatesState = {

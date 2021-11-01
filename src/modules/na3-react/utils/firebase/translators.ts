@@ -74,11 +74,8 @@ const firebaseErrorsTranslationMap: { else: string; [key: string]: string } = {
     "O uid fornecido precisa ser uma string não vazia com no máximo 128 caracteres.",
   "auth/invalid-user-import":
     "O registro do usuário a ser importado é inválido.",
-  "auth/too-many-requests":
-    "Você excedeu seu limite de tentativas de login. Por favor, tente novamente mais tarde.",
   "auth/maximum-user-count-exceeded":
     "O número máximo permitido de usuários a serem importados foi excedido.",
-  "auth/wrong-password": "Senha inválida.",
   "auth/missing-android-pkg-name":
     "Um nome de pacote Android precisa ser fornecido para a instalação do app Android.",
   "auth/missing-continue-uri":
@@ -101,12 +98,15 @@ const firebaseErrorsTranslationMap: { else: string; [key: string]: string } = {
   "auth/session-cookie-expired":
     "O cookie da sessão do Firebase fornecido expirou.",
   "auth/session-cookie-revoked": "O cookie da sessão do Firebase foi revogado.",
+  "auth/too-many-requests":
+    "Você excedeu seu limite de tentativas de login. Por favor, tente novamente mais tarde.",
   "auth/uid-already-exists":
     "O uid fornecido já está sendo usado por um usuário existente. É necessário que cada usuário tenha um uid exclusivo.",
   "auth/unauthorized-continue-uri":
     "O domínio da URL de confirmação não está na lista de permissões. Acesse o Console do Firebase para colocar o domínio na lista de permissões.",
   "auth/user-not-found":
     "Não há registro de usuário existente correspondente ao identificador fornecido.",
+  "auth/wrong-password": "Senha inválida.",
 
   else: "Erro de servidor.",
 };

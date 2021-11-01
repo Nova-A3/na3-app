@@ -1,5 +1,6 @@
 import { nanoid } from "nanoid";
 import React, { useMemo } from "react";
+
 import { Centered } from "../layout/utils/Centered";
 import { Empty } from "../ui/Empty";
 import { Spinner } from "../ui/Spinner";
@@ -8,7 +9,7 @@ import { ListError } from "./components/ListError";
 export type ListProps<Item> = {
   data: Item[] | null | undefined;
   renderItem: ListRenderItem<Item>;
-  loading: boolean;
+  isLoading: boolean;
   error: string | null | undefined;
   verticalSpacing?: number;
 };
@@ -16,7 +17,7 @@ export type ListProps<Item> = {
 export function List<Item extends Record<string, unknown>>({
   data,
   renderItem,
-  loading,
+  isLoading,
   error,
   verticalSpacing,
 }: ListProps<Item>): JSX.Element {
@@ -27,7 +28,7 @@ export function List<Item extends Record<string, unknown>>({
 
   if (error) {
     return <ListError>{error}</ListError>;
-  } else if (loading) {
+  } else if (isLoading) {
     return (
       <Centered>
         <Spinner />

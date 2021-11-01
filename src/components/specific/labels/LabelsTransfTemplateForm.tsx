@@ -1,5 +1,6 @@
 import { notification } from "antd";
 import React, { useCallback, useMemo, useState } from "react";
+
 import {
   useNa3Product,
   useNa3ProductCustomers,
@@ -16,6 +17,11 @@ import { SubmitButton } from "../../forms/SubmitButton";
 type LabelTemplateFormProps = {
   editingTemplate?: Na3TransfLabelTemplate;
   onSubmit?: () => void;
+};
+
+const defaultProps: LabelTemplateFormProps = {
+  editingTemplate: undefined,
+  onSubmit: undefined,
 };
 
 type FormValues = {
@@ -58,7 +64,7 @@ export function LabelsTransfTemplateForm({
       { templateName, productName, customerName, batchIdFormat },
       helpers
     ) => {
-      const notifyError = (message: string) => {
+      const notifyError = (message: string): void => {
         notification.error({
           description: message,
           message: `Erro ao ${editingTemplate ? "editar" : "criar"} o modelo`,
@@ -162,7 +168,7 @@ export function LabelsTransfTemplateForm({
       onSubmit={handleSubmit}
       onValidate={handleValidate}
     >
-      {({ values, touched, setFieldValue, setFieldTouched }) => (
+      {({ values, touched, setFieldValue, setFieldTouched }): JSX.Element => (
         <>
           <FormItem
             autoCapitalize={true}
@@ -274,3 +280,5 @@ export function LabelsTransfTemplateForm({
     </Form>
   );
 }
+
+LabelsTransfTemplateForm.defaultProps = defaultProps;

@@ -1,6 +1,7 @@
 import { nanoid } from "nanoid";
 import React from "react";
-import { Route, Switch } from "react-router";
+import { Route, Switch } from "react-router-dom";
+
 import { ROUTES } from "../../constants";
 import { PageContainer } from "./PageContainer";
 

@@ -5,6 +5,7 @@ import {
   TagsOutlined,
 } from "@ant-design/icons";
 import React from "react";
+
 import type { Na3DepartmentId, Na3DepartmentType } from "../modules/na3-types";
 import {
   HomePage,

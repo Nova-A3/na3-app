@@ -4,7 +4,8 @@ export type ApiTrovoError = {
 };
 
 export type ApiTrovoResponse<T> =
-  { error: ApiTrovoError; data: null } | { error: null; data: T };
+  | { error: ApiTrovoError; data: null }
+  | { error: null; data: T };
 
 export type ApiTrovoQrSlotEmpty = { empty: true; uid: null; scanId: null };
 

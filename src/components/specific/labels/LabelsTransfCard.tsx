@@ -2,6 +2,7 @@ import { DeleteOutlined } from "@ant-design/icons";
 import { Button, Card, Col, Row, Tooltip, Typography } from "antd";
 import React, { useCallback, useMemo, useState } from "react";
 import { IoPersonCircleOutline, IoPricetagOutline } from "react-icons/io5";
+
 import type { Na3TransfLabelTemplate } from "../../../modules/na3-types";
 import { isTouchDevice } from "../../../utils";
 import classes from "./LabelsTransfCard.module.css";
@@ -11,6 +12,11 @@ type LabelsTransfCardProps = {
   onSelect: (template: Na3TransfLabelTemplate) => void;
   onDelete?: (template: Na3TransfLabelTemplate) => void;
   tooltipActionText?: string;
+};
+
+const defaultProps: Omit<LabelsTransfCardProps, "data" | "onSelect"> = {
+  onDelete: () => undefined,
+  tooltipActionText: undefined,
 };
 
 export function LabelsTransfCard({
@@ -107,3 +113,5 @@ export function LabelsTransfCard({
     </Tooltip>
   );
 }
+
+LabelsTransfCard.defaultProps = defaultProps;

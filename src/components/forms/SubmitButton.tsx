@@ -2,13 +2,21 @@ import type { ButtonProps } from "antd";
 import { Button, Form, Tooltip } from "antd";
 import { useFormikContext } from "formik";
 import React, { useCallback, useState } from "react";
+
 import { isTouchDevice } from "../../utils";
 
 type SubmitButtonProps = ButtonProps & {
   horizontal?: boolean;
 };
 
-export function SubmitButton(props: SubmitButtonProps): JSX.Element {
+const defaultProps: SubmitButtonProps = {
+  horizontal: false,
+};
+
+export function SubmitButton({
+  horizontal,
+  children,
+}: SubmitButtonProps): JSX.Element {
   const { initialValues, isValid, isSubmitting, setTouched } =
     useFormikContext();
 
@@ -56,7 +64,7 @@ export function SubmitButton(props: SubmitButtonProps): JSX.Element {
     >
       <Form.Item
         wrapperCol={
-          props.horizontal
+          horizontal
             ? { sm: { offset: 6, span: 18 }, xs: { span: 24 } }
             : { span: 24 }
         }
@@ -70,9 +78,11 @@ export function SubmitButton(props: SubmitButtonProps): JSX.Element {
           onClick={handleClick}
           type={tooltipIsVisible ? "default" : "primary"}
         >
-          {tooltipIsVisible ? "Mostrar campos inválidos" : props.children}
+          {tooltipIsVisible ? "Mostrar campos inválidos" : children}
         </Button>
       </Form.Item>
     </Tooltip>
   );
 }
+
+SubmitButton.defaultProps = defaultProps;
