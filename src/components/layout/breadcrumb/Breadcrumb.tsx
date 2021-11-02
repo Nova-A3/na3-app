@@ -45,9 +45,9 @@ export function Breadcrumb(): JSX.Element {
   return (
     <Row className={classes.Container}>
       <Col md={24} xs={0}>
-        <AntdBreadcrumb className={classes.Breadcrumb}>
-          {breadcrumbItems.length > 1 &&
-            breadcrumbItems.map((breadcrumbItem) => (
+        {breadcrumbItems.length > 1 && (
+          <AntdBreadcrumb className={classes.Breadcrumb}>
+            {breadcrumbItems.map((breadcrumbItem) => (
               <AntdBreadcrumb.Item key={nanoid()}>
                 <Link
                   className={!breadcrumbItem.path ? classes.Disabled : ""}
@@ -66,7 +66,8 @@ export function Breadcrumb(): JSX.Element {
                 </Link>
               </AntdBreadcrumb.Item>
             ))}
-        </AntdBreadcrumb>
+          </AntdBreadcrumb>
+        )}
       </Col>
     </Row>
   );
