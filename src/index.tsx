@@ -1,3 +1,4 @@
+import "animate.css";
 import "antd/dist/antd.css";
 import "./index.css";
 

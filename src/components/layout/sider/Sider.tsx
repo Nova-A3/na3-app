@@ -61,7 +61,7 @@ export function Sider(): JSX.Element {
       collapsible={true}
       onCollapse={handleCollapse}
     >
-      <SiderLogo />
+      <SiderLogo isCollapsed={isCollapsed} />
       <SiderMenu
         items={siderItems.filter((item): item is SiderItem => !!item)}
         onNavigation={handleMenuNavigation}
