@@ -48,7 +48,7 @@ export function PageContainer({
   return (
     <div className={classes.PageContainer}>
       {hasAccess ? (
-        <div>{children}</div>
+        children
       ) : (
         <AuthPage
           authorizedDpts={

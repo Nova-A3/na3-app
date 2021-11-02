@@ -1,7 +1,6 @@
 import { nanoid } from "nanoid";
 import React, { useMemo } from "react";
 
-import { Centered } from "../layout/utils/Centered";
 import { Empty } from "../ui/Empty";
 import { Spinner } from "../ui/Spinner";
 import { ListError } from "./components/ListError";
@@ -29,11 +28,7 @@ export function List<Item extends Record<string, unknown>>({
   if (error) {
     return <ListError>{error}</ListError>;
   } else if (isLoading) {
-    return (
-      <Centered>
-        <Spinner />
-      </Centered>
-    );
+    return <Spinner />;
   } else if (data) {
     return data.length === 0 ? (
       <Empty description="Nada para mostrar" />

@@ -7,5 +7,5 @@ type CenteredProps = {
 };
 
 export function Centered({ children }: CenteredProps): JSX.Element {
-  return <div className={classes.Container}>{children}</div>;
+  return <div className={classes.Centered}>{children}</div>;
 }
