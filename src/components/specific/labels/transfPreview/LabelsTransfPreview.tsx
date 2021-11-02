@@ -1,5 +1,7 @@
 import { Divider, Modal, Typography } from "antd";
-import React, { useCallback } from "react";
+import barcode from "jsbarcode";
+import QrCode from "qrcode";
+import React, { useCallback, useState } from "react";
 
 import labelLayout from "../../../../assets/labelsTransfLayout.svg";
 import type { ApiLabel } from "../../../../modules/na3-types";
@@ -11,8 +13,22 @@ type LabelsTransfPreviewProps = {
   copies: number | undefined;
   label: ApiLabel<"transf"> | undefined;
   onCancel: () => void;
-  onPrint: (label: ApiLabel<"transf">, copies: number) => void;
-  onSave: (label: ApiLabel<"transf">, copies: number) => void;
+  onPrint: (
+    label: ApiLabel<"transf">,
+    additionalConfig: {
+      barcodeDataUrl: string;
+      copies: number;
+      qrDataUrl: string;
+    }
+  ) => void;
+  onSave: (
+    label: ApiLabel<"transf">,
+    additionalConfig: {
+      barcodeDataUrl: string;
+      copies: number;
+      qrDataUrl: string;
+    }
+  ) => void;
 };
 
 export function LabelsTransfPreview({
@@ -22,15 +38,49 @@ export function LabelsTransfPreview({
   onSave,
   label,
 }: LabelsTransfPreviewProps): JSX.Element | null {
+  const [qrDataUrl, setQrDataUrl] = useState<string>();
+  const [barcodeDataUrl, setBarcodeDataUrl] = useState<string>();
+
+  const handleMakeQrCode = useCallback(
+    async (canvasEl: HTMLCanvasElement | null) => {
+      if (!canvasEl || !label?.batchId) return;
+      const qrData = `https://app.novaa3.com.br/transf/${label.batchId
+        .trim()
+        .toUpperCase()
+        .replace(/[- ]/g, "")}`;
+      await QrCode.toCanvas(canvasEl, qrData, {
+        color: {
+          light: "#0000", // Transparent
+        },
+        margin: 0,
+        width: 72,
+      });
+      setQrDataUrl(canvasEl.toDataURL());
+    },
+    [label?.batchId]
+  );
+
+  const handleMakeBarcode = useCallback(
+    (canvasEl: HTMLCanvasElement | null) => {
+      if (!canvasEl || !label?.productCode) return;
+      barcode(canvasEl, label.productCode, {
+        background: "#0000",
+        margin: 0, // Transparent
+      });
+      setBarcodeDataUrl(canvasEl.toDataURL());
+    },
+    [label?.productCode]
+  );
+
   const handlePrint = useCallback(() => {
-    if (!label || !copies) return;
-    onPrint(label, copies);
-  }, [onPrint, label, copies]);
+    if (!(label && copies && qrDataUrl && barcodeDataUrl)) return;
+    onPrint(label, { barcodeDataUrl, copies, qrDataUrl });
+  }, [onPrint, label, copies, qrDataUrl, barcodeDataUrl]);
 
   const handleSave = useCallback(() => {
-    if (!label || !copies) return;
-    onSave(label, copies);
-  }, [onSave, label, copies]);
+    if (!(label && copies && qrDataUrl && barcodeDataUrl)) return;
+    onSave(label, { barcodeDataUrl, copies, qrDataUrl });
+  }, [onSave, label, copies, qrDataUrl, barcodeDataUrl]);
 
   if (!label) {
     return null;
@@ -78,6 +128,22 @@ export function LabelsTransfPreview({
             {label.invoiceNumber.toUpperCase()}
           </PreviewData>
         )}
+
+        <canvas
+          ref={handleMakeQrCode}
+          style={{ left: 520, position: "absolute", top: 243 }}
+        />
+
+        <canvas
+          ref={handleMakeBarcode}
+          style={{
+            height: 72,
+            left: 672,
+            position: "absolute",
+            top: 243,
+            width: 202,
+          }}
+        />
       </div>
 
       <Divider />

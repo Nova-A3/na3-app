@@ -57,15 +57,29 @@ export function LabelsTransfPrintTemplatePage({
   }, []);
 
   const handlePrint = useCallback(
-    (labelConfig: ApiLabel<"transf">, copies: number) => {
-      return [labelConfig, copies];
+    (
+      label: ApiLabel<"transf">,
+      additionalConfig: {
+        barcodeDataUrl: string;
+        copies: number;
+        qrDataUrl: string;
+      }
+    ) => {
+      return [label, additionalConfig];
     },
     []
   );
 
   const handleSave = useCallback(
-    (labelConfig: ApiLabel<"transf">, copies: number) => {
-      return [labelConfig, copies];
+    (
+      label: ApiLabel<"transf">,
+      additionalConfig: {
+        barcodeDataUrl: string;
+        copies: number;
+        qrDataUrl: string;
+      }
+    ) => {
+      return [label, additionalConfig];
     },
     []
   );
