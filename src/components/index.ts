@@ -22,6 +22,7 @@ export { PageActionButtons } from "./pages/components/PageActionButtons";
 export { PageDescription } from "./pages/components/PageDescription";
 export { PageTitle } from "./pages/components/PageTitle";
 export { MenuPage } from "./pages/MenuPage";
+export { RouteHandler } from "./pages/RouteHandler";
 export { LabelsTransfList } from "./specific/labels/LabelsTransfList";
 export { LabelsTransfPrintForm } from "./specific/labels/LabelsTransfPrintForm";
 export { LabelsTransfTemplateForm } from "./specific/labels/LabelsTransfTemplateForm";
