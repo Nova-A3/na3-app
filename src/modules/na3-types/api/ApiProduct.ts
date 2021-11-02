@@ -1,47 +1,47 @@
 export type ApiProduct = {
-  /* From Bimer */
-  id: string;
+  active: boolean;
+  application: string | null;
+  attributes: { code: string; id: string; name: string }[];
+  classificationCode: string | null;
   code: string;
-  name: string;
-  masterProductId: string | null;
-  originProductId: string | null;
+  conversionFactor: number;
   customerIds: string[];
-  group: { id: string; code: string; description: string } | null;
+  dimensions: {
+    diameter: number;
+    height: number;
+    length: number;
+    packageType: string;
+    width: number;
+  };
   family: {
-    id: string | null;
     code: string | null;
     description: string | null;
+    id: string | null;
   } | null;
-  application: string | null;
-  dimensions: {
-    packageType: string;
-    length: number;
-    width: number;
-    height: number;
-    diameter: number;
-  };
-  weight: { net: number; gross: number };
-  perCarton: number;
-  variants: { id: string; code: string; name: string }[];
-  attributes: { id: string; code: string; name: string }[];
-  conversionFactor: number;
-  classificationCode: string | null;
-  active: boolean;
-  taxClassification: {
-    id: string;
-    code: string;
-    description: string;
-    precedingTaxesRate: number;
-    classification: string;
-  } | null;
+  grid: ApiProductGrid | null;
+  group: { code: string; description: string, id: string; } | null;
+  /* From Bimer */
+  id: string;
+  images: ApiProductImage[];
   isInventoryProduct: boolean;
   isMexicoProduct: boolean;
-
-  images: ApiProductImage[];
-  grid: ApiProductGrid | null;
+  masterProductId: string | null;
+  name: string;
+  originProductId: string | null;
+  perCarton: number;
+  taxClassification: {
+    classification: string;
+    code: string;
+    description: string;
+    id: string;
+    precedingTaxesRate: number;
+  } | null;
 
   /* From Nomus */
-  unit: { name: string; abbreviation: Uppercase<string> };
+  unit: { abbreviation: Uppercase<string>, name: string; };
+  variants: { code: string; id: string; name: string }[];
+
+  weight: { gross: number, net: number; };
 };
 
 export type ApiProductImage = {
@@ -51,18 +51,18 @@ export type ApiProductImage = {
 };
 
 export type ApiProductGrid = {
-  id: string;
   horizontal: {
-    id: string;
-    code: number;
     abbreviation: string;
-    type: { id: string; code: string };
-  };
-  vertical: {
-    id: string;
     code: number;
-    abbreviation: string;
-    type: { id: string; code: string };
+    id: string;
+    type: { code: string, id: string; };
   };
+  id: string;
   productName: string;
+  vertical: {
+    abbreviation: string;
+    code: number;
+    id: string;
+    type: { code: string, id: string; };
+  };
 };

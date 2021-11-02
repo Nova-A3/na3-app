@@ -4,23 +4,23 @@ import type { Na3ServiceOrder } from "../../../na3-types";
 
 export type ServiceOrdersState = {
   data: Na3ServiceOrder[] | null;
-  loading: boolean;
   error: firebase.FirebaseError | null;
+  loading: boolean;
 };
 
 export type ServiceOrdersSetDataAction = {
-  type: "SERVICE_ORDERS_SET_DATA";
   data: ServiceOrdersState["data"];
+  type: "SERVICE_ORDERS_SET_DATA";
 };
 
 export type ServiceOrdersSetLoadingAction = {
-  type: "SERVICE_ORDERS_SET_LOADING";
   loading: ServiceOrdersState["loading"];
+  type: "SERVICE_ORDERS_SET_LOADING";
 };
 
 export type ServiceOrdersSetErrorAction = {
-  type: "SERVICE_ORDERS_SET_ERROR";
   error: ServiceOrdersState["error"];
+  type: "SERVICE_ORDERS_SET_ERROR";
 };
 
 export type ServiceOrdersAction =

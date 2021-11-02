@@ -4,8 +4,8 @@ import React from "react";
 import classes from "./PageTitle.module.css";
 
 type PageTitleProps = {
-  icon?: React.ReactNode;
   children?: React.ReactNode;
+  icon?: React.ReactNode;
 };
 
 const defaultProps: PageTitleProps = {

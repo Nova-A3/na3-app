@@ -8,8 +8,8 @@ import { Na3ServiceOrdersController } from "./controllers/ServiceOrdersControlle
 import { Na3TransfLabelTemplatesController } from "./controllers/TransfLabelTemplatesController";
 
 type Na3ProviderProps = {
-  env?: ConfigState["environment"];
   children?: React.ReactNode;
+  env?: ConfigState["environment"];
 };
 
 const defaultProps: Na3ProviderProps = {

@@ -1,12 +1,12 @@
 import type { BimerCompany } from "./BimerCompany";
 
 export type BimerDepartment = {
-  Empresa: BimerCompany;
-  Identificador: string;
   Ativo: boolean;
   Codigo: string;
   ControlaEstoque: boolean;
   ControlaLote: boolean;
   Descricao: string;
+  Empresa: BimerCompany;
+  Identificador: string;
   Observacao?: string;
 };

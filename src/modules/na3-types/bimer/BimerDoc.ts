@@ -2,22 +2,21 @@ import type { BimerBase } from "./BimerBase";
 
 type BimerDocumentItem = {
   Identificador: string;
+  IdentificadorProduto: string;
+  IdentificadorSetorEntrada?: string;
+  IdentificadorSetorSaida: string;
+  Quantidade: number;
   SerieLote?: {
     Codigo: string;
     Identificador: string;
     Tipo: "L" | "S";
   };
-  IdentificadorProduto: string;
-  IdentificadorSetorEntrada?: string;
-  IdentificadorSetorSaida: string;
-  Quantidade: number;
-  ValorUnitario: number;
   ValorPesoBruto: number;
   ValorPesoLiquido: number;
+  ValorUnitario: number;
 };
 
 type BimerDocumentPayment = {
-  Identificador: string;
   Aliquota: number;
   AliquotaConvenio: number;
   AliquotaTACConvenio: number;
@@ -25,6 +24,7 @@ type BimerDocumentPayment = {
   AtualizaFinanceiro: boolean;
   DataVencimento: string;
   DescricaoAgrupamento: string;
+  Identificador: string;
   IdentificadorFormaPagamento: string;
   IdentificadorNaturezaLancamento: string;
   IdentificadorPessoaConvenio?: string;
@@ -32,7 +32,6 @@ type BimerDocumentPayment = {
   IdentificadorTipoBaixa?: string;
   NomeAdquirenteCartao?: string;
   NumeroAutorizacaoCartao?: string;
-  NumeroSequencialUnicoCartao?: string;
   NumeroCheque: string;
   NumeroDias: number;
   NumeroDiasIntervalo: number;
@@ -40,6 +39,7 @@ type BimerDocumentPayment = {
   NumeroDiasRecebimento: number;
   NumeroParcelas: number;
   NumeroParcelasRecebimento: number;
+  NumeroSequencialUnicoCartao?: string;
   NumeroTitulo: number;
   Valor: number;
   ValorJurosPrazo: number;
@@ -49,9 +49,24 @@ type BimerDocumentPayment = {
 
 export type BimerDoc = {
   ChaveAcesso: string;
+  CodigoEmpresa: string;
+  DataEmissao: string;
+  DataReferencia: string;
+  DataReferenciaPagamento: string;
+  DocumentoCancelado: boolean;
+  Faturamento?: string;
   Identificador: string;
-  Numero: string;
   IdentificadorLoteEstoque: string;
+  IdentificadorOperacao: string;
+  IdentificadorPessoa: string;
+  Itens: BimerDocumentItem[];
+  Liberado: boolean;
+  Mensagens?: (BimerBase | null)[];
+  NomeEntidadeOrigem?: string;
+  Numero: string;
+  Observacao: string;
+  Pagamentos: BimerDocumentPayment[];
+  StatusDocumentoTelecomunicacao: string;
   StatusNotaFiscalEletronica:
     | "A"
     | "C"
@@ -62,22 +77,7 @@ export type BimerDoc = {
     | "R"
     | "S"
     | "X";
-  StatusDocumentoTelecomunicacao: string;
-  TipoFinalidade: string;
   TipoDocumento: "C" | "F" | "N" | "O" | "S" | "T";
-  Liberado: boolean;
-  DocumentoCancelado: boolean;
+  TipoFinalidade: string;
   UnidadeNegocio?: BimerBase;
-  CodigoEmpresa: string;
-  DataEmissao: string;
-  DataReferencia: string;
-  DataReferenciaPagamento: string;
-  IdentificadorOperacao: string;
-  IdentificadorPessoa: string;
-  Itens: BimerDocumentItem[];
-  NomeEntidadeOrigem?: string;
-  Faturamento?: string;
-  Pagamentos: BimerDocumentPayment[];
-  Observacao: string;
-  Mensagens?: (BimerBase | null)[];
 };

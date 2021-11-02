@@ -1,6 +1,6 @@
 export type BimerError = {
-  ErrorMessage: string;
   ErrorCode?: string;
+  ErrorMessage: string;
   PossibleCause?: string;
   StackTrace?: string;
 };
@@ -8,8 +8,8 @@ export type BimerError = {
 type BimerPagination = {
   Limite: number;
   Pagina: number;
-  TotalPagina: number;
   Total: number;
+  TotalPagina: number;
 };
 
 export type BimerResFail = {

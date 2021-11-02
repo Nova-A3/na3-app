@@ -20,8 +20,8 @@ import {
 export type RoutePath = `/${Lowercase<string>}`;
 
 export type SiderConfig = {
-  title?: Capitalize<string>;
   children?: SiderChild[];
+  title?: Capitalize<string>;
 };
 
 type SiderChild = {
@@ -30,12 +30,12 @@ type SiderChild = {
 };
 
 export type AppRoute = {
-  title: string | null;
+  authorized?: (Na3DepartmentId | Na3DepartmentType)[];
   component: React.ReactNode;
   icon?: React.ReactNode;
-  authorized?: (Na3DepartmentId | Na3DepartmentType)[];
   notExact?: boolean;
   siderConfig?: SiderConfig;
+  title: string | null;
 };
 
 type AppRouteMap = {

@@ -30,6 +30,7 @@ module.exports = {
     "react",
     "react-hooks",
     "sort-keys-fix",
+    "typescript-sort-keys",
     "simple-import-sort",
   ],
   rules: {
@@ -64,6 +65,8 @@ module.exports = {
     "react/prefer-stateless-function": "warn",
     "react/no-array-index-key": "warn",
     "sort-keys-fix/sort-keys-fix": "warn",
+    "typescript-sort-keys/interface": "warn",
+    "typescript-sort-keys/string-enum": "warn",
     "simple-import-sort/imports": "warn",
     "simple-import-sort/exports": "warn",
   },

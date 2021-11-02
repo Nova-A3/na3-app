@@ -9,8 +9,8 @@ import classes from "./LabelsTransfCard.module.css";
 
 type LabelsTransfCardProps = {
   data: Na3TransfLabelTemplate;
-  onSelect: (template: Na3TransfLabelTemplate) => void;
   onDelete?: (template: Na3TransfLabelTemplate) => void;
+  onSelect: (template: Na3TransfLabelTemplate) => void;
   tooltipActionText?: string;
 };
 

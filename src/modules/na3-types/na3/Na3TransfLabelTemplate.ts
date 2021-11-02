@@ -10,9 +10,9 @@ export type Na3TransfLabelTemplate = Pick<
   | "productUnitAbbreviation"
   | "productUnitName"
 > & {
+  customerId: string | null;
   id: string;
   name: string;
   productId: string;
-  customerId: string | null;
   productSnapshot: ApiProduct | null;
 };

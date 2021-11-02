@@ -5,8 +5,8 @@ import type { ApiProduct, ApiResponse } from "../../../na3-types";
 
 type UseNa3ProductResult = {
   data: ApiProduct | undefined;
-  loading: boolean;
   error: string | undefined;
+  loading: boolean;
 };
 
 export function useNa3Product(query: string): UseNa3ProductResult {

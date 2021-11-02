@@ -4,15 +4,15 @@ export type ApiTrovoError = {
 };
 
 export type ApiTrovoResponse<T> =
-  | { error: ApiTrovoError; data: null }
-  | { error: null; data: T };
+  | { data: null, error: ApiTrovoError; }
+  | { data: T, error: null; };
 
-export type ApiTrovoQrSlotEmpty = { empty: true; uid: null; scanId: null };
+export type ApiTrovoQrSlotEmpty = { empty: true; scanId: null, uid: null; };
 
 export type ApiTrovoQrSlotFulfilled = {
   empty: false;
-  uid: string;
   scanId: string;
+  uid: string;
 };
 
 export type ApiTrovoQrSlot<IsEmpty extends boolean | undefined = undefined> =
@@ -29,8 +29,8 @@ export type ApiTrovoQrScan = {
 };
 
 export type ApiTrovoQr<IsEmpty extends boolean | undefined = undefined> = {
-  id: string;
   generatedAt: string;
+  id: string;
   registeredAt: IsEmpty extends true
     ? null
     : IsEmpty extends false
@@ -41,6 +41,11 @@ export type ApiTrovoQr<IsEmpty extends boolean | undefined = undefined> = {
     : IsEmpty extends false
     ? string
     : string | null;
+  scans: IsEmpty extends true
+    ? []
+    : IsEmpty extends false
+    ? ApiTrovoQrScan[] & { 0: ApiTrovoQrScan }
+    : ApiTrovoQrScan[];
   slots: [
     ApiTrovoQrSlot<IsEmpty>,
     ApiTrovoQrSlot<IsEmpty>,
@@ -48,9 +53,4 @@ export type ApiTrovoQr<IsEmpty extends boolean | undefined = undefined> = {
     ApiTrovoQrSlot<IsEmpty>,
     ApiTrovoQrSlot<IsEmpty>
   ];
-  scans: IsEmpty extends true
-    ? []
-    : IsEmpty extends false
-    ? ApiTrovoQrScan[] & { 0: ApiTrovoQrScan }
-    : ApiTrovoQrScan[];
 };

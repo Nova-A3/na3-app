@@ -1,38 +1,38 @@
 import type { BimerBase } from "./BimerBase";
 
 export type BimerProduct = {
-  Identificador: string;
-  Codigo: string;
-  Nome: string;
-  IdentificadorProdutoMaster?: string;
-  IdentificadorProdutoOrigem?: string;
-  Grupo: BimerBase;
-  Familia: BimerBase;
-  ProdutoAplicacao?: string;
-  Dimensoes: {
-    TipoEmbalagem: string;
-    Altura: number;
-    Largura: number;
-    Profundidade: number;
-    Diametro: number;
-  };
-  PesoBruto: number;
-  PesoLiquido: number;
-  QuantidadeVolumes: number;
-  MarcasProduto: { Identificador: string; Codigo: string; NomeMarca: string }[];
-  CaracteristicasProduto: {
-    Identificador: string;
-    Codigo: string;
-    Caracteristica: string;
-  }[];
-  FatorConversaoUnidade: number;
-  CodigoClassificacao?: string;
   Ativo?: boolean;
   AtivoCompra?: boolean;
+  CaracteristicasProduto: {
+    Caracteristica: string;
+    Codigo: string;
+    Identificador: string;
+  }[];
   ClassificacaoFiscal?: BimerBase & {
     AliquotaTotalTributosPrecedentes: number;
     Classificacao: string;
   };
+  Codigo: string;
+  CodigoClassificacao?: string;
+  Dimensoes: {
+    Altura: number;
+    Diametro: number;
+    Largura: number;
+    Profundidade: number;
+    TipoEmbalagem: string;
+  };
+  Familia: BimerBase;
+  FatorConversaoUnidade: number;
+  Grupo: BimerBase;
+  Identificador: string;
+  IdentificadorProdutoMaster?: string;
+  IdentificadorProdutoOrigem?: string;
+  MarcasProduto: { Codigo: string; Identificador: string; NomeMarca: string }[];
+  Nome: string;
+  PesoBruto: number;
+  PesoLiquido: number;
+  ProdutoAplicacao?: string;
+  QuantidadeVolumes: number;
 };
 
 export type BimerProductImage = {
@@ -42,18 +42,18 @@ export type BimerProductImage = {
 };
 
 export type BimerProductGrid = {
-  Identificador: string;
   GradeHorizontal: {
-    Identificador: string;
     Codigo: number;
+    Identificador: string;
     Sigla: string;
-    Tipo: { Identificador: string; Codigo: string };
+    Tipo: { Codigo: string, Identificador: string; };
   };
   GradeVertical: {
-    Identificador: string;
     Codigo: number;
+    Identificador: string;
     Sigla: string;
-    Tipo: { Identificador: string; Codigo: string };
+    Tipo: { Codigo: string, Identificador: string; };
   };
+  Identificador: string;
   NmProduto: string;
 };

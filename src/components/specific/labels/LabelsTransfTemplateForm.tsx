@@ -25,12 +25,12 @@ const defaultProps: LabelTemplateFormProps = {
 };
 
 type FormValues = {
-  templateName: string;
+  batchIdFormat: "brazil" | "mexico";
+  customerName: string;
   productCode: string;
   productName: string;
-  customerName: string;
   productUnitDisplay: string;
-  batchIdFormat: "brazil" | "mexico";
+  templateName: string;
 };
 
 export function LabelsTransfTemplateForm({

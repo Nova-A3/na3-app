@@ -3,31 +3,31 @@ import type { ApiError } from "./ApiResponse";
 export type ApiScheduledResultFnDataMap = {
   "auto-mailer":
     | {
-        isSunday: false;
-        yesterdayDocIds: string[];
         accDocIds: string[];
-        yesterdayTotal: number;
         accTotal: number;
-        mailId: string;
+        isSunday: false;
         mailAcceptedBy: string[];
+        mailId: string;
+        yesterdayDocIds: string[];
+        yesterdayTotal: number;
       }
     | { isSunday: true };
 };
 
 export type ApiScheduledResult = {
-  ok: true;
-  timestamp: string;
+  durationMs: number;
   functions: {
     [FunctionId in keyof ApiScheduledResultFnDataMap]:
       | { executed: false }
-      | ({ executed: true; attempts: number } & (
+      | ({ attempts: number, executed: true; } & (
           | {
-              status: "success";
-              errors: null;
               data: ApiScheduledResultFnDataMap[FunctionId];
+              errors: null;
+              status: "success";
             }
-          | { status: "fail"; errors: ApiError[]; data: null }
+          | { data: null, errors: ApiError[]; status: "fail"; }
         ));
   };
-  durationMs: number;
+  ok: true;
+  timestamp: string;
 };

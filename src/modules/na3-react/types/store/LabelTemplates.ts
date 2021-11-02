@@ -4,8 +4,8 @@ import type { Na3TransfLabelTemplate } from "../../../na3-types";
 
 type LabelTemplateState<Data extends Na3TransfLabelTemplate> = {
   data: Data[] | null;
-  loading: boolean;
   error: firebase.FirebaseError | null;
+  loading: boolean;
 };
 
 export type LabelTemplatesState = {
@@ -13,18 +13,18 @@ export type LabelTemplatesState = {
 };
 
 export type LabelTemplatesTransfSetDataAction = {
-  type: "LABEL_TEMPLATES_TRANSF_SET_DATA";
   data: LabelTemplatesState["transf"]["data"];
+  type: "LABEL_TEMPLATES_TRANSF_SET_DATA";
 };
 
 export type LabelTemplatesTransfSetLoadingAction = {
-  type: "LABEL_TEMPLATES_TRANSF_SET_LOADING";
   loading: LabelTemplatesState["transf"]["loading"];
+  type: "LABEL_TEMPLATES_TRANSF_SET_LOADING";
 };
 
 export type LabelTemplatesTransfSetErrorAction = {
-  type: "LABEL_TEMPLATES_TRANSF_SET_ERROR";
   error: LabelTemplatesState["transf"]["error"];
+  type: "LABEL_TEMPLATES_TRANSF_SET_ERROR";
 };
 
 export type LabelTemplatesAction =

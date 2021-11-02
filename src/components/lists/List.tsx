@@ -8,9 +8,9 @@ import { ListError } from "./components/ListError";
 
 export type ListProps<Item> = {
   data: Item[] | null | undefined;
-  renderItem: ListRenderItem<Item>;
-  isLoading: boolean;
   error: string | null | undefined;
+  isLoading: boolean;
+  renderItem: ListRenderItem<Item>;
   verticalSpacing?: number;
 };
 

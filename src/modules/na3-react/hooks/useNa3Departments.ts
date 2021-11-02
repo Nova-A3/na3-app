@@ -10,18 +10,18 @@ import { useStateSlice } from "./useStateSlice";
 
 export type UseNa3DepartmentsResult = {
   data: Na3Department[] | null;
-  loading: boolean;
   error: firebase.FirebaseError | null;
   helpers: {
-    getById: (id: string) => Na3Department | undefined;
     getByDisplayName: (displayName: string) => Na3Department | undefined;
-    getByType: <T extends Na3DepartmentType>(
-      type: T
-    ) => Na3Department<T>[] | undefined;
+    getById: (id: string) => Na3Department | undefined;
     getByIdsOrTypes: (
       idsOrTypes: (Na3DepartmentId | Na3DepartmentType)[]
     ) => Na3Department[] | undefined;
+    getByType: <T extends Na3DepartmentType>(
+      type: T
+    ) => Na3Department<T>[] | undefined;
   };
+  loading: boolean;
 };
 
 export function useNa3Departments(): UseNa3DepartmentsResult {

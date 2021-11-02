@@ -3,10 +3,10 @@ import type firebase from "firebase";
 import type { Na3Department } from "../../../na3-types";
 
 export type AuthState = {
-  user: firebase.User | null | undefined;
-  loading: boolean;
-  error: firebase.auth.Error | null;
   department: Na3Department | null;
+  error: firebase.auth.Error | null;
+  loading: boolean;
+  user: firebase.User | null | undefined;
 };
 
 export type AuthSetUserAction = {
@@ -15,18 +15,18 @@ export type AuthSetUserAction = {
 };
 
 export type AuthSetLoadingAction = {
-  type: "AUTH_SET_LOADING";
   loading: AuthState["loading"];
+  type: "AUTH_SET_LOADING";
 };
 
 export type AuthSetErrorAction = {
-  type: "AUTH_SET_ERROR";
   error: AuthState["error"];
+  type: "AUTH_SET_ERROR";
 };
 
 export type AuthSetDepartmentAction = {
-  type: "AUTH_SET_DEPARTMENT";
   department: AuthState["department"];
+  type: "AUTH_SET_DEPARTMENT";
 };
 
 export type AuthAction =

@@ -4,8 +4,8 @@ import React from "react";
 import classes from "./FormCollapse.module.css";
 
 type FormCollapseProps = {
-  title: string;
   children?: React.ReactNode;
+  title: string;
 };
 
 const defaultProps: Omit<FormCollapseProps, "title"> = {

@@ -8,53 +8,53 @@ export type Na3ServiceOrder = LegacyTicket & {
 /* LegacyTicket */
 
 type LegacyTicketEditedEventChanges = {
-  machine?: { old: string; new: string };
-  description?: { old: string; new: string };
+  cause?: { new: string, old: string; };
+  description?: { new: string, old: string; };
   interruptions?: {
-    line?: { old: boolean; new: boolean };
-    equipment?: { old: boolean; new: boolean };
+    equipment?: { new: boolean, old: boolean; };
+    line?: { new: boolean, old: boolean; };
   };
-  team?: { old: string; new: string };
-  maintenanceType?: { old: string; new: string };
-  cause?: { old: string; new: string };
+  machine?: { new: string, old: string; };
+  maintenanceType?: { new: string, old: string; };
+  team?: { new: string, old: string; };
 };
 
 type LegacyTicket = {
-  id: string;
-  username: string;
-
-  dpt: string;
-  machine: string;
-  description: string;
-  interruptions: {
-    line: boolean;
-    equipment: boolean;
-    production?: boolean;
-  };
-  team: string;
-  maintenanceType: string;
-  cause: string;
+  acceptedAt?: string | null;
   additionalInfo?: string | null;
 
-  status: "closed" | "pending" | "refused" | "solved" | "solving";
-  priority?: "high" | "low" | "medium" | null;
-
   assignedMaintainer?: string;
-
-  solution?: string | null;
-  solutionSteps?: string[];
-  refusalReason?: string | null;
-
-  createdAt: string;
-  acceptedAt?: string | null;
-  solvedAt?: string | null;
+  cause: string;
   closedAt?: string | null;
-  reopenedAt?: string;
-
-  version?: string | null;
-
+  createdAt: string;
+  description: string;
+  dpt: string;
   events: {
+    device: {
+      model: string | null;
+      name: string | null;
+      os: { name: string | null; version: string | null };
+    };
     id: string;
+    payload: {
+      assignedMaintainer?: LegacyTicket["assignedMaintainer"];
+      changes?: LegacyTicketEditedEventChanges;
+      poke?: { from: string; to: string };
+      priority?: LegacyTicket["priority"];
+      refusalReason?: LegacyTicket["refusalReason"];
+      solution?: LegacyTicket["solution"] | { content?: string; who?: string };
+      solutionStep?: {
+        content?: string;
+        type:
+          | "solutionAccepted"
+          | "solutionRefused"
+          | "solutionTransmitted"
+          | "step";
+        who?: string;
+      };
+    } | null;
+    timestamp: string;
+
     type:
       | "LegacyTicketClosed"
       | "LegacyTicketConfirmed"
@@ -68,31 +68,31 @@ type LegacyTicket = {
       | "solutionRefused"
       | "solutionStepAdded"
       | "solutionTransmitted";
-    timestamp: string;
-    device: {
-      name: string | null;
-      model: string | null;
-      os: { name: string | null; version: string | null };
-    };
-
-    payload: {
-      priority?: LegacyTicket["priority"];
-      assignedMaintainer?: LegacyTicket["assignedMaintainer"];
-      solution?: LegacyTicket["solution"] | { content?: string; who?: string };
-      refusalReason?: LegacyTicket["refusalReason"];
-      changes?: LegacyTicketEditedEventChanges;
-      poke?: { from: string; to: string };
-      solutionStep?: {
-        type:
-          | "solutionAccepted"
-          | "solutionRefused"
-          | "solutionTransmitted"
-          | "step";
-        content?: string;
-        who?: string;
-      };
-    } | null;
   }[];
+  id: string;
+
+  interruptions: {
+    equipment: boolean;
+    line: boolean;
+    production?: boolean;
+  };
+  machine: string;
+
+  maintenanceType: string;
+
+  priority?: "high" | "low" | "medium" | null;
+  refusalReason?: string | null;
+  reopenedAt?: string;
+
+  solution?: string | null;
+  solutionSteps?: string[];
+  solvedAt?: string | null;
+  status: "closed" | "pending" | "refused" | "solved" | "solving";
+  team: string;
+
+  username: string;
+
+  version?: string | null;
 };
 
 /*

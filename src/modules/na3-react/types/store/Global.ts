@@ -3,8 +3,8 @@ export type GlobalState = {
 };
 
 export type GlobalSetLoadingAction = {
-  type: "GLOBAL_SET_LOADING";
   loading: GlobalState["loading"];
+  type: "GLOBAL_SET_LOADING";
 };
 
 export type GlobalAction = GlobalSetLoadingAction;

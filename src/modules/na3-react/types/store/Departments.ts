@@ -4,23 +4,23 @@ import type { Na3Department } from "../../../na3-types";
 
 export type DepartmentsState = {
   data: Na3Department[] | null;
-  loading: boolean;
   error: firebase.FirebaseError | null;
+  loading: boolean;
 };
 
 export type DepartmentsSetDataAction = {
-  type: "DEPARTMENTS_SET_DATA";
   data: DepartmentsState["data"];
+  type: "DEPARTMENTS_SET_DATA";
 };
 
 export type DepartmentsSetLoadingAction = {
-  type: "DEPARTMENTS_SET_LOADING";
   loading: DepartmentsState["loading"];
+  type: "DEPARTMENTS_SET_LOADING";
 };
 
 export type DepartmentsSetErrorAction = {
-  type: "DEPARTMENTS_SET_ERROR";
   error: DepartmentsState["error"];
+  type: "DEPARTMENTS_SET_ERROR";
 };
 
 export type DepartmentsAction =

@@ -12,10 +12,8 @@ import { InputMask } from "./fields/InputMask";
 import classes from "./FormItem.module.css";
 
 type FormItemProps = {
-  name: string;
-  label: string;
-  placeholder?: string;
-  tooltip?: LabelTooltipType;
+  autoCapitalize?: boolean;
+  disabled?: boolean;
   /**
    * Defines a top-level help text. Takes precedence over both the field's generated error message *and* its `helpDefault` prop.
    *
@@ -32,25 +30,27 @@ type FormItemProps = {
    * ```
    */
   helpDefault?: React.ReactNode;
+  label: string;
   loading?: boolean;
-  onValueChange?: (value: string) => void;
-  autoCapitalize?: boolean;
-  disabled?: boolean;
+  name: string;
   noFeedback?: boolean;
   notRequired?: boolean;
+  onValueChange?: (value: string) => void;
+  placeholder?: string;
+  tooltip?: LabelTooltipType;
 } & (
   | {
+      options: { label: React.ReactNode, value: string; }[];
       type: "autoComplete" | "select";
-      options: { value: string; label: React.ReactNode }[];
     }
   | (InputNumberProps &
       Omit<InputProps, "name" | "placeholder" | "type"> & {
         type: "decimal" | "integer";
       })
   | (Omit<InputMaskProps, "name"> & {
-      type: "mask";
       mask: (RegExp | string)[];
       maskPlaceholder?: string;
+      type: "mask";
     })
   | (Omit<InputProps, "name" | "placeholder" | "type"> & {
       type: "input" | "password";

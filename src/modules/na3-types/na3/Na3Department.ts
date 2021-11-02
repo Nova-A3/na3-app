@@ -5,6 +5,8 @@ import type { Na3User } from "./Na3User";
 export type Na3DepartmentType = "factory-adm" | "office" | "shop-floor";
 
 export type Na3DepartmentIdMap = {
+  "factory-adm": "administrativo" | "manutencao" | "pcp" | "qualidade";
+  office: "comex" | "desenvolvimento" | "diretoria";
   "shop-floor":
     | "corte-solda-luva"
     | "corte-solda-saco"
@@ -19,33 +21,31 @@ export type Na3DepartmentIdMap = {
     | "off-set"
     | "reciclagem"
     | "super-kit";
-  "factory-adm": "administrativo" | "manutencao" | "pcp" | "qualidade";
-  office: "comex" | "desenvolvimento" | "diretoria";
 };
 
 export type Na3DepartmentId<T extends Na3DepartmentType = Na3DepartmentType> =
   Na3DepartmentIdMap[T];
 
 export type Na3DepartmentLocationMap = {
-  "shop-floor": "factory";
   "factory-adm": "factory";
   office: "office";
+  "shop-floor": "factory";
 };
 
 export type Na3DepartmentLocation =
   Na3DepartmentLocationMap[keyof Na3DepartmentLocationMap];
 
 export type Na3Department<T extends Na3DepartmentType = Na3DepartmentType> = {
-  type: T;
-  id: Na3DepartmentIdMap[T];
-  name: string;
-  displayName: string;
-  location: T extends "office" ? "office" : "factory";
-  people: Na3User[];
   apps: Partial<Record<Na3AppId, Na3App>>;
+  displayName: string;
+  id: Na3DepartmentIdMap[T];
+  location: T extends "office" ? "office" : "factory";
+  machines: T extends "shop-floor" ? Record<string, Na3Machine> : never;
+  name: string;
+  people: Na3User[];
   style: { colors: { background: string; text: string } };
 
   /* Shop-floor only */
   twoLetterId: T extends "shop-floor" ? string : never;
-  machines: T extends "shop-floor" ? Record<string, Na3Machine> : never;
+  type: T;
 };

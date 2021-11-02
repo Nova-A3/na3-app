@@ -6,10 +6,10 @@ import { PageDescription } from "./components/PageDescription";
 import { PageTitle } from "./components/PageTitle";
 
 type MenuPageProps = {
-  items: StaticListItemProps[];
-  title: string;
   description?: string;
   icon?: React.ReactNode;
+  items: StaticListItemProps[];
+  title: string;
 };
 
 const defaultProps: Omit<MenuPageProps, "items" | "title"> = {

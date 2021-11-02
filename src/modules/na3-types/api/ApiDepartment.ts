@@ -1,14 +1,14 @@
 import type { ApiCompany } from "./ApiCompany";
 
 export type ApiDepartment = {
-  company: ApiCompany;
-  id: string;
-  code: string;
   active: boolean;
-  permissions: {
-    inventory: boolean;
-    batches: boolean;
-  };
+  code: string;
+  company: ApiCompany;
   description: string;
+  id: string;
   note: string | null;
+  permissions: {
+    batches: boolean;
+    inventory: boolean;
+  };
 };

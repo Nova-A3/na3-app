@@ -3,8 +3,8 @@ export type ConfigState = {
 };
 
 export type ConfigSetEnvironmentAction = {
-  type: "CONFIG_SET_ENVIRONMENT";
   environment: ConfigState["environment"];
+  type: "CONFIG_SET_ENVIRONMENT";
 };
 
 export type ConfigAction = ConfigSetEnvironmentAction;

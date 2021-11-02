@@ -7,9 +7,9 @@ import { useStateSlice } from "./useStateSlice";
 
 export type UseNa3ServiceOrdersResult = {
   data: Na3ServiceOrder[] | null;
-  loading: boolean;
   error: firebase.FirebaseError | null;
   helpers: Record<string, never>;
+  loading: boolean;
 };
 
 export function useNa3ServiceOrders(): UseNa3ServiceOrdersResult {

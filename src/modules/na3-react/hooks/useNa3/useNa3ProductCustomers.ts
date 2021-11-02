@@ -5,8 +5,8 @@ import type { ApiPerson, ApiProduct } from "../../../na3-types";
 
 type UseNa3ProductCustomersResult = {
   data: ApiPerson[] | undefined;
-  loading: boolean;
   error: string | undefined;
+  loading: boolean;
 };
 
 export function useNa3ProductCustomers(

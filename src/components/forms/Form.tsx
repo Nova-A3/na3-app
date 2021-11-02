@@ -11,23 +11,23 @@ type FormikTyped<Original, Values> = Omit<
   Original,
   "setFieldError" | "setFieldTouched" | "setFieldValue" | "setStatus" | "status"
 > & {
-  status?: FormStatus;
-  setStatus: (status: FormStatus | undefined) => void;
-
-  setFieldValue: <FieldName extends Extract<keyof Values, string>>(
-    field: FieldName,
-    value: Values[FieldName],
-    shouldValidate?: boolean
+  setFieldError: (
+    field: Extract<keyof Values, string>,
+    message: string | undefined
   ) => void;
   setFieldTouched: (
     field: Extract<keyof Values, string>,
     isTouched?: boolean,
     shouldValidate?: boolean
   ) => void;
-  setFieldError: (
-    field: Extract<keyof Values, string>,
-    message: string | undefined
+
+  setFieldValue: <FieldName extends Extract<keyof Values, string>>(
+    field: FieldName,
+    value: Values[FieldName],
+    shouldValidate?: boolean
   ) => void;
+  setStatus: (status: FormStatus | undefined) => void;
+  status?: FormStatus;
 };
 
 export type HandleSubmit<Values> = (
@@ -45,13 +45,13 @@ export type FormChildrenProps<Values> = FormikTyped<
 >;
 
 type FormProps<Values> = {
-  initialValues: Values;
-  onSubmit: HandleSubmit<Values>;
-  onValidate?: HandleValidate<Values>;
+  children: (props: FormChildrenProps<Values>) => React.ReactNode;
   initialTouched?: FormikTouched<Values>;
   initialValid?: boolean;
+  initialValues: Values;
+  onSubmit: HandleSubmit<Values>;
 
-  children: (props: FormChildrenProps<Values>) => React.ReactNode;
+  onValidate?: HandleValidate<Values>;
 } & { horizontal?: boolean };
 
 const defaultProps: Omit<

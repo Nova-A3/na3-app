@@ -7,31 +7,31 @@ import { useStateSlice } from "./useStateSlice";
 
 export type UseNa3TransfLabelTemplatesResult = {
   data: Na3TransfLabelTemplate[] | null;
-  loading: boolean;
   error: firebase.FirebaseError | null;
   helpers: {
-    getById: (id: string) => Na3TransfLabelTemplate | undefined;
     add: (templateData: Omit<Na3TransfLabelTemplate, "id">) => Promise<
       | {
-          error: null;
           data: firebase.firestore.DocumentReference<firebase.firestore.DocumentData>;
+          error: null;
         }
-      | { error: firebase.FirebaseError; data: null }
+      | { data: null, error: firebase.FirebaseError; }
     >;
+    delete: (
+      templateId: string
+    ) => Promise<{ error: firebase.FirebaseError } | { error: null }>;
+    getById: (id: string) => Na3TransfLabelTemplate | undefined;
     update: (
       templateId: string,
       templateData: Omit<Na3TransfLabelTemplate, "id">
     ) => Promise<
       | {
-          error: null;
           data: firebase.firestore.DocumentReference<firebase.firestore.DocumentData>;
+          error: null;
         }
-      | { error: firebase.FirebaseError; data: null }
+      | { data: null, error: firebase.FirebaseError; }
     >;
-    delete: (
-      templateId: string
-    ) => Promise<{ error: firebase.FirebaseError } | { error: null }>;
   };
+  loading: boolean;
 };
 
 export function useNa3TransfLabelTemplates(): UseNa3TransfLabelTemplatesResult {

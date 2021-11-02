@@ -7,9 +7,9 @@ import { List } from "../../lists/List";
 import { LabelsTransfCard } from "./LabelsTransfCard";
 
 type LabelsTransfListProps = {
-  onSelectTemplate: (template: Na3TransfLabelTemplate) => void;
-  onDeleteTemplate?: (template: Na3TransfLabelTemplate) => void;
   cardTooltipActionText?: string;
+  onDeleteTemplate?: (template: Na3TransfLabelTemplate) => void;
+  onSelectTemplate: (template: Na3TransfLabelTemplate) => void;
 };
 
 const defaultProps: Omit<LabelsTransfListProps, "onSelectTemplate"> = {

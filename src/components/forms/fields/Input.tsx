@@ -3,23 +3,23 @@ import { useField } from "formik";
 import React, { useCallback, useMemo } from "react";
 
 export type InputNumberProps = {
-  min?: number | null;
   max?: number | null;
+  min?: number | null;
 };
 
 export type InputProps = Readonly<
   {
+    addonAfter?: React.ReactNode;
+    addonBefore?: React.ReactNode;
+    allowClear?: boolean;
+    autoCapitalize?: boolean;
+    autoFocus?: boolean;
+    disabled?: boolean;
+    maxLength?: number | null;
     name: string;
     placeholder?: string;
-    addonBefore?: React.ReactNode;
-    addonAfter?: React.ReactNode;
     prefix?: React.ReactNode;
     suffix?: React.ReactNode;
-    allowClear?: boolean;
-    autoFocus?: boolean;
-    maxLength?: number | null;
-    autoCapitalize?: boolean;
-    disabled?: boolean;
   } & (
     | { type?: "input" | "password" }
     | (InputNumberProps & { type: "decimal" | "integer" })

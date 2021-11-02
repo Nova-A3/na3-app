@@ -6,8 +6,8 @@ import React, { useCallback, useState } from "react";
 import { isTouchDevice } from "../../utils";
 
 type SubmitButtonProps = ButtonProps & {
-  horizontal?: boolean;
   disableShowInvalidFields?: boolean;
+  horizontal?: boolean;
 };
 
 const defaultProps: SubmitButtonProps = {

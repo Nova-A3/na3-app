@@ -2,19 +2,19 @@ type ApiLabelId = "transf";
 
 export type ApiLabel<Id extends ApiLabelId = ApiLabelId> = {
   transf: {
-    transfId: string | null;
+    barcodeData: string;
+    batchId: string;
+    batchIdFormat: "brazil" | "mexico";
     customerName: string;
     date: string;
+    invoiceNumber: string | null;
     productCode: string;
     productName: string;
     productQuantity: number | string;
     productUnitAbbreviation: string;
     productUnitName: string;
-    batchId: string;
     qrData: string;
-    barcodeData: string;
-    batchIdFormat: "brazil" | "mexico";
-    invoiceNumber: string | null;
+    transfId: string | null;
   };
 }[Id];
 

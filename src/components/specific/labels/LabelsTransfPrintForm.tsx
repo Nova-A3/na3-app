@@ -15,8 +15,8 @@ import { FormItem } from "../../forms/FormItem";
 import { SubmitButton } from "../../forms/SubmitButton";
 
 type LabelsTransfPrintFormProps = {
-  template: Na3TransfLabelTemplate;
   onSubmit: HandleSubmit<FormValues>;
+  template: Na3TransfLabelTemplate;
 };
 
 type FormValues = Record<
@@ -31,9 +31,9 @@ type FormValues = Record<
   >,
   string
 > & {
-  productUnitDisplay: string;
   copies: string;
   invoiceNumber: string;
+  productUnitDisplay: string;
 };
 
 export function LabelsTransfPrintForm({

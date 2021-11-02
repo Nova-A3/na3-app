@@ -5,12 +5,12 @@ import { useHistory } from "react-router-dom";
 import classes from "./StaticListItem.module.css";
 
 export type StaticListItemProps = {
-  title: React.ReactNode;
-  description: React.ReactNode;
-  icon: React.ReactNode;
   color: string;
-  onClick?: React.MouseEventHandler<HTMLElement>;
+  description: React.ReactNode;
   href?: string;
+  icon: React.ReactNode;
+  onClick?: React.MouseEventHandler<HTMLElement>;
+  title: React.ReactNode;
 };
 
 export function StaticListItem({

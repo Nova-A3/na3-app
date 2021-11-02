@@ -14,10 +14,10 @@ type SiderItemChild = {
 };
 
 export type SiderItem = {
+  children?: SiderItemChild[];
+  icon: React.ReactNode;
   path: string;
   title: Capitalize<string>;
-  icon: React.ReactNode;
-  children?: SiderItemChild[];
 };
 
 export function Sider(): JSX.Element {

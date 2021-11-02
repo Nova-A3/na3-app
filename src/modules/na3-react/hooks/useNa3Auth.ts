@@ -6,7 +6,6 @@ import { useStateSlice } from "./useStateSlice";
 
 export type UseNa3AuthResult = {
   department: Na3Department | null;
-  loading: boolean;
   error: firebase.auth.Error | null;
   helpers: {
     signIn: (
@@ -18,6 +17,7 @@ export type UseNa3AuthResult = {
     >;
     signOut: () => Promise<{ error: firebase.FirebaseError } | { error: null }>;
   };
+  loading: boolean;
 };
 
 export function useNa3Auth(): UseNa3AuthResult {
