@@ -47,7 +47,6 @@ export type FormChildrenProps<Values> = FormikTyped<
 type FormProps<Values> = {
   children: (props: FormChildrenProps<Values>) => React.ReactNode;
   initialTouched?: FormikTouched<Values>;
-  initialValid?: boolean;
   initialValues: Values;
   onSubmit: HandleSubmit<Values>;
 
@@ -60,14 +59,12 @@ const defaultProps: Omit<
 > = {
   horizontal: false,
   initialTouched: undefined,
-  initialValid: false,
   onValidate: undefined,
 };
 
 export function Form<Values extends Record<string, boolean | number | string>>({
   initialValues,
   initialTouched,
-  initialValid,
   onSubmit,
   onValidate,
   horizontal,
@@ -88,7 +85,6 @@ export function Form<Values extends Record<string, boolean | number | string>>({
       enableReinitialize={true}
       initialTouched={initialTouched}
       initialValues={initialValues}
-      isInitialValid={initialValid || false}
       onSubmit={handleSubmit}
       validate={onValidate}
     >

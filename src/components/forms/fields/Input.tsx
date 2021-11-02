@@ -1,50 +1,62 @@
+import type { InputProps as AntdInputProps } from "antd";
 import { Input as AntdInput, Typography } from "antd";
-import { useField } from "formik";
 import React, { useCallback, useMemo } from "react";
 
-export type InputNumberProps = {
-  max?: number | null;
-  min?: number | null;
+export type InputFieldType = "decimal" | "input" | "integer" | "password";
+
+type InputRequiredProps<T extends InputFieldType> = {
+  name: string;
+  onBlur: (ev: React.FocusEvent<HTMLInputElement>) => void;
+  onChange: (ev: React.ChangeEvent<HTMLInputElement>) => void;
+  type: T;
+  value: string;
 };
 
-export type InputProps = Readonly<
-  {
-    addonAfter?: React.ReactNode;
-    addonBefore?: React.ReactNode;
-    allowClear?: boolean;
-    autoCapitalize?: boolean;
-    autoFocus?: boolean;
-    disabled?: boolean;
-    maxLength?: number | null;
-    name: string;
-    placeholder?: string;
-    prefix?: React.ReactNode;
-    suffix?: React.ReactNode;
-  } & (
-    | { type?: "input" | "password" }
-    | (InputNumberProps & { type: "decimal" | "integer" })
-  )
->;
+export type InputOptionalProps<T extends InputFieldType = InputFieldType> =
+  Partial<
+    Pick<
+      Omit<AntdInputProps, keyof InputRequiredProps<T>>,
+      | "addonAfter"
+      | "addonBefore"
+      | "allowClear"
+      | "autoFocus"
+      | "disabled"
+      | "maxLength"
+      | "placeholder"
+      | "prefix"
+      | "suffix"
+    > & {
+      autoCapitalize?: boolean;
+      max?: T extends "decimal" | "integer" ? number : never;
+      min?: T extends "decimal" | "integer" ? number : never;
+    }
+  >;
 
-export function Input({
+export type InputProps<T extends InputFieldType = InputFieldType> =
+  InputOptionalProps<T> & InputRequiredProps<T>;
+
+export function Input<T extends InputFieldType>({
   name,
+  onBlur,
+  onChange,
   type,
-  placeholder,
-  addonBefore,
+  value,
+  /* Inherited optionals */
   addonAfter,
+  addonBefore,
+  allowClear,
+  autoFocus,
+  disabled,
+  maxLength,
+  placeholder,
   prefix,
   suffix,
-  allowClear,
-  maxLength,
-  autoFocus,
+  /* Custom-defined optionals */
   autoCapitalize,
-  disabled,
-  ...props
-}: InputProps): JSX.Element {
-  const [
-    { onBlur: handleFieldBlur, onChange: handleFieldChange, value: fieldValue },
-  ] = useField<string>(name);
-
+  /* InputNumber optionals */
+  max,
+  min,
+}: InputProps<T>): JSX.Element {
   const handleChange = useCallback(
     (ev: React.ChangeEvent<HTMLInputElement>) => {
       if (maxLength && ev.target.value.length > maxLength) return;
@@ -57,12 +69,8 @@ export function Input({
       }
 
       if (
-        ("min" in props &&
-          props.min &&
-          Number.parseFloat(ev.target.value.replace(",", ".")) <= props.min) ||
-        ("max" in props &&
-          props.max &&
-          Number.parseFloat(ev.target.value.replace(",", ".")) > props.max)
+        (min && Number.parseFloat(ev.target.value.replace(",", ".")) <= min) ||
+        (max && Number.parseFloat(ev.target.value.replace(",", ".")) > max)
       ) {
         if (/,.?$/.test(ev.target.value)) {
           ev.target.value = ev.target.value.slice(
@@ -78,9 +86,9 @@ export function Input({
         ev.target.value = ev.target.value.toUpperCase();
       }
 
-      handleFieldChange(ev);
+      onChange(ev);
     },
-    [handleFieldChange, type, autoCapitalize, props, maxLength]
+    [onChange, type, autoCapitalize, min, max, maxLength]
   );
 
   const formatPreOrSuffix = useCallback(
@@ -107,37 +115,27 @@ export function Input({
     [formatPreOrSuffix, suffix]
   );
 
-  return type === "password" ? (
-    <AntdInput.Password
+  const InputComponent = useMemo(
+    () => (type === "password" ? AntdInput.Password : AntdInput),
+    [type]
+  );
+
+  return (
+    <InputComponent
       addonAfter={addonAfter}
       addonBefore={addonBefore}
       allowClear={allowClear}
       autoComplete="off"
       autoFocus={autoFocus}
       disabled={disabled}
+      maxLength={maxLength}
       name={name}
-      onBlur={handleFieldBlur}
+      onBlur={onBlur}
       onChange={handleChange}
       placeholder={placeholder}
       prefix={formattedPrefix}
       suffix={formattedSuffix}
-      value={fieldValue}
-    />
-  ) : (
-    <AntdInput
-      addonAfter={addonAfter}
-      addonBefore={addonBefore}
-      allowClear={allowClear}
-      autoComplete="off"
-      autoFocus={autoFocus}
-      disabled={disabled}
-      name={name}
-      onBlur={handleFieldBlur}
-      onChange={handleChange}
-      placeholder={placeholder}
-      prefix={formattedPrefix}
-      suffix={formattedSuffix}
-      value={fieldValue}
+      value={value}
     />
   );
 }

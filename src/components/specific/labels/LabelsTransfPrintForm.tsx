@@ -64,7 +64,7 @@ export function LabelsTransfPrintForm({
         batchIdFormat: template.batchIdFormat,
         copies: parseInt(copies),
         customerName,
-        date,
+        date: dayjs(date).format("DD/MM/YYYY"),
         invoiceNumber,
         productCode,
         productName,
@@ -89,7 +89,7 @@ export function LabelsTransfPrintForm({
         batchId: "",
         copies: "",
         customerName: template.customerName.trim().toUpperCase(),
-        date: dayjs().format("DD/MM/YYYY"),
+        date: dayjs().format(),
         invoiceNumber: "",
         productCode: template.productCode.trim().toUpperCase(),
         productName: template.productName.trim().toUpperCase(),
@@ -254,7 +254,7 @@ function PrintFormHeader(): JSX.Element {
         </Col>
 
         <Col md={6} sm={8} xs={24}>
-          <FormItem disabled={true} label="Data" name="date" type="input" />
+          <FormItem label="Data" name="date" type="date" />
         </Col>
       </Row>
 

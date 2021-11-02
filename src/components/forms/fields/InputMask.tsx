@@ -1,56 +1,60 @@
 import useMask from "@ryuuji3/react-mask-hook";
 import { Input } from "antd";
-import { useField } from "formik";
-import React, { useCallback } from "react";
+import React from "react";
 
-import type { InputProps } from "./Input";
+import type { InputOptionalProps } from "./Input";
 
-export type InputMaskProps = Omit<
-  InputProps,
-  "maxLength" | "placeholder" | "type"
-> & {
+type InputMaskRequiredProps = {
   mask: (RegExp | string)[];
-  maskPlaceholder?: string | null;
+  name: string;
+  onBlur: (ev: React.FocusEvent<HTMLInputElement>) => void;
+  onChange: (value: string) => void;
+  value: string;
 };
+
+export type InputMaskOptionalProps = Partial<
+  InputOptionalProps & {
+    maskPlaceholder?: string | null;
+  }
+>;
+
+export type InputMaskProps = InputMaskRequiredProps &
+  Omit<
+    InputMaskOptionalProps,
+    "autoCapitalize" | "max" | "min" | "placeholder"
+  >;
 
 export function InputMask({
   mask,
-  maskPlaceholder,
   name,
-  addonBefore,
+  onBlur,
+  onChange,
+  value: valueProp,
+  /* Optionals */
+  maskPlaceholder,
+  /* Input-inherited optionals */
   addonAfter,
-  prefix,
-  suffix,
+  addonBefore,
   allowClear,
   autoFocus,
-  autoCapitalize,
   disabled,
+  maxLength,
+  prefix,
+  suffix,
 }: InputMaskProps): JSX.Element {
-  const [
-    { onBlur: handleFieldBlur, onChange: handleFieldChange, value: fieldValue },
-  ] = useField<string>(name);
-
-  const handleChange = useCallback(
-    (value: string) => {
-      if (autoCapitalize) value = value.toUpperCase();
-      handleFieldChange(name)(value);
-    },
-    [name, autoCapitalize, handleFieldChange]
-  );
-
   const {
-    "data-value": maskDataValue,
-    onChange: handleMaskChange,
-    onFocus: hadleMaskFocus,
-    onKeyDown: handleMaskKeyDown,
-    onKeyUp: handleMaskKeyUp,
+    "data-value": dataValue,
+    onChange: handleChange,
+    onFocus: handleFocus,
+    onKeyDown: handleKeyDown,
+    onKeyUp: handleKeyUp,
     placeholder,
     value,
   } = useMask({
-    mask: mask,
-    onChange: handleChange,
+    mask,
+    onChange,
     placeholder: maskPlaceholder || "_",
-    value: fieldValue,
+    value: valueProp,
   });
 
   return (
@@ -60,14 +64,15 @@ export function InputMask({
       allowClear={allowClear}
       autoComplete="off"
       autoFocus={autoFocus}
-      data-value={maskDataValue}
+      data-value={dataValue}
       disabled={disabled}
+      maxLength={maxLength}
       name={name}
-      onBlur={handleFieldBlur}
-      onChange={handleMaskChange}
-      onFocus={hadleMaskFocus}
-      onKeyDown={handleMaskKeyDown}
-      onKeyUp={handleMaskKeyUp}
+      onBlur={onBlur}
+      onChange={handleChange}
+      onFocus={handleFocus}
+      onKeyDown={handleKeyDown}
+      onKeyUp={handleKeyUp}
       placeholder={placeholder}
       prefix={prefix}
       suffix={suffix}

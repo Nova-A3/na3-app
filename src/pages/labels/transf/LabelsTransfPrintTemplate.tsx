@@ -182,7 +182,7 @@ export function LabelsTransfPrintTemplatePage({
       makeLabels(label, additionalConfig).save(
         `Etiquetas ${label.batchId.trim().toUpperCase()}.pdf`
       );
-      void message.success("Etiquetas baixadas");
+      void message.success("Download concluído");
       handleCloseLabelPreview();
     },
     [makeLabels, handleCloseLabelPreview]

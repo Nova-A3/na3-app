@@ -5,101 +5,132 @@ import { nanoid } from "nanoid";
 import React, { useCallback, useEffect, useMemo } from "react";
 
 import { isTouchDevice } from "../../utils";
-import type { InputNumberProps, InputProps } from "./fields/Input";
+import type { InputFieldType, InputOptionalProps } from "./fields/Input";
 import { Input } from "./fields/Input";
-import type { InputMaskProps } from "./fields/InputMask";
+import type { InputDateOptionalProps } from "./fields/InputDate";
+import { InputDate } from "./fields/InputDate";
 import { InputMask } from "./fields/InputMask";
 import classes from "./FormItem.module.css";
 
-type FormItemProps = {
+type OptionsFieldType = "autoComplete" | "select";
+
+type FieldType = InputFieldType | OptionsFieldType | "date" | "mask";
+
+type FormItemBaseProps<T extends FieldType> = {
   autoCapitalize?: boolean;
   disabled?: boolean;
-  /**
-   * Defines a top-level help text. Takes precedence over both the field's generated error message *and* its `helpDefault` prop.
-   *
-   * ```
-   * help > error > helpDefault
-   * ```
-   */
+  /* help > error > helpDefault */
   help?: React.ReactNode;
-  /**
-   * Defines a bottom-level help text. Appears only when no error message nor the `help` prop could be rendered.
-   *
-   * ```
-   * help > error > helpDefault
-   * ```
-   */
   helpDefault?: React.ReactNode;
+  /* Required */
   label: string;
   loading?: boolean;
+  /* Required */
   name: string;
   noFeedback?: boolean;
   notRequired?: boolean;
   onValueChange?: (value: string) => void;
   placeholder?: string;
   tooltip?: LabelTooltipType;
-} & (
-  | {
-      options: { label: React.ReactNode; value: string }[];
-      type: "autoComplete" | "select";
-    }
-  | (InputNumberProps &
-      Omit<InputProps, "name" | "placeholder" | "type"> & {
-        type: "decimal" | "integer";
-      })
-  | (Omit<InputMaskProps, "name"> & {
-      mask: (RegExp | string)[];
-      maskPlaceholder?: string;
-      type: "mask";
-    })
-  | (Omit<InputProps, "name" | "placeholder" | "type"> & {
-      type: "input" | "password";
-    })
-);
-
-const defaultProps: Omit<FormItemProps, "label" | "name" | "type"> = {
-  autoCapitalize: false,
-  disabled: false,
-  help: undefined,
-  helpDefault: undefined,
-  loading: false,
-  noFeedback: false,
-  notRequired: false,
-  onValueChange: undefined,
-  placeholder: "",
-  tooltip: null,
+  /* Required */
+  type: T;
+} & {
+  mask?: T extends "mask" ? (RegExp | string)[] : never;
+  maskPlaceholder?: T extends "mask" ? string : never;
+} & {
+  options?: T extends OptionsFieldType
+    ? { label: React.ReactNode; value: string }[]
+    : never;
 };
 
-export function FormItem({
-  type,
-  name,
+type PropsComposedWithBaseInput<T extends FieldType> = FormItemBaseProps<T> &
+  (T extends InputFieldType
+    ? InputOptionalProps<T>
+    : Omit<
+        Record<keyof InputOptionalProps, never>,
+        keyof FormItemBaseProps<T>
+      >);
+
+type PropsComposedWithInputDate<T extends FieldType> =
+  PropsComposedWithBaseInput<T> &
+    (T extends "date"
+      ? InputDateOptionalProps
+      : Omit<
+          Record<keyof InputDateOptionalProps, never>,
+          keyof PropsComposedWithBaseInput<T>
+        >);
+
+type FormItemProps<T extends FieldType> = PropsComposedWithInputDate<T>;
+
+const defaultProps: Omit<
+  FormItemProps<FieldType>,
+  "label" | "name" | "type"
+> = {
+  autoCapitalize: undefined,
+  disabled: undefined,
+  help: undefined,
+  helpDefault: undefined,
+  loading: undefined,
+  mask: undefined,
+  maskPlaceholder: undefined,
+  noFeedback: undefined,
+  notRequired: undefined,
+  onValueChange: undefined,
+  options: undefined,
+  placeholder: undefined,
+  tooltip: undefined,
+};
+
+export function FormItem<T extends FieldType>({
   label,
-  placeholder: placeholderProperty,
-  tooltip,
+  name,
+  type,
+  /* Own optionals */
+  autoCapitalize,
+  disabled,
   help,
   helpDefault,
   loading,
-  onValueChange,
-  autoCapitalize,
-  disabled,
   noFeedback,
   notRequired,
-  ...props
-}: FormItemProps): JSX.Element {
-  const [field, meta] = useField<string>(name);
+  onValueChange,
+  placeholder: placeholderProp,
+  tooltip,
+  /* InputMask required props */
+  mask,
+  /* InputMask optionals */
+  maskPlaceholder,
+  /* Select/AutoComplete required props */
+  options,
+  /* Base Input optionals */
+  addonAfter,
+  addonBefore,
+  allowClear,
+  autoFocus,
+  maxLength,
+  prefix,
+  suffix,
+  /* InputNumber optionals */
+  max,
+  min,
+  /* InputDate optionals */
+  allowFutureDates,
+  format,
+}: FormItemProps<T>): JSX.Element {
+  const [{ value, onChange, onBlur }, meta] = useField<string>(name);
 
   const handleChange = useCallback(
     (value: string) => {
-      field.onChange(field.name)(autoCapitalize ? value.toUpperCase() : value);
+      onChange(name)(autoCapitalize ? value.toUpperCase() : value);
     },
-    [field, autoCapitalize]
+    [onChange, name, autoCapitalize]
   );
 
   const handleBlur = useCallback(
     (ev: React.FocusEvent) => {
-      field.onBlur(field.name)(ev);
+      onBlur(ev);
     },
-    [field]
+    [onBlur]
   );
 
   const handleAutoCompleteFilterOption: Exclude<
@@ -126,7 +157,7 @@ export function FormItem({
 
   const placeholder = useMemo(
     () =>
-      placeholderProperty ||
+      placeholderProp ||
       (type === "integer"
         ? "Somente dígitos"
         : type === "decimal"
@@ -136,7 +167,7 @@ export function FormItem({
               ? "selecionar"
               : "preencher"
           }`),
-    [type, placeholderProperty]
+    [type, placeholderProp]
   );
 
   const hasFeedback = useMemo(
@@ -145,10 +176,117 @@ export function FormItem({
   );
 
   useEffect(() => {
-    onValueChange?.(field.value);
-  }, [field.value, onValueChange]);
+    onValueChange?.(value);
+  }, [value, onValueChange]);
 
   // process.env.NODE_ENV === "development" && console.log(name, field);
+
+  let field: JSX.Element | null = null;
+
+  switch (type) {
+    case "date":
+      field = (
+        <InputDate
+          allowClear={allowClear}
+          allowFutureDates={allowFutureDates}
+          disabled={disabled}
+          format={format}
+          name={name}
+          onBlur={onBlur}
+          onChange={handleChange}
+          value={value}
+        />
+      );
+      break;
+    case "input":
+    case "password":
+    case "integer":
+    case "decimal":
+      field = (
+        <Input
+          addonAfter={addonAfter}
+          addonBefore={addonBefore}
+          allowClear={allowClear}
+          autoCapitalize={autoCapitalize}
+          autoFocus={autoFocus}
+          disabled={disabled}
+          max={max}
+          maxLength={maxLength}
+          min={min}
+          name={name}
+          onBlur={onBlur}
+          onChange={onChange}
+          placeholder={placeholder}
+          prefix={prefix}
+          suffix={suffix}
+          type={type}
+          value={value}
+        />
+      );
+      break;
+    case "mask":
+      if (!mask) {
+        throw new Error("You must specify a valid mask for masked inputs.");
+      }
+      field = (
+        <InputMask
+          addonAfter={addonAfter}
+          addonBefore={addonBefore}
+          allowClear={allowClear}
+          autoFocus={autoFocus}
+          disabled={disabled}
+          mask={mask}
+          maskPlaceholder={maskPlaceholder}
+          name={name}
+          onBlur={onBlur}
+          onChange={handleChange}
+          prefix={prefix}
+          suffix={suffix}
+          value={value}
+        />
+      );
+      break;
+    case "select":
+      if (!options) {
+        throw new Error(
+          "You must specify a valid set of options for select inputs."
+        );
+      }
+      field = (
+        <Select<string>
+          disabled={disabled}
+          onBlur={handleBlur}
+          onChange={handleChange}
+          placeholder={placeholder}
+          value={value || undefined}
+        >
+          {options.map(({ value, label }) => (
+            <Select.Option key={nanoid()} value={value}>
+              {label}
+            </Select.Option>
+          ))}
+        </Select>
+      );
+      break;
+    case "autoComplete":
+      if (!options) {
+        throw new Error(
+          "You must specify a valid set of options for autoComplete inputs."
+        );
+      }
+      field = (
+        <AutoComplete
+          defaultActiveFirstOption={false}
+          disabled={disabled}
+          filterOption={handleAutoCompleteFilterOption}
+          onBlur={handleBlur}
+          onChange={handleChange}
+          options={options}
+          placeholder={placeholder}
+          value={value}
+        />
+      );
+  }
 
   return (
     <Form.Item
@@ -180,69 +318,7 @@ export function FormItem({
           : undefined
       }
     >
-      {type === "input" ||
-      type === "password" ||
-      type === "integer" ||
-      type === "decimal" ? (
-        <Input
-          addonAfter={"addonAfter" in props && props.addonAfter}
-          addonBefore={"addonBefore" in props && props.addonBefore}
-          allowClear={"allowClear" in props && props.allowClear}
-          autoCapitalize={autoCapitalize}
-          autoFocus={"autoFocus" in props && props.autoFocus}
-          disabled={disabled}
-          max={"max" in props ? props.max : null}
-          maxLength={"maxLength" in props ? props.maxLength : null}
-          min={"min" in props ? props.min : null}
-          name={name}
-          placeholder={placeholder}
-          prefix={"prefix" in props && props.prefix}
-          suffix={"suffix" in props && props.suffix}
-          type={type}
-        />
-      ) : type === "mask" ? (
-        <InputMask
-          addonAfter={"addonAfter" in props && props.addonAfter}
-          addonBefore={"addonBefore" in props && props.addonBefore}
-          allowClear={"allowClear" in props && props.allowClear}
-          autoCapitalize={autoCapitalize}
-          autoFocus={"autoFocus" in props && props.autoFocus}
-          disabled={disabled}
-          mask={"mask" in props ? props.mask : []}
-          maskPlaceholder={
-            "maskPlaceholder" in props ? props.maskPlaceholder : null
-          }
-          name={name}
-          prefix={"prefix" in props && props.prefix}
-          suffix={"suffix" in props && props.suffix}
-        />
-      ) : type === "select" ? (
-        <Select<string>
-          disabled={disabled}
-          onBlur={handleBlur}
-          onChange={handleChange}
-          placeholder={placeholder}
-          value={field.value || undefined}
-        >
-          {"options" in props &&
-            props.options.map(({ value, label }) => (
-              <Select.Option key={nanoid()} value={value}>
-                {label}
-              </Select.Option>
-            ))}
-        </Select>
-      ) : (
-        <AutoComplete
-          defaultActiveFirstOption={false}
-          disabled={disabled}
-          filterOption={handleAutoCompleteFilterOption}
-          onBlur={handleBlur}
-          onChange={handleChange}
-          options={"options" in props ? props.options : undefined}
-          placeholder={placeholder}
-          value={field.value}
-        />
-      )}
+      {field}
     </Form.Item>
   );
 }
