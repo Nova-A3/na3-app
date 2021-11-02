@@ -16,6 +16,7 @@ type BreadcrumbItem = {
 
 export function Breadcrumb(): JSX.Element {
   const { pathname } = useLocation();
+
   const breadcrumb = useBreadcrumb();
 
   const breadcrumbItems = useMemo((): BreadcrumbItem[] => {
@@ -45,31 +46,29 @@ export function Breadcrumb(): JSX.Element {
 
   return (
     <Row className={classes.Container}>
-      <Col md={24} xs={0}>
-        {breadcrumbItems.length > 1 && (
-          <AntdBreadcrumb className={classes.Breadcrumb}>
-            {breadcrumbItems.map((breadcrumbItem) => (
-              <AntdBreadcrumb.Item key={nanoid()}>
-                <Link
-                  className={!breadcrumbItem.path ? classes.Disabled : ""}
-                  to={breadcrumbItem.path || ""}
-                >
-                  {breadcrumbItem.icon && (
-                    <span
-                      className={
-                        breadcrumbItem.content ? classes.Icon : undefined
-                      }
-                    >
-                      {breadcrumbItem.icon}
-                    </span>
-                  )}
-                  {breadcrumbItem.content}
-                </Link>
-              </AntdBreadcrumb.Item>
-            ))}
-          </AntdBreadcrumb>
-        )}
-      </Col>
+      {breadcrumbItems.length > 1 && (
+        <AntdBreadcrumb className={classes.Breadcrumb}>
+          {breadcrumbItems.map((breadcrumbItem) => (
+            <AntdBreadcrumb.Item key={nanoid()}>
+              <Link
+                className={!breadcrumbItem.path ? classes.Disabled : ""}
+                to={breadcrumbItem.path || ""}
+              >
+                {breadcrumbItem.icon && (
+                  <span
+                    className={
+                      breadcrumbItem.content ? classes.Icon : undefined
+                    }
+                  >
+                    {breadcrumbItem.icon}
+                  </span>
+                )}
+                {breadcrumbItem.content}
+              </Link>
+            </AntdBreadcrumb.Item>
+          ))}
+        </AntdBreadcrumb>
+      )}
     </Row>
   );
 }

@@ -13,3 +13,11 @@
 .Disabled {
   pointer-events: none;
 }
+
+/* up to md */
+@media screen and (max-width: 768px) {
+  .Container {
+    margin: 0;
+    display: none;
+  }
+}
