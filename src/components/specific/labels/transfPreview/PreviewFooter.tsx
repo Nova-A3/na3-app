@@ -32,7 +32,7 @@ export function PreviewFooter({
 
       <div>
         <Button disabled={isSaveDisabled} onClick={onSave}>
-          Salvar para imprimir
+          Salvar
         </Button>
 
         <Button disabled={isPrintDisabled} onClick={onPrint} type="primary">

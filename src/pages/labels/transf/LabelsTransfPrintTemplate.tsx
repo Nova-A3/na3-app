@@ -1,4 +1,4 @@
-import { Button, notification, Result } from "antd";
+import { Button, message, notification, Result } from "antd";
 import React, { useCallback, useEffect, useMemo } from "react";
 import { useHistory } from "react-router-dom";
 
@@ -163,7 +163,7 @@ export function LabelsTransfPrintTemplatePage({
   );
 
   const handlePrint = useCallback(() => {
-    return notification.error({
+    notification.error({
       description:
         "Por favor, opte por salvar como PDF para imprimir manualmente.",
       message: "Função indisponível",
@@ -179,11 +179,13 @@ export function LabelsTransfPrintTemplatePage({
         qrDataUrl: string;
       }
     ) => {
-      return makeLabels(label, additionalConfig).save(
+      makeLabels(label, additionalConfig).save(
         `Etiquetas ${label.batchId.trim().toUpperCase()}.pdf`
       );
+      void message.success("Etiquetas baixadas");
+      handleCloseLabelPreview();
     },
-    [makeLabels]
+    [makeLabels, handleCloseLabelPreview]
   );
 
   useEffect(() => {
