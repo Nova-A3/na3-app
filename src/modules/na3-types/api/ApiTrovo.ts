@@ -4,10 +4,10 @@ export type ApiTrovoError = {
 };
 
 export type ApiTrovoResponse<T> =
-  | { data: null, error: ApiTrovoError; }
-  | { data: T, error: null; };
+  | { data: null; error: ApiTrovoError }
+  | { data: T; error: null };
 
-export type ApiTrovoQrSlotEmpty = { empty: true; scanId: null, uid: null; };
+export type ApiTrovoQrSlotEmpty = { empty: true; scanId: null; uid: null };
 
 export type ApiTrovoQrSlotFulfilled = {
   empty: false;

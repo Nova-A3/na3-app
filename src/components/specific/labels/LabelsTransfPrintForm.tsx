@@ -23,59 +23,30 @@ export function LabelsTransfPrintForm({
   template,
   onSubmit,
 }: LabelsTransfPrintFormProps): JSX.Element {
-  const formatBatchId = useCallback(
-    (batchId: string) => {
-      return template.batchIdFormat === "brazil"
-        ? batchId.slice(0, 4) +
-            "-" +
-            batchId.slice(4, 7) +
-            "-" +
-            batchId.slice(7, 12) +
-            " " +
-            batchId.slice(12)
-        : "KA-" +
-            batchId[1] +
-            (batchId[1] === "N" ? "T" : "I") +
-            "-" +
-            batchId.slice(2);
-    },
-    [template.batchIdFormat]
-  );
+  const handleValidate = useCallback((values: LabelsTransfPrintFormValues) => {
+    const errors: Partial<LabelsTransfPrintFormValues> = {};
 
-  const handleValidate = useCallback(
-    (values: LabelsTransfPrintFormValues) => {
-      const errors: Partial<LabelsTransfPrintFormValues> = {};
+    if (!values.batchId) errors.batchId = "Campo obrigatório";
+    else if (!na3.batchId(values.batchId).isValid) {
+      errors.batchId = "Nº do Lote inválido";
+    }
 
-      if (!values.batchId) errors.batchId = "Campo obrigatório";
-      else if (
-        !na3
-          .validators()
-          .batchId()
-          .isBatchId(formatBatchId(values.batchId), template.batchIdFormat)
-      ) {
-        errors.batchId = "Nº do Lote inválido";
-      }
+    if (!values.productQuantity) errors.productQuantity = "Campo obrigatório";
+    else if (Number.parseFloat(values.productQuantity.replace(",", ".")) <= 0) {
+      errors.productQuantity = "Deve ser maior que zero";
+    }
 
-      if (!values.productQuantity) errors.productQuantity = "Campo obrigatório";
-      else if (
-        Number.parseFloat(values.productQuantity.replace(",", ".")) <= 0
-      ) {
-        errors.productQuantity = "Deve ser maior que zero";
-      }
+    if (!values.copies) errors.copies = "Campo obrigatório";
+    else if (Number.parseInt(values.copies) <= 0) {
+      errors.copies = "Deve ser maior que zero";
+    }
 
-      if (!values.copies) errors.copies = "Campo obrigatório";
-      else if (Number.parseInt(values.copies) <= 0) {
-        errors.copies = "Deve ser maior que zero";
-      }
+    if (values.invoiceNumber && Number.parseInt(values.invoiceNumber) <= 0) {
+      errors.invoiceNumber = "Nº da NF inválido";
+    }
 
-      if (values.invoiceNumber && Number.parseInt(values.invoiceNumber) <= 0) {
-        errors.invoiceNumber = "Nº da NF inválido";
-      }
-
-      return errors;
-    },
-    [formatBatchId, template.batchIdFormat]
-  );
+    return errors;
+  }, []);
 
   const handleSubmit = useCallback(
     ({
@@ -88,8 +59,9 @@ export function LabelsTransfPrintForm({
       productName,
       productQuantity,
     }: LabelsTransfPrintFormValues): void => {
+      console.log(na3.batchId(batchId));
       onSubmit({
-        batchId,
+        batchId: na3.batchId(batchId).value,
         batchIdFormat: template.batchIdFormat,
         copies: parseInt(copies),
         customerName,
@@ -97,7 +69,9 @@ export function LabelsTransfPrintForm({
         invoiceNumber,
         productCode,
         productName,
-        productQuantity,
+        productQuantity: parseFloat(productQuantity.replace(",", "."))
+          .toString()
+          .replace(".", ","),
         productUnitAbbreviation: template.productUnitAbbreviation,
         productUnitName: template.productUnitName,
       });
@@ -220,6 +194,7 @@ export function LabelsTransfPrintForm({
                 }
                 label="Valor de quantidade"
                 max={template.productSnapshot?.perCarton}
+                maxLength={8}
                 name="productQuantity"
                 suffix={template.productUnitName.toLowerCase()}
                 tooltip={

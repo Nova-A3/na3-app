@@ -19,13 +19,13 @@ export type ApiScheduledResult = {
   functions: {
     [FunctionId in keyof ApiScheduledResultFnDataMap]:
       | { executed: false }
-      | ({ attempts: number, executed: true; } & (
+      | ({ attempts: number; executed: true } & (
           | {
               data: ApiScheduledResultFnDataMap[FunctionId];
               errors: null;
               status: "success";
             }
-          | { data: null, errors: ApiError[]; status: "fail"; }
+          | { data: null; errors: ApiError[]; status: "fail" }
         ));
   };
   ok: true;

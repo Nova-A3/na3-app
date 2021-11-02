@@ -6,13 +6,14 @@ import type { ListProps, ListRenderItem } from "./List";
 import { List } from "./List";
 
 type StaticListProps<Item> =
-  Omit<
+  | (Omit<
       ListProps<StaticListItemProps>,
       "data" | "error" | "isLoading" | "renderItem"
-    > & { data: StaticListItemProps[]; renderItem: null } | Omit<ListProps<Item>, "data" | "error" | "isLoading" | "renderItem"> & {
+    > & { data: StaticListItemProps[]; renderItem: null })
+  | (Omit<ListProps<Item>, "data" | "error" | "isLoading" | "renderItem"> & {
       data: Item[];
       renderItem: ListRenderItem<Item>;
-    };
+    });
 
 export function StaticList<Item extends Record<string, unknown>>({
   verticalSpacing,

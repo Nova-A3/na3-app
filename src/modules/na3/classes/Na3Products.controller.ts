@@ -1,5 +1,5 @@
-import type { ApiError, ApiProduct } from "../../na3-types";
-import type { Product, ProductsController } from "../types";
+import type { ApiProduct } from "../../na3-types";
+import type { ControllerResult, Product, ProductsController } from "../types";
 import { formatQueryInput } from "../utils";
 import { Na3BaseController } from "./Na3Base.controller";
 import { Na3Product } from "./Na3Product.instance";
@@ -19,9 +19,7 @@ export class Na3ProductsController
     },
   };
 
-  async getById(
-    id: string
-  ): Promise<{ data: null; error: ApiError } | { data: Product; error: null }> {
+  async getById(id: string): Promise<ControllerResult<Product>> {
     const res = await this.getApi<ApiProduct>(
       `/products/${formatQueryInput(id)}`
     );
@@ -30,9 +28,7 @@ export class Na3ProductsController
     return { data: new Na3Product(res.data), error: null };
   }
 
-  async getByCode(
-    code: string
-  ): Promise<{ data: null; error: ApiError } | { data: Product; error: null }> {
+  async getByCode(code: string): Promise<ControllerResult<Product>> {
     const res = await this.getApi<ApiProduct>(
       `/products?code=${formatQueryInput(code)}`
     );

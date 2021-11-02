@@ -1,4 +1,5 @@
-import type { ApiError, ApiProduct } from "../../../na3-types";
+import type { ApiProduct } from "../../../na3-types";
+import type { ControllerResult } from "../utils/ControllerResult";
 import type { Product } from "./Product";
 
 type ControllerUtils = {
@@ -6,16 +7,8 @@ type ControllerUtils = {
 };
 
 export interface ProductsController {
-  readonly getByCode: (
-    code: string
-  ) => Promise<
-    { data: null; error: ApiError } | { data: Product; error: null }
-  >;
-  readonly getById: (
-    id: string
-  ) => Promise<
-    { data: null; error: ApiError } | { data: Product; error: null }
-  >;
+  readonly getByCode: (code: string) => Promise<ControllerResult<Product>>;
+  readonly getById: (id: string) => Promise<ControllerResult<Product>>;
   readonly isApiProduct: (testProduct: unknown) => testProduct is ApiProduct;
   readonly isDartBagCode: (testCode: unknown) => testCode is `S-${number}`;
   readonly isProductCode: (

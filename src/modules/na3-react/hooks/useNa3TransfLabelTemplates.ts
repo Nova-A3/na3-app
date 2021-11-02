@@ -14,7 +14,7 @@ export type UseNa3TransfLabelTemplatesResult = {
           data: firebase.firestore.DocumentReference<firebase.firestore.DocumentData>;
           error: null;
         }
-      | { data: null, error: firebase.FirebaseError; }
+      | { data: null; error: firebase.FirebaseError }
     >;
     delete: (
       templateId: string
@@ -28,7 +28,7 @@ export type UseNa3TransfLabelTemplatesResult = {
           data: firebase.firestore.DocumentReference<firebase.firestore.DocumentData>;
           error: null;
         }
-      | { data: null, error: firebase.FirebaseError; }
+      | { data: null; error: firebase.FirebaseError }
     >;
   };
   loading: boolean;

@@ -50,7 +50,7 @@ type ApiDocumentPayt = {
 export type ApiDocument = {
   accessKey: string;
   billing: string | null;
-  businessUnit: { code: string; description: string, id: string; } | null;
+  businessUnit: { code: string; description: string; id: string } | null;
   canceled: boolean;
   commDocStatus: string;
   customerId: string;
@@ -59,7 +59,7 @@ export type ApiDocument = {
   inventoryBatchId: string;
   issuedAt: string;
   items: ApiDocumentItem[];
-  messages: { code: string; description: string, id: string; }[];
+  messages: { code: string; description: string; id: string }[];
   nfStatus: "A" | "C" | "D" | "E" | "I" | "N" | "R" | "S" | "X";
   note: string;
   number: string;

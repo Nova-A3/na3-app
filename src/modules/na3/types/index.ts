@@ -4,3 +4,4 @@ export * from "./Na3";
 export * from "./PeopleController";
 export * from "./products/Product";
 export * from "./products/ProductsController";
+export * from "./utils/ControllerResult";

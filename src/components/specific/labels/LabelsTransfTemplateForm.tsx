@@ -84,7 +84,7 @@ export function LabelsTransfTemplateForm({
           productCode: product.data.code.toUpperCase().trim(),
           productId: product.data.id.toUpperCase().trim(),
           productName: product.data.name.toUpperCase().trim(),
-          productSnapshot: product.data,
+          productSnapshot: product.data.get(),
           productUnitAbbreviation: product.data.unit.abbreviation
             .toUpperCase()
             .trim(),

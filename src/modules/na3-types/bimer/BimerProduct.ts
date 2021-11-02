@@ -46,13 +46,13 @@ export type BimerProductGrid = {
     Codigo: number;
     Identificador: string;
     Sigla: string;
-    Tipo: { Codigo: string, Identificador: string; };
+    Tipo: { Codigo: string; Identificador: string };
   };
   GradeVertical: {
     Codigo: number;
     Identificador: string;
     Sigla: string;
-    Tipo: { Codigo: string, Identificador: string; };
+    Tipo: { Codigo: string; Identificador: string };
   };
   Identificador: string;
   NmProduto: string;

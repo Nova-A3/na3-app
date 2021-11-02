@@ -1,1 +1,1 @@
-export { Na3 } from "./Na3";
+export { Na3Controller } from "./Na3.controller";

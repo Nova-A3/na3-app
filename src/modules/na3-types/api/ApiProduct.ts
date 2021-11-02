@@ -19,7 +19,7 @@ export type ApiProduct = {
     id: string | null;
   } | null;
   grid: ApiProductGrid | null;
-  group: { code: string; description: string, id: string; } | null;
+  group: { code: string; description: string; id: string } | null;
   /* From Bimer */
   id: string;
   images: ApiProductImage[];
@@ -38,10 +38,10 @@ export type ApiProduct = {
   } | null;
 
   /* From Nomus */
-  unit: { abbreviation: Uppercase<string>, name: string; };
+  unit: { abbreviation: Uppercase<string>; name: string };
   variants: { code: string; id: string; name: string }[];
 
-  weight: { gross: number, net: number; };
+  weight: { gross: number; net: number };
 };
 
 export type ApiProductImage = {
@@ -55,7 +55,7 @@ export type ApiProductGrid = {
     abbreviation: string;
     code: number;
     id: string;
-    type: { code: string, id: string; };
+    type: { code: string; id: string };
   };
   id: string;
   productName: string;
@@ -63,6 +63,6 @@ export type ApiProductGrid = {
     abbreviation: string;
     code: number;
     id: string;
-    type: { code: string, id: string; };
+    type: { code: string; id: string };
   };
 };

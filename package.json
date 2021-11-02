@@ -41,7 +41,8 @@
     "prettier-check": "yarn prettier --check .",
     "prettier-write": "yarn prettier --write .",
     "lint": "yarn eslint . --ext .ts,.tsx",
-    "lint-fix": "yarn eslint . --fix --ext .ts,.tsx"
+    "lint-fix": "yarn eslint . --fix --ext .ts,.tsx",
+    "pre-push": "yarn prettier-write && yarn lint-fix"
   },
   "eslintConfig": {
     "extends": [

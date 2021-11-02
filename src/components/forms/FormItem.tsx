@@ -40,7 +40,7 @@ type FormItemProps = {
   tooltip?: LabelTooltipType;
 } & (
   | {
-      options: { label: React.ReactNode, value: string; }[];
+      options: { label: React.ReactNode; value: string }[];
       type: "autoComplete" | "select";
     }
   | (InputNumberProps &
@@ -148,7 +148,7 @@ export function FormItem({
     onValueChange?.(field.value);
   }, [field.value, onValueChange]);
 
-  process.env.NODE_ENV === "development" && console.log(name, field);
+  // process.env.NODE_ENV === "development" && console.log(name, field);
 
   return (
     <Form.Item

@@ -1,4 +1,4 @@
-const firebaseErrorsTranslationMap: { [key: string]: string, else: string; } = {
+const firebaseErrorsTranslationMap: { [key: string]: string; else: string } = {
   "auth/claims-too-large":
     "O payload de declarações fornecido para setCustomUserClaims() excede o tamanho máximo permitido de 1.000 bytes.",
   "auth/email-already-exists":

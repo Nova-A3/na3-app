@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useState } from "react";
 
-import { na3 } from "../../../na3";
-import type { ApiPerson, ApiProduct } from "../../../na3-types";
+import type { ApiPerson } from "../../../na3-types";
+import type { ProductData } from "./useNa3Product";
 
 type UseNa3ProductCustomersResult = {
   data: ApiPerson[] | undefined;
@@ -10,7 +10,7 @@ type UseNa3ProductCustomersResult = {
 };
 
 export function useNa3ProductCustomers(
-  product: ApiProduct | null | undefined
+  product: ProductData | null | undefined
 ): UseNa3ProductCustomersResult {
   const [customers, setCustomers] = useState<ApiPerson[]>();
   const [loading, setLoading] = useState(false);
@@ -34,9 +34,7 @@ export function useNa3ProductCustomers(
 
   useEffect(() => {
     if (product) {
-      void handleFetchCustomers(async () =>
-        na3.people().getCustomers(product, { ignoreErrors: true })
-      );
+      void handleFetchCustomers(async () => product.getCustomers());
     } else {
       setLoading(false);
       setCustomers(undefined);

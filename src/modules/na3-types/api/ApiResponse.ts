@@ -28,9 +28,9 @@ export type ApiData =
   | ApiScheduledResult
   | ApiStatus;
 
-export type ApiResponseSuccess<T extends ApiData> = { data: T, error: null; };
+export type ApiResponseSuccess<T extends ApiData> = { data: T; error: null };
 
-export type ApiResponseFail = { data: null, error: ApiError; };
+export type ApiResponseFail = { data: null; error: ApiError };
 
 export type ApiResponse<T extends ApiData> =
   | ApiResponseFail
@@ -42,7 +42,8 @@ export type ApiResponseArray<T extends ApiData> = {
 };
 
 type MakeApiResponseConfig<T extends ApiData = ApiData> =
-  { data: T, type: "success"; } | { error: unknown, type: "fail"; };
+  | { data: T; type: "success" }
+  | { error: unknown; type: "fail" };
 
 export type MakeApiResponse = <T extends ApiData>(
   config: MakeApiResponseConfig<T>

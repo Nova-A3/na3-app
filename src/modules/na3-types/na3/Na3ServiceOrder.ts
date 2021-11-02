@@ -8,15 +8,15 @@ export type Na3ServiceOrder = LegacyTicket & {
 /* LegacyTicket */
 
 type LegacyTicketEditedEventChanges = {
-  cause?: { new: string, old: string; };
-  description?: { new: string, old: string; };
+  cause?: { new: string; old: string };
+  description?: { new: string; old: string };
   interruptions?: {
-    equipment?: { new: boolean, old: boolean; };
-    line?: { new: boolean, old: boolean; };
+    equipment?: { new: boolean; old: boolean };
+    line?: { new: boolean; old: boolean };
   };
-  machine?: { new: string, old: string; };
-  maintenanceType?: { new: string, old: string; };
-  team?: { new: string, old: string; };
+  machine?: { new: string; old: string };
+  maintenanceType?: { new: string; old: string };
+  team?: { new: string; old: string };
 };
 
 type LegacyTicket = {

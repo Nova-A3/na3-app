@@ -109,12 +109,12 @@ export class Na3BatchId implements BatchId {
   }
 
   private validateBrazilian(): boolean {
-    return /^([c-fikr][a-dfgk-mx][0-3]\d-?\d{3}-?[2-4]\d[0-3]\d{2} ?[a-g])$/i.test(
+    return /^([c-fikr][a-dfgk-mx][0-3]\d-\d{3}-[2-4]\d[0-3]\d{2} [a-g])$/i.test(
       this.value
     );
   }
 
   private validateMexican(): boolean {
-    return /^(ka-?((nt)|(ci))-?\d+)$/i.test(this.value);
+    return /^(ka-((nt)|(ci))-\d+)$/i.test(this.value);
   }
 }
