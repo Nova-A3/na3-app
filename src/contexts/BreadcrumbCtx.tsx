@@ -1,4 +1,4 @@
-import React, { createContext, useCallback } from "react";
+import React, { createContext, useCallback, useMemo } from "react";
 
 export type BreadcrumbContext = {
   extra: string[];
@@ -27,9 +27,12 @@ export function BreadcrumbProvider({
     []
   );
 
+  const ctxValue = useMemo(
+    () => ({ extra, setExtra: handleSetExtra }),
+    [extra, handleSetExtra]
+  );
+
   return (
-    <BreadcrumbCtx.Provider value={{ extra, setExtra: handleSetExtra }}>
-      {children}
-    </BreadcrumbCtx.Provider>
+    <BreadcrumbCtx.Provider value={ctxValue}>{children}</BreadcrumbCtx.Provider>
   );
 }

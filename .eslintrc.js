@@ -64,6 +64,7 @@ module.exports = {
     "react/prefer-read-only-props": "warn",
     "react/prefer-stateless-function": "warn",
     "react/no-array-index-key": "warn",
+    "react/jsx-no-constructed-context-values": "warn",
     "sort-keys-fix/sort-keys-fix": "warn",
     "typescript-sort-keys/interface": "warn",
     "typescript-sort-keys/string-enum": "warn",
