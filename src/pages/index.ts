@@ -1,4 +1,6 @@
 export { AuthPage } from "./auth/Auth";
+export { NoMatchPage } from "./error/NoMatch";
+export { NotImplementedPage } from "./error/NotImplemented";
 export { LabelsHomePage } from "./labels/LabelsHome";
 export { LabelsManagePage } from "./labels/LabelsManage";
 export { LabelsPrintPage } from "./labels/LabelsPrint";

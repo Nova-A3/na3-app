@@ -17,30 +17,26 @@ import {
   LabelsTransfPrintPage,
 } from "../pages";
 
-export type RoutePath = `/${Lowercase<string>}`;
-
 export type SiderConfig = {
   children?: SiderChild[];
   title?: Capitalize<string>;
 };
 
 type SiderChild = {
-  path: `${RoutePath}${RoutePath}`;
+  path: string;
   title: Capitalize<string>;
 };
 
 export type AppRoute = {
   authorized?: (Na3DepartmentId | Na3DepartmentType)[];
-  component: React.ReactNode;
+  component: React.ReactNode | null;
   icon?: React.ReactNode;
   notExact?: boolean;
   siderConfig?: SiderConfig;
   title: string | null;
 };
 
-type AppRouteMap = {
-  [Path in RoutePath]: AppRoute;
-};
+type AppRouteMap = Record<string, AppRoute>;
 
 export const ROUTES: AppRouteMap = {
   "/": {
@@ -51,7 +47,7 @@ export const ROUTES: AppRouteMap = {
   },
 
   "/docs": {
-    component: <HomePage />,
+    component: null,
     icon: <FileOutlined />,
     siderConfig: {
       children: [
@@ -60,6 +56,14 @@ export const ROUTES: AppRouteMap = {
       ],
     },
     title: "Documentos",
+  },
+  "/docs/comex": {
+    component: null,
+    title: "Comércio Exterior",
+  },
+  "/docs/transferencia": {
+    component: null,
+    title: "Transferência",
   },
 
   "/etiquetas": {
@@ -100,7 +104,7 @@ export const ROUTES: AppRouteMap = {
   },
 
   "/manutencao": {
-    component: <HomePage />,
+    component: null,
     icon: <SettingOutlined />,
     siderConfig: {
       children: [
@@ -110,5 +114,17 @@ export const ROUTES: AppRouteMap = {
       ],
     },
     title: "Manutenção",
+  },
+  "/manutencao/dashboard": {
+    component: null,
+    title: "Dashboard",
+  },
+  "/manutencao/os": {
+    component: null,
+    title: "Ordens de Serviço",
+  },
+  "/manutencao/projetos": {
+    component: null,
+    title: "Projetos",
   },
 };
