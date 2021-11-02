@@ -3,7 +3,7 @@ import { nanoid } from "nanoid";
 import React, { useMemo } from "react";
 import { Link, useLocation } from "react-router-dom";
 
-import type { AppRoute, RoutePath } from "../../../constants";
+import type { AppRoute } from "../../../constants";
 import { ROUTES } from "../../../constants";
 import { useBreadcrumb } from "../../../hooks";
 import classes from "./Breadcrumb.module.css";
@@ -11,7 +11,7 @@ import classes from "./Breadcrumb.module.css";
 type BreadcrumbItem = {
   content: string | null;
   icon?: React.ReactNode;
-  path?: RoutePath;
+  path?: string;
 };
 
 export function Breadcrumb(): JSX.Element {
@@ -25,17 +25,18 @@ export function Breadcrumb(): JSX.Element {
 
     return [
       ...pathChunks
-        .map((_, index): BreadcrumbItem | null => {
-          const chunkPath: RoutePath = `/${pathChunks
-            .slice(1, index + 1)
-            .join("/")}`;
-          const chunkRoute: AppRoute | undefined = ROUTES[chunkPath];
-
-          return {
-            content: chunkRoute.title,
-            icon: chunkRoute.icon,
-            path: chunkPath,
-          };
+        .map((_, index): BreadcrumbItem | undefined => {
+          const chunkPath = `/${pathChunks.slice(1, index + 1).join("/")}`;
+          if (!(chunkPath in ROUTES)) {
+            return;
+          } else {
+            const chunkRoute: AppRoute | undefined = ROUTES[chunkPath];
+            return {
+              content: chunkRoute.title,
+              icon: chunkRoute.icon,
+              path: chunkPath,
+            };
+          }
         })
         .filter((item): item is BreadcrumbItem => !!item),
       ...breadcrumb.extra.map((extra) => ({ content: extra })),
