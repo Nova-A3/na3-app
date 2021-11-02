@@ -1,2 +1,2 @@
 export * from "./device";
-export * from "./transfLabelTemplates";
+export * from "./transfLabels";

@@ -7,6 +7,7 @@ import {
   useNa3TransfLabelTemplates,
 } from "../../../modules/na3-react";
 import type { Na3TransfLabelTemplate } from "../../../modules/na3-types";
+import type { LabelsTransfCreateTemplateFormValues } from "../../../types";
 import { formatProductUnit } from "../../../utils";
 import { FormCollapse } from "../../forms/components/FormCollapse";
 import type { HandleSubmit, HandleValidate } from "../../forms/Form";
@@ -24,15 +25,6 @@ const defaultProps: LabelTemplateFormProps = {
   onSubmit: undefined,
 };
 
-type FormValues = {
-  batchIdFormat: "brazil" | "mexico";
-  customerName: string;
-  productCode: string;
-  productName: string;
-  productUnitDisplay: string;
-  templateName: string;
-};
-
 export function LabelsTransfTemplateForm({
   editingTemplate,
   onSubmit,
@@ -46,84 +38,86 @@ export function LabelsTransfTemplateForm({
   const product = useNa3Product(productCode);
   const productCustomers = useNa3ProductCustomers(product.data);
 
-  const handleValidate: HandleValidate<FormValues> = useCallback(
-    ({ templateName, productCode, productName, customerName }) => {
-      const errors: Partial<FormValues> = {};
-      if (!templateName) errors.templateName = "Campo obrigatório";
-      if (!productCode) errors.productCode = "Campo obrigatório";
-      if (product.error) errors.productCode = product.error;
-      if (productName && !customerName)
-        errors.customerName = "Campo obrigatório";
-      return errors;
-    },
-    [product.error]
-  );
+  const handleValidate: HandleValidate<LabelsTransfCreateTemplateFormValues> =
+    useCallback(
+      ({ templateName, productCode, productName, customerName }) => {
+        const errors: Partial<LabelsTransfCreateTemplateFormValues> = {};
+        if (!templateName) errors.templateName = "Campo obrigatório";
+        if (!productCode) errors.productCode = "Campo obrigatório";
+        if (product.error) errors.productCode = product.error;
+        if (productName && !customerName)
+          errors.customerName = "Campo obrigatório";
+        return errors;
+      },
+      [product.error]
+    );
 
-  const handleSubmit: HandleSubmit<FormValues> = useCallback(
-    async (
-      { templateName, productName, customerName, batchIdFormat },
-      helpers
-    ) => {
-      const notifyError = (message: string): void => {
-        notification.error({
-          description: message,
-          message: `Erro ao ${editingTemplate ? "editar" : "criar"} o modelo`,
-        });
-      };
+  const handleSubmit: HandleSubmit<LabelsTransfCreateTemplateFormValues> =
+    useCallback(
+      async (
+        { templateName, productName, customerName, batchIdFormat },
+        helpers
+      ) => {
+        const notifyError = (message: string): void => {
+          notification.error({
+            description: message,
+            message: `Erro ao ${editingTemplate ? "editar" : "criar"} o modelo`,
+          });
+        };
 
-      if (!product.data || product.data.name !== productName) {
-        return notifyError("Não foi possível vincular um produto ao modelo.");
-      } else if (!productCustomers.data) {
-        return notifyError("Não foi possível vincular um cliente ao modelo.");
-      }
+        if (!product.data || product.data.name !== productName) {
+          return notifyError("Não foi possível vincular um produto ao modelo.");
+        } else if (!productCustomers.data) {
+          return notifyError("Não foi possível vincular um cliente ao modelo.");
+        }
 
-      helpers.setStatus("loading");
+        helpers.setStatus("loading");
 
-      const customer = productCustomers.data.find(
-        (customer) => customer.name === customerName
-      );
-      const template: Omit<Na3TransfLabelTemplate, "id"> = {
-        batchIdFormat: batchIdFormat,
-        customerId: customer?.id.toUpperCase().trim() || null,
-        customerName: customer?.name.toUpperCase().trim() || customerName,
-        name: templateName.toUpperCase().trim(),
-        productCode: product.data.code.toUpperCase().trim(),
-        productId: product.data.id.toUpperCase().trim(),
-        productName: product.data.name.toUpperCase().trim(),
-        productSnapshot: product.data,
-        productUnitAbbreviation: product.data.unit.abbreviation
-          .toUpperCase()
-          .trim(),
-        productUnitName: product.data.unit.name.toUpperCase().trim(),
-      };
+        const customer = productCustomers.data.find(
+          (customer) => customer.name === customerName
+        );
+        const template: Omit<Na3TransfLabelTemplate, "id"> = {
+          batchIdFormat: batchIdFormat,
+          customerId: customer?.id.toUpperCase().trim() || null,
+          customerName: customer?.name.toUpperCase().trim() || customerName,
+          name: templateName.toUpperCase().trim(),
+          productCode: product.data.code.toUpperCase().trim(),
+          productId: product.data.id.toUpperCase().trim(),
+          productName: product.data.name.toUpperCase().trim(),
+          productSnapshot: product.data,
+          productUnitAbbreviation: product.data.unit.abbreviation
+            .toUpperCase()
+            .trim(),
+          productUnitName: product.data.unit.name.toUpperCase().trim(),
+        };
 
-      const operationRes = await (editingTemplate
-        ? transfLabelTemplates.helpers.update(editingTemplate.id, template)
-        : transfLabelTemplates.helpers.add(template));
+        const operationRes = await (editingTemplate
+          ? transfLabelTemplates.helpers.update(editingTemplate.id, template)
+          : transfLabelTemplates.helpers.add(template));
 
-      if (operationRes.error) {
-        notifyError(operationRes.error.message);
-      } else {
-        notification.success({
-          description: `O modelo "${template.name}" foi ${
-            editingTemplate ? "editado" : "criado"
-          } com sucesso!`,
-          message: `Modelo ${editingTemplate ? "editado" : "criado"}`,
-        });
-      }
+        if (operationRes.error) {
+          notifyError(operationRes.error.message);
+        } else {
+          notification.success({
+            description: `O modelo "${template.name}" foi ${
+              editingTemplate ? "editado" : "criado"
+            } com sucesso!`,
+            message: `Modelo ${editingTemplate ? "editado" : "criado"}`,
+          });
+        }
 
-      helpers.setStatus("ready");
+        helpers.setStatus("ready");
 
-      if (onSubmit) onSubmit();
-    },
-    [
-      editingTemplate,
-      onSubmit,
-      product.data,
-      productCustomers.data,
-      transfLabelTemplates.helpers,
-    ]
-  );
+        if (onSubmit) onSubmit();
+      },
+      [
+        editingTemplate,
+        onSubmit,
+        product.data,
+        productCustomers.data,
+        transfLabelTemplates.helpers,
+      ]
+    );
 
   const batchIdFormatOptions = useMemo(
     () => [
@@ -148,7 +142,7 @@ export function LabelsTransfTemplateForm({
   );
 
   return (
-    <Form<FormValues>
+    <Form<LabelsTransfCreateTemplateFormValues>
       initialTouched={
         editingTemplate && { productCode: true, templateName: true }
       }

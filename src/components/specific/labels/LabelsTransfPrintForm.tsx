@@ -3,37 +3,20 @@ import dayjs from "dayjs";
 import React, { useCallback } from "react";
 
 import { na3 } from "../../../modules/na3";
+import type { Na3TransfLabelTemplate } from "../../../modules/na3-types";
 import type {
-  ApiLabel,
-  Na3TransfLabelTemplate,
-} from "../../../modules/na3-types";
+  LabelsTransfPrintFormOnSubmitValues,
+  LabelsTransfPrintFormValues,
+} from "../../../types";
 import { formatProductUnit } from "../../../utils";
 import { FormCollapse } from "../../forms/components/FormCollapse";
-import type { HandleSubmit, HandleValidate } from "../../forms/Form";
 import { Form } from "../../forms/Form";
 import { FormItem } from "../../forms/FormItem";
 import { SubmitButton } from "../../forms/SubmitButton";
 
 type LabelsTransfPrintFormProps = {
-  onSubmit: HandleSubmit<FormValues>;
+  onSubmit: (labelConfig: LabelsTransfPrintFormOnSubmitValues) => void;
   template: Na3TransfLabelTemplate;
-};
-
-type FormValues = Record<
-  keyof Pick<
-    ApiLabel<"transf">,
-    | "batchId"
-    | "customerName"
-    | "date"
-    | "productCode"
-    | "productName"
-    | "productQuantity"
-  >,
-  string
-> & {
-  copies: string;
-  invoiceNumber: string;
-  productUnitDisplay: string;
 };
 
 export function LabelsTransfPrintForm({
@@ -59,14 +42,15 @@ export function LabelsTransfPrintForm({
     [template.batchIdFormat]
   );
 
-  const handleValidate: HandleValidate<FormValues> = useCallback(
-    (values) => {
-      const errors: Partial<FormValues> = {};
+  const handleValidate = useCallback(
+    (values: LabelsTransfPrintFormValues) => {
+      const errors: Partial<LabelsTransfPrintFormValues> = {};
 
       if (!values.batchId) errors.batchId = "Campo obrigatório";
       else if (
         !na3
-          .validator()
+          .validators()
+          .batchId()
           .isBatchId(formatBatchId(values.batchId), template.batchIdFormat)
       ) {
         errors.batchId = "Nº do Lote inválido";
@@ -93,8 +77,41 @@ export function LabelsTransfPrintForm({
     [formatBatchId, template.batchIdFormat]
   );
 
+  const handleSubmit = useCallback(
+    ({
+      batchId,
+      copies,
+      customerName,
+      date,
+      invoiceNumber,
+      productCode,
+      productName,
+      productQuantity,
+    }: LabelsTransfPrintFormValues): void => {
+      onSubmit({
+        batchId,
+        batchIdFormat: template.batchIdFormat,
+        copies: parseInt(copies),
+        customerName,
+        date,
+        invoiceNumber,
+        productCode,
+        productName,
+        productQuantity,
+        productUnitAbbreviation: template.productUnitAbbreviation,
+        productUnitName: template.productUnitName,
+      });
+    },
+    [
+      onSubmit,
+      template.batchIdFormat,
+      template.productUnitAbbreviation,
+      template.productUnitName,
+    ]
+  );
+
   return (
-    <Form<FormValues>
+    <Form<LabelsTransfPrintFormValues>
       initialValues={{
         batchId: "",
         copies: "",
@@ -109,7 +126,7 @@ export function LabelsTransfPrintForm({
           template.productUnitAbbreviation
         ),
       }}
-      onSubmit={onSubmit}
+      onSubmit={handleSubmit}
       onValidate={handleValidate}
     >
       {({ values }): JSX.Element => (

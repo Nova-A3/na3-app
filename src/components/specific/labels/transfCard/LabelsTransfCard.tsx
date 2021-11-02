@@ -3,8 +3,8 @@ import { Button, Card, Col, Row, Tooltip, Typography } from "antd";
 import React, { useCallback, useMemo, useState } from "react";
 import { IoPersonCircleOutline, IoPricetagOutline } from "react-icons/io5";
 
-import type { Na3TransfLabelTemplate } from "../../../modules/na3-types";
-import { isTouchDevice } from "../../../utils";
+import type { Na3TransfLabelTemplate } from "../../../../modules/na3-types";
+import { isTouchDevice } from "../../../../utils";
 import classes from "./LabelsTransfCard.module.css";
 
 type LabelsTransfCardProps = {

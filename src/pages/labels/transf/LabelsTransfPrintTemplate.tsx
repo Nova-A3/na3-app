@@ -5,12 +5,16 @@ import { useHistory } from "react-router-dom";
 
 import {
   Centered,
+  LabelsTransfPreview,
   LabelsTransfPrintForm,
   PageDescription,
   PageTitle,
 } from "../../../components";
 import { useBreadcrumb } from "../../../hooks";
 import { useNa3TransfLabelTemplates } from "../../../modules/na3-react";
+import type { ApiLabel } from "../../../modules/na3-types";
+import type { LabelsTransfPrintFormOnSubmitValues } from "../../../types";
+import { createTransfLabelFromPrintForm } from "../../../utils";
 
 type PageProps = {
   templateId: string;
@@ -25,6 +29,10 @@ export function LabelsTransfPrintTemplatePage({
     helpers: { getById: getTemplate },
   } = useNa3TransfLabelTemplates();
 
+  const [labelConfig, setLabelConfig] = React.useState<
+    ApiLabel<"transf"> & { copies: number }
+  >();
+
   const template = useMemo(
     () => getTemplate(templateId),
     [templateId, getTemplate]
@@ -34,9 +42,33 @@ export function LabelsTransfPrintTemplatePage({
     history.replace("/etiquetas/imprimir/transferencia");
   }, [history]);
 
-  const handleShowLabelPreview = useCallback(() => {
-    return;
+  const handleOpenLabelPreview = useCallback(
+    (labelConfig: LabelsTransfPrintFormOnSubmitValues) => {
+      setLabelConfig({
+        ...createTransfLabelFromPrintForm(labelConfig),
+        copies: labelConfig.copies,
+      });
+    },
+    []
+  );
+
+  const handleCloseLabelPreview = useCallback(() => {
+    setLabelConfig(undefined);
   }, []);
+
+  const handlePrint = useCallback(
+    (labelConfig: ApiLabel<"transf">, copies: number) => {
+      return [labelConfig, copies];
+    },
+    []
+  );
+
+  const handleSave = useCallback(
+    (labelConfig: ApiLabel<"transf">, copies: number) => {
+      return [labelConfig, copies];
+    },
+    []
+  );
 
   useEffect(() => {
     setBreadcrumbExtra(template?.name.trim().toUpperCase());
@@ -48,8 +80,16 @@ export function LabelsTransfPrintTemplatePage({
       <PageDescription>Configure a etiqueta.</PageDescription>
 
       <LabelsTransfPrintForm
-        onSubmit={handleShowLabelPreview}
+        onSubmit={handleOpenLabelPreview}
         template={template}
+      />
+
+      <LabelsTransfPreview
+        copies={labelConfig?.copies}
+        label={labelConfig}
+        onCancel={handleCloseLabelPreview}
+        onPrint={handlePrint}
+        onSave={handleSave}
       />
     </>
   ) : (

@@ -4,7 +4,7 @@ import { useNa3TransfLabelTemplates } from "../../../modules/na3-react";
 import type { Na3TransfLabelTemplate } from "../../../modules/na3-types";
 import type { ListRenderItem } from "../../lists/List";
 import { List } from "../../lists/List";
-import { LabelsTransfCard } from "./LabelsTransfCard";
+import { LabelsTransfCard } from "./transfCard/LabelsTransfCard";
 
 type LabelsTransfListProps = {
   cardTooltipActionText?: string;

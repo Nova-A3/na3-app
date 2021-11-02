@@ -5,11 +5,12 @@ import type {
   ApiResponseArray,
   ApiResponseSuccess,
 } from "../../na3-types";
+import { formatQueryInput } from "../utils";
 import { Na3Base } from "./Na3Base";
 
 export class Na3People extends Na3Base {
   async getById(id: string): Promise<ApiResponse<ApiPerson>> {
-    return this.getApi<ApiPerson>(`/people/${this.formatQueryInput(id)}`);
+    return this.getApi<ApiPerson>(`/people/${formatQueryInput(id)}`);
   }
 
   async getCustomers(

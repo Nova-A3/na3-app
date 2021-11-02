@@ -1,7 +1,7 @@
 import { Form as AntdForm } from "antd";
 import type { FormikHelpers, FormikProps, FormikTouched } from "formik";
 import { Formik } from "formik";
-import React from "react";
+import React, { useCallback } from "react";
 
 import { Spinner } from "../ui/Spinner";
 
@@ -73,13 +73,23 @@ export function Form<Values extends Record<string, boolean | number | string>>({
   horizontal,
   children,
 }: FormProps<Values>): JSX.Element {
+  const handleSubmit = useCallback(
+    async (
+      values: Values,
+      helpers: FormikTyped<FormikHelpers<Values>, Values>
+    ) => {
+      await onSubmit(values, helpers);
+    },
+    [onSubmit]
+  );
+
   return (
     <Formik<Values>
       enableReinitialize={true}
       initialTouched={initialTouched}
       initialValues={initialValues}
       isInitialValid={initialValid || false}
-      onSubmit={onSubmit}
+      onSubmit={handleSubmit}
       validate={onValidate}
     >
       {(formikProps): JSX.Element => (

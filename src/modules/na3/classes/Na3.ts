@@ -1,12 +1,18 @@
 import { Na3People } from "./Na3People";
 import { Na3Products } from "./Na3Products";
-import { Na3Validator } from "./Na3Validator";
+import { Na3BatchIdValidator } from "./validators/Na3BatchIdValidator";
+import { Na3ProductsValidator } from "./validators/Na3ProductsValidator";
+
+type Na3Validators = {
+  batchId: () => Na3BatchIdValidator;
+  products: () => Na3ProductsValidator;
+};
 
 export class Na3 {
   private static _instance?: Na3;
-  private static _products?: Na3Products;
-  private static _people?: Na3People;
-  private static _validator?: Na3Validator;
+  private _products?: Na3Products;
+  private _people?: Na3People;
+  private _validators?: Na3Validators;
 
   private constructor() {
     return;
@@ -18,17 +24,22 @@ export class Na3 {
   }
 
   products(): Na3Products {
-    if (!Na3._products) Na3._products = new Na3Products();
-    return Na3._products;
+    if (!this._products) this._products = new Na3Products();
+    return this._products;
   }
 
   people(): Na3People {
-    if (!Na3._people) Na3._people = new Na3People();
-    return Na3._people;
+    if (!this._people) this._people = new Na3People();
+    return this._people;
   }
 
-  validator(): Na3Validator {
-    if (!Na3._validator) Na3._validator = new Na3Validator();
-    return Na3._validator;
+  validators(): Na3Validators {
+    if (!this._validators) {
+      this._validators = {
+        batchId: (): Na3BatchIdValidator => new Na3BatchIdValidator(),
+        products: (): Na3ProductsValidator => new Na3ProductsValidator(),
+      };
+    }
+    return this._validators;
   }
 }

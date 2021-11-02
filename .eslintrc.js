@@ -71,4 +71,13 @@ module.exports = {
     "simple-import-sort/imports": "warn",
     "simple-import-sort/exports": "warn",
   },
+  overrides: [
+    {
+      files: ["src/modules/na3/types/**/*"], // Or *.test.js
+      rules: {
+        "@typescript-eslint/consistent-type-definitions": ["off"],
+        "@typescript-eslint/method-signature-style": ["off"],
+      },
+    },
+  ],
 };
