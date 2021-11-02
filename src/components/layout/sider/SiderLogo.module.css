@@ -1,7 +1,11 @@
 .Logo {
   display: flex;
   align-items: center;
-  justify-content: center;
+  justify-content: flex-start;
   height: 32px;
-  margin: 16px;
+  margin: 24px 24px 16px 24px;
+}
+
+.LogoCollapsed {
+  justify-content: center;
 }

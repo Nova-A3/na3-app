@@ -1,4 +1,4 @@
-import { Layout } from "antd";
+import { Grid, Layout } from "antd";
 import React, { useCallback, useMemo, useState } from "react";
 import { useHistory } from "react-router-dom";
 
@@ -21,6 +21,7 @@ export type SiderItem = {
 
 export function Sider(): JSX.Element {
   const history = useHistory();
+  const breakpoint = Grid.useBreakpoint();
 
   const [isCollapsed, setIsCollapsed] = useState(false);
 
@@ -59,6 +60,7 @@ export function Sider(): JSX.Element {
       collapsed={isCollapsed}
       collapsible={true}
       onCollapse={handleCollapse}
+      width={breakpoint.md ? 220 : "100%"}
     >
       <SiderLogo isCollapsed={isCollapsed} />
       <SiderMenu

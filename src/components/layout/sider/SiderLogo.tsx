@@ -10,7 +10,11 @@ type SiderLogoProps = {
 
 export function SiderLogo({ isCollapsed }: SiderLogoProps): JSX.Element {
   return (
-    <div className={classes.Logo}>
+    <div
+      className={
+        classes.Logo + (isCollapsed ? " " + classes.LogoCollapsed : "")
+      }
+    >
       {!isCollapsed && (
         <img
           alt="Logotipo Nova A3"
