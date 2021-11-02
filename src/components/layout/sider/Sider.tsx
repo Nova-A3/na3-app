@@ -1,5 +1,5 @@
 import { Grid, Layout } from "antd";
-import React, { useCallback, useMemo, useState } from "react";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { useHistory } from "react-router-dom";
 
 import { ROUTES } from "../../../constants";
@@ -9,21 +9,21 @@ import { SiderMenu } from "./SiderMenu";
 
 type SiderItemChild = {
   path: string;
-  title: Capitalize<string>;
+  title: string;
 };
 
 export type SiderItem = {
   children?: SiderItemChild[];
   icon: React.ReactNode;
   path: string;
-  title: Capitalize<string>;
+  title: string;
 };
 
 export function Sider(): JSX.Element {
   const history = useHistory();
   const breakpoint = Grid.useBreakpoint();
 
-  const [isCollapsed, setIsCollapsed] = useState(false);
+  const [isCollapsed, setIsCollapsed] = useState<boolean>();
 
   const handleCollapse = useCallback((collapsed: boolean) => {
     setIsCollapsed(collapsed);
@@ -55,14 +55,20 @@ export function Sider(): JSX.Element {
     []
   );
 
+  useEffect(() => {
+    if (isCollapsed === undefined && "md" in breakpoint) {
+      setIsCollapsed(!breakpoint.md);
+    }
+  }, [breakpoint, isCollapsed]);
+
   return (
     <Layout.Sider
-      collapsed={isCollapsed}
+      collapsed={!!isCollapsed}
       collapsible={true}
       onCollapse={handleCollapse}
       width={breakpoint.md ? 220 : "100%"}
     >
-      <SiderLogo isCollapsed={isCollapsed} />
+      <SiderLogo isCollapsed={!!isCollapsed} />
       <SiderMenu
         items={siderItems.filter((item): item is SiderItem => !!item)}
         onNavigation={handleMenuNavigation}

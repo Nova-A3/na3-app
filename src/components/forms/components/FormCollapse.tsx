@@ -18,7 +18,11 @@ export function FormCollapse({
 }: FormCollapseProps): JSX.Element {
   return (
     <Collapse className={classes.Collapse} ghost={true}>
-      <Collapse.Panel header={title} key="form-collapse">
+      <Collapse.Panel
+        className={classes.Panel}
+        header={title}
+        key="form-collapse"
+      >
         {children}
       </Collapse.Panel>
     </Collapse>

@@ -59,7 +59,6 @@ export function LabelsTransfPrintForm({
       productName,
       productQuantity,
     }: LabelsTransfPrintFormValues): void => {
-      console.log(na3.batchId(batchId));
       onSubmit({
         batchId: na3.batchId(batchId).value,
         batchIdFormat: template.batchIdFormat,
@@ -216,9 +215,9 @@ export function LabelsTransfPrintForm({
 
             <Col md={6} sm={8} xs={24}>
               <FormItem
-                label="Qtd. de etiquetas"
+                label="Qtd. de cópias"
                 name="copies"
-                suffix="cópias"
+                suffix="etiquetas"
                 type="integer"
               />
             </Col>
