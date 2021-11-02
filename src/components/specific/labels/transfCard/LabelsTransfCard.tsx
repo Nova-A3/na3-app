@@ -15,7 +15,7 @@ type LabelsTransfCardProps = {
 };
 
 const defaultProps: Omit<LabelsTransfCardProps, "data" | "onSelect"> = {
-  onDelete: () => undefined,
+  onDelete: undefined,
   tooltipActionText: undefined,
 };
 

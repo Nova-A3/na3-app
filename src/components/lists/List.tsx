@@ -1,13 +1,19 @@
+import { Input } from "antd";
 import { nanoid } from "nanoid";
-import React, { useMemo } from "react";
+import React, { useCallback, useMemo, useState } from "react";
 
 import { Empty } from "../ui/Empty";
 import { Spinner } from "../ui/Spinner";
 import { ListError } from "./components/ListError";
+import classes from "./List.module.css";
 
-export type ListProps<Item> = {
-  data: Item[] | null | undefined;
+export type ListProps<
+  Item,
+  Data extends Item[] | null | undefined = Item[] | null | undefined
+> = {
+  data: Data;
   error: string | null | undefined;
+  filterItem?: Data extends Item[] ? (input: string) => Item[] : never;
   isLoading: boolean;
   renderItem: ListRenderItem<Item>;
   verticalSpacing?: number;
@@ -19,9 +25,35 @@ export function List<Item extends Record<string, unknown>>({
   isLoading,
   error,
   verticalSpacing,
+  filterItem,
 }: ListProps<Item>): JSX.Element {
+  const [searchInput, setSearchInput] = useState("");
+
+  const handleSearchChange = useCallback(
+    (eventOrValue: React.ChangeEvent<HTMLInputElement> | string): void => {
+      const input =
+        typeof eventOrValue === "string"
+          ? eventOrValue
+          : eventOrValue.target.value;
+      setSearchInput(input.toLowerCase());
+    },
+    []
+  );
+
+  const filteredData = useMemo(
+    () => filterItem?.(searchInput) || data,
+    [filterItem, searchInput, data]
+  );
+
   const verticalSpacedStyle = useMemo(
     () => ({ marginBottom: verticalSpacing }),
+    [verticalSpacing]
+  );
+
+  const listStyle = useMemo(
+    () => ({
+      paddingTop: verticalSpacing || 8,
+    }),
     [verticalSpacing]
   );
 
@@ -29,30 +61,45 @@ export function List<Item extends Record<string, unknown>>({
     return <ListError>{error}</ListError>;
   } else if (isLoading) {
     return <Spinner />;
-  } else if (data) {
-    return data.length === 0 ? (
-      <Empty description="Nada para mostrar" />
-    ) : (
-      <>
-        {data.map((item, index) => (
-          <div
-            key={
-              (item instanceof Object &&
-                Object.prototype.hasOwnProperty.call(item, "id") &&
-                typeof item.id === "string" &&
-                item.id) ||
-              nanoid()
-            }
-            style={
-              verticalSpacing && index < data.length - 1
-                ? verticalSpacedStyle
-                : undefined
-            }
-          >
-            {renderItem(item)}
+  } else if (filteredData) {
+    return (
+      <div className={classes.ListContainer}>
+        {!!filterItem && (
+          <div className={classes.SearchContainer}>
+            <Input.Search
+              enterButton={true}
+              onChange={handleSearchChange}
+              onSearch={handleSearchChange}
+              placeholder="Pesquisar..."
+            />
           </div>
-        ))}
-      </>
+        )}
+
+        <div className={classes.List} style={listStyle}>
+          {filteredData.length === 0 ? (
+            <Empty description="Nada para mostrar" />
+          ) : (
+            filteredData.map((item, index) => (
+              <div
+                key={
+                  (item instanceof Object &&
+                    Object.prototype.hasOwnProperty.call(item, "id") &&
+                    typeof item.id === "string" &&
+                    item.id) ||
+                  nanoid()
+                }
+                style={
+                  verticalSpacing && index < filteredData.length - 1
+                    ? verticalSpacedStyle
+                    : undefined
+                }
+              >
+                {renderItem(item)}
+              </div>
+            ))
+          )}
+        </div>
+      </div>
     );
   } else {
     return (

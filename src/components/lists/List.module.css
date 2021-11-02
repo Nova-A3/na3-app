@@ -1,0 +1,17 @@
+.ListContainer {
+  height: calc(100% - 77px);
+  display: flex;
+  flex: 1;
+  flex-flow: column;
+  overflow: hidden;
+  margin: 0 -28px -28px;
+}
+
+.List {
+  overflow: scroll;
+  padding: 0 28px 28px;
+}
+
+.SearchContainer {
+  padding: 0 28px;
+}
