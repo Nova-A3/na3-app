@@ -2,14 +2,13 @@ import { Layout } from "antd";
 import React, { useCallback, useMemo, useState } from "react";
 import { useHistory } from "react-router-dom";
 
-import type { RoutePath } from "../../../constants";
 import { ROUTES } from "../../../constants";
 import { SiderLogo } from "./SiderLogo";
 import type { SiderMenuProps } from "./SiderMenu";
 import { SiderMenu } from "./SiderMenu";
 
 type SiderItemChild = {
-  path: `${RoutePath}${RoutePath}`;
+  path: string;
   title: Capitalize<string>;
 };
 
