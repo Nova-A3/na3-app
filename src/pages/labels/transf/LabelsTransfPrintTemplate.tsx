@@ -39,7 +39,6 @@ export function LabelsTransfPrintTemplatePage({
   }, []);
 
   useEffect(() => {
-    console.log("USE EFFECT");
     setBreadcrumbExtra(template?.name.trim().toUpperCase());
   }, [template, setBreadcrumbExtra]);
 

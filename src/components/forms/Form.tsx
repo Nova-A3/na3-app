@@ -84,7 +84,8 @@ export function Form<Values extends Record<string, boolean | number | string>>({
     >
       {(formikProps): JSX.Element => (
         <>
-          {console.log(formikProps)}
+          {process.env.NODE_ENV !== "production" &&
+            console.log("FORM", formikProps)}
 
           <Spinner spinning={formikProps.status === "loading"}>
             <AntdForm
