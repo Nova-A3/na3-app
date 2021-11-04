@@ -4,6 +4,9 @@ import "./index.css";
 
 import { ConfigProvider as AntdConfigProvider } from "antd";
 import ptBR from "antd/lib/locale/pt_BR";
+import dayjs from "dayjs";
+import timezone from "dayjs/plugin/timezone";
+import utc from "dayjs/plugin/utc";
 import firebase from "firebase";
 import React from "react";
 import ReactDOM from "react-dom";
@@ -13,6 +16,9 @@ import { App } from "./App";
 import { BreadcrumbProvider } from "./contexts";
 import { Na3Provider } from "./modules/na3-react";
 import reportWebVitals from "./reportWebVitals";
+
+dayjs.extend(utc);
+dayjs.extend(timezone);
 
 firebase.initializeApp({
   apiKey: "AIzaSyAynKF5joA-_wpax9jzatonSZgxSE-MaRQ",
