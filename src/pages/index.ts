@@ -7,4 +7,5 @@ export { LabelsPrintPage } from "./labels/LabelsPrint";
 export { LabelsTransfCreateTemplatePage } from "./labels/transf/LabelsTransfCreateTemplate";
 export { LabelsTransfManagePage } from "./labels/transf/LabelsTransfManage";
 export { LabelsTransfPrintPage } from "./labels/transf/LabelsTransfPrint";
+export { MaintenanceHomePage } from "./maintenance/MaintenanceHome";
 export { HomePage } from "./root/Home";

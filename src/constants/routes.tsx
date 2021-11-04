@@ -15,16 +15,17 @@ import {
   LabelsTransfCreateTemplatePage,
   LabelsTransfManagePage,
   LabelsTransfPrintPage,
+  MaintenanceHomePage,
 } from "../pages";
 
 export type SiderConfig = {
   children?: SiderChild[];
-  title?: Capitalize<string>;
+  title?: string;
 };
 
 type SiderChild = {
   path: string;
-  title: Capitalize<string>;
+  title: string;
 };
 
 export type AppRoute = {
@@ -104,7 +105,7 @@ export const ROUTES: AppRouteMap = {
   },
 
   "/manutencao": {
-    component: null,
+    component: <MaintenanceHomePage />,
     icon: <SettingOutlined />,
     siderConfig: {
       children: [
