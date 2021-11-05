@@ -1,5 +1,6 @@
 .LabelPreview {
   position: relative;
+  font-size: 1.5vw;
   border: 1px solid black;
   border-radius: 6px;
   border-bottom-right-radius: 0px;

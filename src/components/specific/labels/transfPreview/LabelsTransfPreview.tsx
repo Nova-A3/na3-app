@@ -1,4 +1,4 @@
-import { Divider, Modal, Typography } from "antd";
+import { Divider, Grid, Modal, Typography } from "antd";
 import barcode from "jsbarcode";
 import QrCode from "qrcode";
 import React, { useCallback, useState } from "react";
@@ -40,6 +40,8 @@ export function LabelsTransfPreview({
 }: LabelsTransfPreviewProps): JSX.Element | null {
   const [qrDataUrl, setQrDataUrl] = useState<string>();
   const [barcodeDataUrl, setBarcodeDataUrl] = useState<string>();
+
+  const breakpoint = Grid.useBreakpoint();
 
   const handleMakeQrCode = useCallback(
     async (canvasEl: HTMLCanvasElement | null) => {
@@ -103,45 +105,50 @@ export function LabelsTransfPreview({
       <div className={classes.LabelPreview}>
         <img alt="Layout impresso da etiqueta" src={labelLayout} />
 
-        <PreviewData x={311} y={65}>
+        <PreviewData x="32.6%" y="19%">
           {label.customerName.toUpperCase()}
         </PreviewData>
 
-        <PreviewData x={780} y={65}>
+        <PreviewData x="82%" y="19%">
           {label.date.toUpperCase()}
         </PreviewData>
 
-        <PreviewData w={700} x={46} y={150}>
+        <PreviewData w="70%" x="4.9%" y="45.5%">
           {label.productCode.toUpperCase()} — {label.productName.toUpperCase()}
         </PreviewData>
 
-        <PreviewData x={780} y={150}>
+        <PreviewData x="82%" y="45.5%">
           {label.productQuantity} {label.productUnitAbbreviation.toUpperCase()}
         </PreviewData>
 
-        <PreviewData x={46} y={258}>
+        <PreviewData x="4.9%" y="78%">
           {label.batchId.toUpperCase()}
         </PreviewData>
 
         {label.invoiceNumber && (
-          <PreviewData x={275} y={258}>
+          <PreviewData x="29%" y="78%">
             {label.invoiceNumber.toUpperCase()}
           </PreviewData>
         )}
 
         <canvas
           ref={handleMakeQrCode}
-          style={{ left: 520, position: "absolute", top: 243 }}
+          style={{
+            left: "54.65%",
+            position: "absolute",
+            top: "72.6%",
+            visibility: breakpoint.md ? "visible" : "hidden",
+          }}
         />
 
         <canvas
           ref={handleMakeBarcode}
           style={{
-            height: 72,
-            left: 672,
+            height: "22.2%",
+            left: "70.35%",
             position: "absolute",
-            top: 243,
-            width: 202,
+            top: "72.6%",
+            width: "20.2%",
           }}
         />
       </div>
