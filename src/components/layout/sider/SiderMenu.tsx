@@ -1,26 +1,18 @@
-import { LogoutOutlined, MailOutlined } from "@ant-design/icons";
 import type { MenuItemProps } from "antd";
 import { Menu } from "antd";
 import React from "react";
 import { useLocation } from "react-router-dom";
 
 import type { SiderItem } from "./Sider";
-import classes from "./SiderMenu.module.css";
 
 export type SiderMenuProps = {
-  isSignedIn: boolean;
   items: SiderItem[];
   onNavigation: Exclude<MenuItemProps["onClick"], undefined>;
-  onReportBug: () => void;
-  onSignOut: () => void;
 };
 
 export function SiderMenu({
   items,
   onNavigation,
-  isSignedIn,
-  onSignOut,
-  onReportBug,
 }: SiderMenuProps): JSX.Element {
   const location = useLocation();
 
@@ -45,27 +37,6 @@ export function SiderMenu({
             {title}
           </Menu.Item>
         )
-      )}
-
-      <Menu.Divider />
-
-      <Menu.Item icon={<MailOutlined />} key="REPORT_BUG" onClick={onReportBug}>
-        Reportar problema
-      </Menu.Item>
-
-      {isSignedIn && (
-        <div className={classes.SignOut}>
-          <Menu mode="inline" theme="dark">
-            <Menu.Item
-              danger={true}
-              icon={<LogoutOutlined />}
-              key="SIGN_OUT"
-              onClick={onSignOut}
-            >
-              SAIR
-            </Menu.Item>
-          </Menu>
-        </div>
       )}
     </Menu>
   );

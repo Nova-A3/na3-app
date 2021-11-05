@@ -1,5 +1,4 @@
 import "animate.css";
-import "antd/dist/antd.css";
 import "./index.css";
 
 import { ConfigProvider as AntdConfigProvider } from "antd";
@@ -9,6 +8,7 @@ import timezone from "dayjs/plugin/timezone";
 import utc from "dayjs/plugin/utc";
 import firebase from "firebase";
 import React from "react";
+import { ThemeSwitcherProvider } from "react-css-theme-switcher";
 import ReactDOM from "react-dom";
 import { BrowserRouter } from "react-router-dom";
 
@@ -19,6 +19,11 @@ import reportWebVitals from "./reportWebVitals";
 
 dayjs.extend(utc);
 dayjs.extend(timezone);
+
+const themes = {
+  dark: `${process.env.PUBLIC_URL}/dark-theme.css`,
+  light: `${process.env.PUBLIC_URL}/light-theme.css`,
+};
 
 firebase.initializeApp({
   apiKey: "AIzaSyAynKF5joA-_wpax9jzatonSZgxSE-MaRQ",
@@ -36,7 +41,13 @@ function Root(): JSX.Element {
       <Na3Provider env="production">
         <BrowserRouter>
           <BreadcrumbProvider>
-            <App />
+            <ThemeSwitcherProvider
+              defaultTheme="light"
+              insertionPoint="styles-insertion-point"
+              themeMap={themes}
+            >
+              <App />
+            </ThemeSwitcherProvider>
           </BreadcrumbProvider>
         </BrowserRouter>
       </Na3Provider>

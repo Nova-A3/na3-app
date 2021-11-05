@@ -1,9 +1,8 @@
-import { Grid, Layout, message } from "antd";
+import { Grid, Layout } from "antd";
 import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { useHistory } from "react-router-dom";
 
 import { ROUTES } from "../../../constants";
-import { useNa3Auth } from "../../../modules/na3-react";
 import { SiderLogo } from "./SiderLogo";
 import type { SiderMenuProps } from "./SiderMenu";
 import { SiderMenu } from "./SiderMenu";
@@ -27,8 +26,6 @@ export function Sider(): JSX.Element {
 
   const breakpoint = Grid.useBreakpoint();
 
-  const auth = useNa3Auth();
-
   const handleCollapse = useCallback((collapsed: boolean) => {
     setIsCollapsed(collapsed);
   }, []);
@@ -40,15 +37,6 @@ export function Sider(): JSX.Element {
     },
     [history]
   );
-
-  const handleSignOut = useCallback(async () => {
-    await auth.helpers.signOut();
-    await message.info("Você saiu.");
-  }, [auth.helpers]);
-
-  const handleReportBug = useCallback(() => {
-    window.location.href = "mailto:msantos@novaa3.com.br";
-  }, []);
 
   const siderItems = useMemo(
     (): (SiderItem | null)[] =>
@@ -83,11 +71,8 @@ export function Sider(): JSX.Element {
     >
       <SiderLogo isCollapsed={!!isCollapsed} />
       <SiderMenu
-        isSignedIn={!!auth.department}
         items={siderItems.filter((item): item is SiderItem => !!item)}
         onNavigation={handleMenuNavigation}
-        onReportBug={handleReportBug}
-        onSignOut={handleSignOut}
       />
     </Layout.Sider>
   );
