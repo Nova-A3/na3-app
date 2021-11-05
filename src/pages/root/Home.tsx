@@ -3,11 +3,17 @@ import { FileOutlined, SettingOutlined, TagsOutlined } from "@ant-design/icons";
 import { Col, Divider, Row } from "antd";
 import { nanoid } from "nanoid";
 import React from "react";
+import { FormProvider, useForm } from "react-hook-form";
 
 import { HomeLogo, PageDescription, StaticListItem } from "../../components";
+import { FormField } from "../../components/forms/FormField/FormField";
 import classes from "./Home.module.css";
 
 export function HomePage(): JSX.Element {
+  const testForm = useForm({
+    defaultValues: { firstName: "Marco" },
+  });
+
   return (
     <>
       <HomeLogo />
@@ -40,6 +46,15 @@ export function HomePage(): JSX.Element {
           </Col>
         ))}
       </Row>
+
+      <FormProvider {...testForm}>
+        <FormField
+          isLoading={true}
+          label="Primeiro nome"
+          name="firstName"
+          type="input"
+        />
+      </FormProvider>
     </>
   );
 }
