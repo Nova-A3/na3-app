@@ -21,8 +21,8 @@ dayjs.extend(utc);
 dayjs.extend(timezone);
 
 const themes = {
-  dark: `${process.env.PUBLIC_URL}/dark-theme.css`,
-  light: `${process.env.PUBLIC_URL}/light-theme.css`,
+  dark: `${process.env.PUBLIC_URL}/dark.theme.css`,
+  light: `${process.env.PUBLIC_URL}/light.theme.css`,
 };
 
 firebase.initializeApp({
