@@ -4,6 +4,7 @@ import { Formik } from "formik";
 import React, { useCallback } from "react";
 
 import { Spinner } from "../ui/Spinner";
+import classes from "./Form.module.css";
 
 type FormStatus = "loading" | "ready";
 
@@ -93,7 +94,10 @@ export function Form<Values extends Record<string, boolean | number | string>>({
           {/* {process.env.NODE_ENV !== "production" &&
             console.log("FORM", formikProps)} */}
 
-          <Spinner spinning={formikProps.status === "loading"}>
+          <Spinner
+            spinning={formikProps.status === "loading"}
+            wrapperClassName={classes.FormContainer}
+          >
             <AntdForm
               colon={false}
               labelAlign="left"

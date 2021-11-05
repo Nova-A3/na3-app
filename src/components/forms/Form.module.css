@@ -1,0 +1,10 @@
+.FormContainer {
+  flex: 1;
+
+  display: flex;
+  flex-flow: column;
+
+  overflow: scroll;
+
+  margin-bottom: -18px;
+}
