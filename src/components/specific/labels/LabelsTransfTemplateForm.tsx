@@ -67,13 +67,11 @@ export function LabelsTransfTemplateForm({
 
         if (!product.data || product.data.name !== productName) {
           return notifyError("Não foi possível vincular um produto ao modelo.");
-        } else if (!productCustomers.data) {
-          return notifyError("Não foi possível vincular um cliente ao modelo.");
         }
 
         helpers.setStatus("loading");
 
-        const customer = productCustomers.data.find(
+        const customer = productCustomers.data?.find(
           (customer) => customer.name === customerName
         );
         const template: Omit<Na3TransfLabelTemplate, "id"> = {
@@ -140,6 +138,8 @@ export function LabelsTransfTemplateForm({
     ],
     []
   );
+
+  console.log(product, productCustomers);
 
   return (
     <Form<LabelsTransfCreateTemplateFormValues>
