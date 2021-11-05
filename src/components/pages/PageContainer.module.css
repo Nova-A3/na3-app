@@ -1,9 +1,7 @@
 .PageContainer {
   height: 100%;
-
   display: flex;
-  flex-flow: column;
-
+  flex-direction: column;
   padding: 28px;
   padding-bottom: 0;
 }

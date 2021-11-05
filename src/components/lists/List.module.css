@@ -1,20 +1,22 @@
 .ListContainer {
   flex: 1;
-
   display: flex;
-  flex-flow: column;
-
+  flex-direction: column;
   overflow: hidden;
-
   margin: 0 -28px -18px;
 }
 
 .List {
   overflow: scroll;
-
   padding: 0 28px 28px;
 }
 
 .SearchContainer {
   padding: 0 28px;
+}
+
+@media screen and (max-width: 768px) {
+  .List {
+    padding-bottom: 130px;
+  }
 }

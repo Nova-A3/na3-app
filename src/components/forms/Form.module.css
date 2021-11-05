@@ -1,10 +1,14 @@
 .FormContainer {
   flex: 1;
-
   display: flex;
-  flex-flow: column;
-
-  overflow: scroll;
-
+  flex-direction: column;
+  overflow-x: hidden;
+  overflow-y: scroll;
   margin-bottom: -18px;
+}
+
+@media screen and (max-width: 768px) {
+  .FormContainer {
+    padding-bottom: 130px;
+  }
 }
