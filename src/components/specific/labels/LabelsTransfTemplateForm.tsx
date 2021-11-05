@@ -1,5 +1,5 @@
-import { Modal, notification } from "antd";
-import React, { useCallback, useEffect, useMemo, useState } from "react";
+import { notification } from "antd";
+import React, { useCallback, useMemo, useState } from "react";
 
 import {
   useNa3Product,
@@ -35,7 +35,7 @@ export function LabelsTransfTemplateForm({
   const [productCode, setProductCode] = useState(
     editingTemplate?.productCode || ""
   );
-  const [showSameProductModal, setShowSameProductModal] = useState(false);
+  // const [showSameProductModal, setShowSameProductModal] = useState(false);
 
   const transfLabelTemplates = useNa3TransfLabelTemplates();
 
@@ -143,6 +143,7 @@ export function LabelsTransfTemplateForm({
     []
   );
 
+  /*
   useEffect(() => {
     if (editingTemplate || showSameProductModal) return;
 
@@ -177,8 +178,7 @@ export function LabelsTransfTemplateForm({
     editingTemplate,
     showSameProductModal,
   ]);
-
-  console.log(product, productCustomers);
+  */
 
   return (
     <Form<LabelsTransfCreateTemplateFormValues>
