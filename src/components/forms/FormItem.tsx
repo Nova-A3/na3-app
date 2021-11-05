@@ -1,5 +1,7 @@
-import { AutoComplete, Form, Select, Typography } from "antd";
+import type { SwitchProps } from "antd";
+import { AutoComplete, Form, Radio, Select, Switch, Typography } from "antd";
 import type { LabelTooltipType } from "antd/lib/form/FormItemLabel";
+import type { FieldHelperProps, FieldInputProps, FieldMetaProps } from "formik";
 import { useField } from "formik";
 import { nanoid } from "nanoid";
 import React, { useCallback, useEffect, useMemo } from "react";
@@ -12,9 +14,11 @@ import { InputDate } from "./fields/InputDate";
 import { InputMask } from "./fields/InputMask";
 import classes from "./FormItem.module.css";
 
-type OptionsFieldType = "autoComplete" | "select";
+type OptionsFieldType = "autoComplete" | "radio" | "select";
 
-type FieldType = InputFieldType | OptionsFieldType | "date" | "mask";
+type FieldType = InputFieldType | OptionsFieldType | "date" | "mask" | "switch";
+
+type FieldValue<T extends FieldType> = T extends "switch" ? boolean : string;
 
 type FormItemBaseProps<T extends FieldType> = {
   autoCapitalize?: boolean;
@@ -22,14 +26,23 @@ type FormItemBaseProps<T extends FieldType> = {
   /* help > error > helpDefault */
   help?: React.ReactNode;
   helpDefault?: React.ReactNode;
+  hidden?: boolean;
   /* Required */
   label: string;
+  labelSpan?: number;
   loading?: boolean;
   /* Required */
   name: string;
   noFeedback?: boolean;
   notRequired?: boolean;
-  onValueChange?: (value: string) => void;
+  onValueChange?: (
+    value: FieldValue<T>,
+    field: [
+      FieldInputProps<FieldValue<T>>,
+      FieldMetaProps<FieldValue<T>>,
+      FieldHelperProps<FieldValue<T>>
+    ]
+  ) => void;
   placeholder?: string;
   tooltip?: LabelTooltipType;
   /* Required */
@@ -60,7 +73,16 @@ type PropsComposedWithInputDate<T extends FieldType> =
           keyof PropsComposedWithBaseInput<T>
         >);
 
-type FormItemProps<T extends FieldType> = PropsComposedWithInputDate<T>;
+type PropsComposedWithInputSwitch<T extends FieldType> =
+  PropsComposedWithInputDate<T> &
+    (T extends "switch"
+      ? Partial<SwitchProps>
+      : Omit<
+          Record<keyof Partial<SwitchProps>, never>,
+          keyof PropsComposedWithInputDate<T>
+        >);
+
+type FormItemProps<T extends FieldType> = PropsComposedWithInputSwitch<T>;
 
 const defaultProps: Omit<
   FormItemProps<FieldType>,
@@ -70,6 +92,8 @@ const defaultProps: Omit<
   disabled: undefined,
   help: undefined,
   helpDefault: undefined,
+  hidden: false,
+  labelSpan: undefined,
   loading: undefined,
   mask: undefined,
   maskPlaceholder: undefined,
@@ -96,6 +120,8 @@ export function FormItem<T extends FieldType>({
   onValueChange,
   placeholder: placeholderProp,
   tooltip,
+  hidden,
+  labelSpan,
   /* InputMask required props */
   mask,
   /* InputMask optionals */
@@ -117,7 +143,8 @@ export function FormItem<T extends FieldType>({
   allowFutureDates,
   format,
 }: FormItemProps<T>): JSX.Element {
-  const [{ value, onChange, onBlur }, meta] = useField<string>(name);
+  const [{ value, onChange, onBlur, ...fieldProps }, meta, helpers] =
+    useField<FieldValue<T>>(name);
 
   const handleChange = useCallback(
     (value: string) => {
@@ -131,6 +158,13 @@ export function FormItem<T extends FieldType>({
       onBlur(name)(ev);
     },
     [onBlur, name]
+  );
+
+  const handleSwitchChange = useCallback(
+    (checked: boolean) => {
+      helpers.setValue(checked as FieldValue<T>);
+    },
+    [helpers]
   );
 
   const handleAutoCompleteFilterOption: Exclude<
@@ -163,8 +197,10 @@ export function FormItem<T extends FieldType>({
         : type === "decimal"
         ? "Somente decimal"
         : `${isTouchDevice() ? "Toque" : "Clique"} para ${
-            type === "select" || type === "autoComplete"
+            type === "select"
               ? "selecionar"
+              : type === "autoComplete"
+              ? "preencher/selecionar"
               : "preencher"
           }`),
     [type, placeholderProp]
@@ -176,8 +212,12 @@ export function FormItem<T extends FieldType>({
   );
 
   useEffect(() => {
-    onValueChange?.(value);
-  }, [value, onValueChange]);
+    onValueChange?.(value, [
+      { onBlur, onChange, value, ...fieldProps },
+      meta,
+      helpers,
+    ]);
+  }, [onValueChange, value, onBlur, onChange, fieldProps, meta, helpers]);
 
   // process.env.NODE_ENV === "development" && console.log(name, field);
 
@@ -194,7 +234,7 @@ export function FormItem<T extends FieldType>({
           name={name}
           onBlur={onBlur}
           onChange={handleChange}
-          value={value}
+          value={value.toString()}
         />
       );
       break;
@@ -202,6 +242,7 @@ export function FormItem<T extends FieldType>({
     case "password":
     case "integer":
     case "decimal":
+    case "textArea":
       field = (
         <Input
           addonAfter={addonAfter}
@@ -220,7 +261,7 @@ export function FormItem<T extends FieldType>({
           prefix={prefix}
           suffix={suffix}
           type={type}
-          value={value}
+          value={value.toString()}
         />
       );
       break;
@@ -242,7 +283,7 @@ export function FormItem<T extends FieldType>({
           onChange={handleChange}
           prefix={prefix}
           suffix={suffix}
-          value={value}
+          value={value.toString()}
         />
       );
       break;
@@ -258,7 +299,7 @@ export function FormItem<T extends FieldType>({
           onBlur={handleBlur}
           onChange={handleChange}
           placeholder={placeholder}
-          value={value || undefined}
+          value={value.toString() || undefined}
         >
           {options.map(({ value, label }) => (
             <Select.Option key={nanoid()} value={value}>
@@ -283,8 +324,43 @@ export function FormItem<T extends FieldType>({
           onChange={handleChange}
           options={options}
           placeholder={placeholder}
-          value={value}
+          value={value.toString()}
         />
+      );
+      break;
+    case "radio":
+      if (!options) {
+        throw new Error(
+          "You must specify a valid set of options for radio inputs."
+        );
+      }
+      field = (
+        <Radio.Group
+          className={classes.RadioGroup}
+          onChange={onChange}
+          value={value}
+        >
+          {options.map(({ value, label }) => (
+            <Radio.Button
+              key={nanoid()}
+              style={{ width: `${100 / options.length}%` }}
+              value={value}
+            >
+              {label}
+            </Radio.Button>
+          ))}
+        </Radio.Group>
+      );
+      break;
+    case "switch":
+      field = (
+        <div className={classes.SwitchContainer}>
+          <Switch
+            checked={!!value}
+            disabled={disabled}
+            onChange={handleSwitchChange}
+          />
+        </div>
       );
   }
 
@@ -292,6 +368,7 @@ export function FormItem<T extends FieldType>({
     <Form.Item
       hasFeedback={hasFeedback}
       help={help || (hasFeedback && meta.touched && meta.error) || helpDefault}
+      hidden={hidden}
       label={
         notRequired ? (
           <>
@@ -306,6 +383,7 @@ export function FormItem<T extends FieldType>({
           label
         )
       }
+      labelCol={{ span: labelSpan || 24 }}
       required={!notRequired}
       tooltip={tooltip}
       validateStatus={
@@ -317,6 +395,7 @@ export function FormItem<T extends FieldType>({
             : "success"
           : undefined
       }
+      wrapperCol={{ span: 24 - (labelSpan || 0) }}
     >
       {field}
     </Form.Item>

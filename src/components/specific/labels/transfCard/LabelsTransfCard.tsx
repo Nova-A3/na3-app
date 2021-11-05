@@ -1,5 +1,5 @@
 import { DeleteOutlined } from "@ant-design/icons";
-import { Button, Card, Col, Row, Tooltip, Typography } from "antd";
+import { Button, Card, Col, Divider, Row, Tooltip, Typography } from "antd";
 import React, { useCallback, useMemo, useState } from "react";
 import { IoPersonCircleOutline, IoPricetagOutline } from "react-icons/io5";
 
@@ -71,20 +71,23 @@ export function LabelsTransfCard({
             </Row>
 
             {isMouseOver && (
-              <div className={classes.Details}>
+              <>
+                <Divider className={classes.Details} />
+
                 <div className={classes.DetailsItem}>
                   <span className={classes.DetailsIcon}>
                     <IoPricetagOutline />
                   </span>
                   {data.productName.toUpperCase()}
                 </div>
+
                 <div className={classes.DetailsItem}>
                   <span className={classes.DetailsIcon}>
                     <IoPersonCircleOutline />
                   </span>
                   {data.customerName.toUpperCase()}
                 </div>
-              </div>
+              </>
             )}
           </Col>
 

@@ -12,17 +12,21 @@
 
 .Details {
   margin-top: 6px;
+  margin-bottom: 12px;
 }
 
 .DetailsItem {
   display: flex;
   align-items: center;
+  margin-top: 7px;
+  line-height: 1.4em;
 }
 
 .DetailsIcon {
   display: flex;
   align-items: center;
-  width: 24px;
+  width: 23px;
+  min-width: 23px;
 }
 
 .Actions {

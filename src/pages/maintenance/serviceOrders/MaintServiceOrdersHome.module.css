@@ -17,3 +17,9 @@
   margin: 0 -28px -18px;
   padding: 0 28px 28px;
 }
+
+@media (min-width: 768px) {
+  .ListTitle {
+    margin-bottom: 10px;
+  }
+}

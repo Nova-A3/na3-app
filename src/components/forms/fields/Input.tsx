@@ -2,12 +2,21 @@ import type { InputProps as AntdInputProps } from "antd";
 import { Input as AntdInput, Typography } from "antd";
 import React, { useCallback, useMemo } from "react";
 
-export type InputFieldType = "decimal" | "input" | "integer" | "password";
+export type InputFieldType =
+  | "decimal"
+  | "input"
+  | "integer"
+  | "password"
+  | "textArea";
 
 type InputRequiredProps<T extends InputFieldType> = {
   name: string;
-  onBlur: (ev: React.FocusEvent<HTMLInputElement>) => void;
-  onChange: (ev: React.ChangeEvent<HTMLInputElement>) => void;
+  onBlur: (
+    ev: React.FocusEvent<HTMLInputElement | HTMLTextAreaElement>
+  ) => void;
+  onChange: (
+    ev: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+  ) => void;
   type: T;
   value: string;
 };
@@ -58,7 +67,7 @@ export function Input<T extends InputFieldType>({
   min,
 }: InputProps<T>): JSX.Element {
   const handleChange = useCallback(
-    (ev: React.ChangeEvent<HTMLInputElement>) => {
+    (ev: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
       if (maxLength && ev.target.value.length > maxLength) return;
 
       if (
@@ -115,13 +124,18 @@ export function Input<T extends InputFieldType>({
     [formatPreOrSuffix, suffix]
   );
 
-  const InputComponent = useMemo(
-    () => (type === "password" ? AntdInput.Password : AntdInput),
+  const BasicInputComponent = useMemo(
+    () =>
+      type === "password"
+        ? AntdInput.Password
+        : type === "textArea"
+        ? undefined
+        : AntdInput,
     [type]
   );
 
-  return (
-    <InputComponent
+  return BasicInputComponent ? (
+    <BasicInputComponent
       addonAfter={addonAfter}
       addonBefore={addonBefore}
       allowClear={allowClear}
@@ -135,6 +149,20 @@ export function Input<T extends InputFieldType>({
       placeholder={placeholder}
       prefix={formattedPrefix}
       suffix={formattedSuffix}
+      value={value}
+    />
+  ) : (
+    <AntdInput.TextArea
+      allowClear={allowClear}
+      autoComplete="off"
+      autoFocus={autoFocus}
+      autoSize={{ minRows: 3 }}
+      disabled={disabled}
+      maxLength={maxLength}
+      name={name}
+      onBlur={onBlur}
+      onChange={handleChange}
+      placeholder={placeholder}
       value={value}
     />
   );

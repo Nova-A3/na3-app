@@ -4,6 +4,7 @@ import React, { useCallback } from "react";
 import { useHistory } from "react-router-dom";
 
 import {
+  MaintCreateServiceOrderForm,
   MaintServiceOrdersList,
   PageActionButtons,
   PageTitle,
@@ -47,9 +48,9 @@ export function MaintServiceOrdersHomePage(): JSX.Element {
         </PageActionButtons>
       )}
 
-      <Row className={classes.PageRow} gutter={12}>
+      <Row className={classes.PageRow} gutter={28}>
         <Col className={classes.PageGridCol} md={8} xs={24}>
-          <div>
+          <div className={classes.ListTitle}>
             <Divider orientation="left">Suas OS</Divider>
           </div>
 
@@ -61,8 +62,14 @@ export function MaintServiceOrdersHomePage(): JSX.Element {
           </div>
         </Col>
 
-        <Col md={16} xs={0}>
-          <Divider orientation="left">Abrir OS</Divider>
+        <Col className={classes.PageGridCol} md={16} xs={0}>
+          <div>
+            <Divider orientation="left">Abrir OS</Divider>
+          </div>
+
+          <div className={classes.PageContent}>
+            <MaintCreateServiceOrderForm />
+          </div>
         </Col>
       </Row>
     </>

@@ -60,7 +60,7 @@ export function List<Item extends Record<string, unknown>>({
   if (error) {
     return <ListError>{error}</ListError>;
   } else if (isLoading) {
-    return <Spinner />;
+    return <Spinner className={classes.Loading} />;
   } else if (filteredData) {
     return (
       <div className={classes.ListContainer}>
