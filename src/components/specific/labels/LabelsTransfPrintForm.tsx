@@ -188,7 +188,9 @@ export function LabelsTransfPrintForm({
                 helpDefault={
                   template.productSnapshot &&
                   `Máx./caixa: 
-                          ${template.productSnapshot.perCarton} 
+                          ${template.productSnapshot.perCarton
+                            .toString()
+                            .replace(".", ",")} 
                           ${template.productUnitName.toLowerCase()}`
                 }
                 label="Valor de quantidade"
@@ -204,7 +206,11 @@ export function LabelsTransfPrintForm({
                       <>
                         <br />
                         Máx./caixa:{" "}
-                        <strong>{template.productSnapshot.perCarton}</strong>
+                        <strong>
+                          {template.productSnapshot.perCarton
+                            .toString()
+                            .replace(".", ",")}
+                        </strong>
                       </>
                     )}
                   </>
