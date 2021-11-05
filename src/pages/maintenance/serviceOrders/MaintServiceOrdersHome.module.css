@@ -1,0 +1,19 @@
+.PageRow {
+  height: 100%;
+}
+
+.PageGridCol {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.PageContent {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  overflow: scroll;
+  margin: 0 -28px -18px;
+  padding: 0 28px 28px;
+}

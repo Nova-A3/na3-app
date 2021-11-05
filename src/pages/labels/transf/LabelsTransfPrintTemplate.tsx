@@ -1,13 +1,13 @@
-import { Button, message, notification, Result } from "antd";
+import { Button, message, notification } from "antd";
 import React, { useCallback, useEffect, useMemo } from "react";
 import { useHistory } from "react-router-dom";
 
 import {
-  Centered,
   LabelsTransfPreview,
   LabelsTransfPrintForm,
   PageDescription,
   PageTitle,
+  Result,
 } from "../../../components";
 import { useBreadcrumb } from "../../../hooks";
 import usePdf from "../../../hooks/usePdf";
@@ -211,17 +211,15 @@ export function LabelsTransfPrintTemplatePage({
       />
     </>
   ) : (
-    <Centered>
-      <Result
-        extra={
-          <Button onClick={handleGoBack} type="primary">
-            Voltar
-          </Button>
-        }
-        status="404"
-        subTitle="O modelo de etiqueta solicitado não existe ou foi desabilitado."
-        title="Oops!"
-      />
-    </Centered>
+    <Result
+      description="O modelo de etiqueta solicitado não existe ou foi desabilitado."
+      extra={
+        <Button onClick={handleGoBack} type="primary">
+          Voltar
+        </Button>
+      }
+      status="404"
+      title="Oops!"
+    />
   );
 }

@@ -2,8 +2,8 @@ import { Input } from "antd";
 import { nanoid } from "nanoid";
 import React, { useCallback, useMemo, useState } from "react";
 
-import { Empty } from "../ui/Empty";
-import { Spinner } from "../ui/Spinner";
+import { Empty } from "../ui/Empty/Empty";
+import { Spinner } from "../ui/Spinner/Spinner";
 import { ListError } from "./components/ListError";
 import classes from "./List.module.css";
 

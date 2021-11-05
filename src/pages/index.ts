@@ -8,4 +8,6 @@ export { LabelsTransfCreateTemplatePage } from "./labels/transf/LabelsTransfCrea
 export { LabelsTransfManagePage } from "./labels/transf/LabelsTransfManage";
 export { LabelsTransfPrintPage } from "./labels/transf/LabelsTransfPrint";
 export { MaintenanceHomePage } from "./maintenance/MaintenanceHome";
+export { MaintServiceOrdersCreatePage } from "./maintenance/serviceOrders/MaintServiceOrdersCreate";
+export { MaintServiceOrdersHomePage } from "./maintenance/serviceOrders/MaintServiceOrdersHome";
 export { HomePage } from "./root/Home";

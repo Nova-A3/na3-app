@@ -1,5 +1,7 @@
-import { Button, Result } from "antd";
+import { Button } from "antd";
 import React, { useCallback, useState } from "react";
+
+import { Result } from "../../ui/Result/Result";
 
 type ListErrorProps = {
   children: React.ReactNode;
@@ -8,9 +10,9 @@ type ListErrorProps = {
 export function ListError({ children }: ListErrorProps): JSX.Element {
   return (
     <Result
+      description={children}
       extra={<ListErrorButtons />}
       status="warning"
-      subTitle={children}
       title="Não foi possível carregar"
     />
   );

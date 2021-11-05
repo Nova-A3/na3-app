@@ -26,7 +26,7 @@ export function MenuPage({
   return (
     <>
       <PageTitle icon={icon}>{title}</PageTitle>
-      <PageDescription>{description}</PageDescription>
+      {description && <PageDescription>{description}</PageDescription>}
 
       <StaticList data={items} renderItem={null} />
     </>

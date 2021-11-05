@@ -1,0 +1,24 @@
+.Card {
+  border-radius: 6px;
+}
+
+.Header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 6;
+}
+
+.IdText {
+  margin-right: 8px;
+}
+
+.Title {
+  display: inline;
+  margin: 0;
+}
+
+.Divider {
+  margin-top: 6px;
+  margin-bottom: 9px;
+}

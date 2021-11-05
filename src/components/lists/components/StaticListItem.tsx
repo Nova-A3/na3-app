@@ -1,10 +1,11 @@
-import { Avatar, Card, Row, Typography } from "antd";
+import { Avatar, Card } from "antd";
 import React, { useCallback, useMemo } from "react";
 import { useHistory } from "react-router-dom";
 
 import classes from "./StaticListItem.module.css";
 
 export type StaticListItemProps = {
+  cardClassName?: string;
   color: string;
   description: React.ReactNode;
   href?: string;
@@ -20,6 +21,7 @@ export function StaticListItem({
   color,
   href,
   onClick,
+  cardClassName,
 }: StaticListItemProps): JSX.Element {
   const history = useHistory();
 
@@ -31,25 +33,31 @@ export function StaticListItem({
     [history, onClick, href]
   );
 
-  const coloredStyle = useMemo(() => ({ backgroundColor: color }), [color]);
+  const coloredAvatarStyle = useMemo(
+    () => ({ backgroundColor: color }),
+    [color]
+  );
 
   return (
     <Card
-      className={classes.Container}
+      className={`${classes.Card} ${
+        cardClassName ? cardClassName : ""
+      } animate__animated animate__fadeIn animate__faster`}
       hoverable={!!(onClick || href)}
       onClick={handleClick}
       size="small"
-      title={null}
     >
-      <Row align="middle" className={classes.Header}>
-        <Avatar className={classes.Avatar} icon={icon} style={coloredStyle} />
-
-        <Typography.Title className={classes.Title} level={5}>
-          {title}
-        </Typography.Title>
-      </Row>
-
-      <Typography.Text italic={true}>{description}</Typography.Text>
+      <Card.Meta
+        avatar={
+          <Avatar
+            className={classes.Avatar}
+            icon={icon}
+            style={coloredAvatarStyle}
+          />
+        }
+        description={description}
+        title={title}
+      />
     </Card>
   );
 }

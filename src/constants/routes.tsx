@@ -16,6 +16,8 @@ import {
   LabelsTransfManagePage,
   LabelsTransfPrintPage,
   MaintenanceHomePage,
+  MaintServiceOrdersCreatePage,
+  MaintServiceOrdersHomePage,
 } from "../pages";
 
 export type SiderConfig = {
@@ -37,9 +39,27 @@ export type AppRoute = {
   title: string | null;
 };
 
-type AppRouteMap = Record<string, AppRoute>;
+type AppRouteMap<Path extends string> = Readonly<
+  Record<Path | string, AppRoute>
+>;
 
-export const ROUTES: AppRouteMap = {
+export const ROUTES: AppRouteMap<
+  | "/"
+  | "/docs"
+  | "/docs/comex"
+  | "/docs/transferencia"
+  | "/etiquetas"
+  | "/etiquetas/gerenciar"
+  | "/etiquetas/gerenciar/transferencia"
+  | "/etiquetas/gerenciar/transferencia/criar-modelo"
+  | "/etiquetas/imprimir"
+  | "/etiquetas/imprimir/transferencia"
+  | "/manutencao"
+  | "/manutencao/dashboard"
+  | "/manutencao/os"
+  | "/manutencao/os/abrir-os"
+  | "/manutencao/projetos"
+> = {
   "/": {
     component: <HomePage />,
     icon: <HomeOutlined />,
@@ -117,14 +137,22 @@ export const ROUTES: AppRouteMap = {
     title: "Manutenção",
   },
   "/manutencao/dashboard": {
+    authorized: ["manutencao"],
     component: null,
     title: "Dashboard",
   },
   "/manutencao/os": {
-    component: null,
+    authorized: ["shop-floor"],
+    component: <MaintServiceOrdersHomePage />,
     title: "Ordens de Serviço",
   },
+  "/manutencao/os/abrir-os": {
+    authorized: ["shop-floor"],
+    component: <MaintServiceOrdersCreatePage />,
+    title: "Abrir OS",
+  },
   "/manutencao/projetos": {
+    authorized: ["manutencao"],
     component: null,
     title: "Projetos",
   },

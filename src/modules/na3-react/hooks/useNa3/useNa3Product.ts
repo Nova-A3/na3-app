@@ -50,9 +50,9 @@ export function useNa3Product(query: string): UseNa3ProductResult {
     } else {
       setLoading(false);
       setProduct(undefined);
-      if (!typoFixedQuery)
+      if (!typoFixedQuery) {
         setError("Nenhum ID ou código de produto fornecido.");
-      else setError("ID ou código de produto inválido.");
+      } else setError("ID ou código de produto inválido.");
     }
   }, [query, handleFetchProduct]);
 

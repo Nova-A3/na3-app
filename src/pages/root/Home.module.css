@@ -1,0 +1,14 @@
+.HomeQuickLink {
+  border-radius: 12px;
+  margin-bottom: 8px;
+}
+
+.HomeDescription {
+  margin: 0 auto;
+}
+
+@media (min-width: 768px) {
+  .HomeDescription {
+    text-align: center;
+  }
+}

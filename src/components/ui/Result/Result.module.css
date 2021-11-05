@@ -1,9 +1,6 @@
-.Card {
-  border-radius: 6px;
-}
-
-.Avatar {
+.Container {
   display: flex;
   align-items: center;
   justify-content: center;
+  margin-top: 48px;
 }

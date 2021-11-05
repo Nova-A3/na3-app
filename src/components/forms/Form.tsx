@@ -3,7 +3,7 @@ import type { FormikHelpers, FormikProps, FormikTouched } from "formik";
 import { Formik } from "formik";
 import React, { useCallback } from "react";
 
-import { Spinner } from "../ui/Spinner";
+import { Spinner } from "../ui/Spinner/Spinner";
 import classes from "./Form.module.css";
 
 type FormStatus = "loading" | "ready";
