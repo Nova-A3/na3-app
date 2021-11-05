@@ -15,11 +15,13 @@ const defaultProps: PageTitleProps = {
 
 export function PageTitle({ icon, children }: PageTitleProps): JSX.Element {
   return (
-    <Divider className={classes.Container} orientation="left">
-      {icon && <span className={classes.Icon}>{icon}</span>}
+    <div>
+      <Divider className={classes.Container} orientation="left">
+        {icon && <span className={classes.Icon}>{icon}</span>}
 
-      {children}
-    </Divider>
+        {children}
+      </Divider>
+    </div>
   );
 }
 
