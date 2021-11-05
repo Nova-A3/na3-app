@@ -7,6 +7,16 @@
   padding-right: 24px;
 }
 
+.Avatar {
+  margin-right: 10px !important;
+}
+
+.Username {
+  display: flex;
+  align-items: center;
+  font-weight: normal;
+}
+
 .Actions {
   display: flex;
   align-items: center;
@@ -18,14 +28,22 @@
 }
 
 .SignOutButton {
-  margin-left: 12px;
+  margin-left: 6px;
 }
 
 @media (max-width: 768px) {
   .Header {
-    padding-right: 14px;
+    padding-right: 7px;
     padding-left: 7px;
     height: 48px;
     min-height: 48px;
+  }
+
+  .Avatar {
+    margin-right: 6px !important;
+  }
+
+  .SignOutButton {
+    margin-left: 4px;
   }
 }

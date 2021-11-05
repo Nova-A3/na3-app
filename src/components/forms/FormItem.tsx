@@ -383,7 +383,7 @@ export function FormItem<T extends FieldType>({
           label
         )
       }
-      labelCol={{ span: labelSpan || 24 }}
+      labelCol={labelSpan ? { span: labelSpan } : undefined}
       required={!notRequired}
       tooltip={tooltip}
       validateStatus={
@@ -395,7 +395,7 @@ export function FormItem<T extends FieldType>({
             : "success"
           : undefined
       }
-      wrapperCol={{ span: 24 - (labelSpan || 0) }}
+      wrapperCol={labelSpan ? { span: 24 - labelSpan } : undefined}
     >
       {field}
     </Form.Item>

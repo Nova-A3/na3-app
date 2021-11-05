@@ -37,6 +37,7 @@ export function Header(): JSX.Element | null {
         {auth.department && (
           <PageHeader
             avatar={{
+              className: classes.Avatar,
               icon: <UserOutlined />,
               size: "small",
               style: {
@@ -44,7 +45,11 @@ export function Header(): JSX.Element | null {
               },
             }}
             className={`${classes.Header} animate__animated animate__fadeIn`}
-            title={<small>{auth.department.displayName.toUpperCase()}</small>}
+            title={
+              <small className={classes.Username}>
+                {auth.department.displayName.toUpperCase()}
+              </small>
+            }
           />
         )}
       </div>
@@ -69,7 +74,7 @@ export function Header(): JSX.Element | null {
         {auth.department && (
           <Tooltip color="#ff4d4f" title="Sair">
             <Button
-              className={`${classes.signOutButton} animate__animated animate__fadeIn`}
+              className={`${classes.SignOutButton} animate__animated animate__fadeIn`}
               danger={true}
               icon={<LogoutOutlined />}
               onClick={handleSignOut}
