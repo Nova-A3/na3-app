@@ -6,3 +6,6 @@ coverage
 
 # production
 build
+
+# compiled, minified stylesheets
+public/*.css
