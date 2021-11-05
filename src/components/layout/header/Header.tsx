@@ -32,7 +32,7 @@ export function Header(): JSX.Element | null {
   }
 
   return (
-    <div className={classes.Header}>
+    <div className={classes.HeaderContainer}>
       <div>
         {auth.department && (
           <PageHeader
@@ -62,6 +62,7 @@ export function Header(): JSX.Element | null {
               <MdDarkMode />
             </div>
           }
+          className={!auth.department ? classes.SwitchExtraMargin : undefined}
           onChange={handleToggleTheme}
           size="small"
           unCheckedChildren={

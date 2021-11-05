@@ -43,7 +43,7 @@ function Root(): JSX.Element {
           <BreadcrumbProvider>
             <ThemeSwitcherProvider
               defaultTheme="light"
-              insertionPoint="styles-insertion-point"
+              insertionPoint={document.getElementById("styles-insertion-point")}
               themeMap={themes}
             >
               <App />
