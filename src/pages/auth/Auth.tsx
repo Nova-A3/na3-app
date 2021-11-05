@@ -56,7 +56,6 @@ export function AuthPage({ authorizedDpts }: AuthProps): JSX.Element {
       </PageDescription>
 
       <Form<FormValues>
-        horizontal={true}
         initialValues={{
           department:
             authorizedDpts.length === 1
@@ -64,6 +63,7 @@ export function AuthPage({ authorizedDpts }: AuthProps): JSX.Element {
               : "",
           password: "",
         }}
+        isHorizontal={true}
         onSubmit={handleSubmit}
       >
         {({ isSubmitting }): JSX.Element => (
@@ -107,8 +107,8 @@ export function AuthPage({ authorizedDpts }: AuthProps): JSX.Element {
 
             <SubmitButton
               disableShowInvalidFields={true}
-              horizontal={true}
               icon={<LoginOutlined />}
+              isHorizontal={true}
             >
               {isSubmitting ? "Entrando..." : "Entrar"}
             </SubmitButton>

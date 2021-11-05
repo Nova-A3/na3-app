@@ -49,26 +49,29 @@ type FormProps<Values> = {
   children: (props: FormChildrenProps<Values>) => React.ReactNode;
   initialTouched?: FormikTouched<Values>;
   initialValues: Values;
+  isHorizontal?: boolean;
+  isOnModal?: boolean;
   onSubmit: HandleSubmit<Values>;
-
   onValidate?: HandleValidate<Values>;
-} & { horizontal?: boolean };
+};
 
 const defaultProps: Omit<
   FormProps<Record<string, never>>,
   "children" | "initialValues" | "onSubmit"
 > = {
-  horizontal: false,
   initialTouched: undefined,
+  isHorizontal: false,
+  isOnModal: false,
   onValidate: undefined,
 };
 
 export function Form<Values extends Record<string, boolean | number | string>>({
   initialValues,
   initialTouched,
+  isOnModal,
   onSubmit,
   onValidate,
-  horizontal,
+  isHorizontal,
   children,
 }: FormProps<Values>): JSX.Element {
   const handleSubmit = useCallback(
@@ -91,19 +94,21 @@ export function Form<Values extends Record<string, boolean | number | string>>({
     >
       {(formikProps): JSX.Element => (
         <>
-          {/* {process.env.NODE_ENV !== "production" &&
-            console.log("FORM", formikProps)} */}
+          {process.env.NODE_ENV !== "production" &&
+            console.log("FORM", formikProps)}
 
           <Spinner
             spinning={formikProps.status === "loading"}
-            wrapperClassName={classes.FormContainer}
+            wrapperClassName={`${classes.FormContainer} ${
+              isOnModal ? "" : classes.MobileAccessibleForm
+            }`}
           >
             <AntdForm
               colon={false}
               labelAlign="left"
-              labelCol={{ span: horizontal ? 6 : 24 }}
+              labelCol={{ span: isHorizontal ? 6 : 24 }}
               onFinish={formikProps.handleSubmit}
-              wrapperCol={{ span: horizontal ? 18 : 24 }}
+              wrapperCol={{ span: isHorizontal ? 18 : 24 }}
             >
               {children(formikProps)}
             </AntdForm>

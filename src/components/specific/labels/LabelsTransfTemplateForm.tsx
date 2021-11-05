@@ -1,5 +1,5 @@
-import { notification } from "antd";
-import React, { useCallback, useMemo, useState } from "react";
+import { Modal, notification } from "antd";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
 
 import {
   useNa3Product,
@@ -8,7 +8,7 @@ import {
 } from "../../../modules/na3-react";
 import type { Na3TransfLabelTemplate } from "../../../modules/na3-types";
 import type { LabelsTransfCreateTemplateFormValues } from "../../../types";
-import { formatProductUnit } from "../../../utils";
+import { formatProductUnit, isTouchDevice } from "../../../utils";
 import { FormCollapse } from "../../forms/components/FormCollapse";
 import type { HandleSubmit, HandleValidate } from "../../forms/Form";
 import { Form } from "../../forms/Form";
@@ -17,21 +17,25 @@ import { SubmitButton } from "../../forms/SubmitButton";
 
 type LabelTemplateFormProps = {
   editingTemplate?: Na3TransfLabelTemplate;
+  isOnModal?: boolean;
   onSubmit?: () => void;
 };
 
 const defaultProps: LabelTemplateFormProps = {
   editingTemplate: undefined,
+  isOnModal: false,
   onSubmit: undefined,
 };
 
 export function LabelsTransfTemplateForm({
   editingTemplate,
   onSubmit,
+  isOnModal,
 }: LabelTemplateFormProps): JSX.Element {
   const [productCode, setProductCode] = useState(
     editingTemplate?.productCode || ""
   );
+  const [showSameProductModal, setShowSameProductModal] = useState(false);
 
   const transfLabelTemplates = useNa3TransfLabelTemplates();
 
@@ -139,6 +143,41 @@ export function LabelsTransfTemplateForm({
     []
   );
 
+  useEffect(() => {
+    if (editingTemplate || showSameProductModal) return;
+
+    const sameProductTemplates = transfLabelTemplates.data?.filter(
+      ({ productCode }) => productCode === product.data?.code
+    );
+
+    if (sameProductTemplates && sameProductTemplates.length > 0) {
+      Modal.info({
+        content: (
+          <>
+            <ul>
+              {sameProductTemplates.map((template) => (
+                <li key={template.id}>{template.name.toUpperCase()}</li>
+              ))}
+            </ul>
+            {isTouchDevice() ? "Toque" : "Clique"} em {'"OK"'} para continuar.
+          </>
+        ),
+        title: `Já existe${sameProductTemplates.length > 1 ? "m" : ""} ${
+          sameProductTemplates.length > 1 ? sameProductTemplates.length : "um"
+        } modelo${
+          sameProductTemplates.length > 1 ? "s" : ""
+        } para este produto`,
+      });
+
+      setShowSameProductModal(true);
+    }
+  }, [
+    product,
+    transfLabelTemplates.data,
+    editingTemplate,
+    showSameProductModal,
+  ]);
+
   console.log(product, productCustomers);
 
   return (
@@ -159,6 +198,7 @@ export function LabelsTransfTemplateForm({
           : "",
         templateName: editingTemplate?.name || "",
       }}
+      isOnModal={isOnModal}
       onSubmit={handleSubmit}
       onValidate={handleValidate}
     >
@@ -221,6 +261,13 @@ export function LabelsTransfTemplateForm({
                 autoCapitalize={true}
                 disabled={productCustomers.loading}
                 help={productCustomers.loading && "Buscando clientes..."}
+                helpDefault={
+                  (!productCustomers.data ||
+                    productCustomers.data.length === 0) &&
+                  values.customerName.trim().length === 0 && (
+                    <em>Nenhum cliente para sugerir</em>
+                  )
+                }
                 label="Cliente"
                 loading={productCustomers.loading}
                 name="customerName"
@@ -228,6 +275,11 @@ export function LabelsTransfTemplateForm({
                   label: customer.name.toUpperCase(),
                   value: customer.name.toUpperCase(),
                 }))}
+                placeholder={
+                  !productCustomers.data || productCustomers.data.length === 0
+                    ? `${isTouchDevice() ? "Toque" : "Clique"} para preencher`
+                    : undefined
+                }
                 type="autoComplete"
               />
               {(productCustomers.data || []).length > 0 &&

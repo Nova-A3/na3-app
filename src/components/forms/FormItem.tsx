@@ -128,9 +128,9 @@ export function FormItem<T extends FieldType>({
 
   const handleBlur = useCallback(
     (ev: React.FocusEvent) => {
-      onBlur(ev);
+      onBlur(name)(ev);
     },
-    [onBlur]
+    [onBlur, name]
   );
 
   const handleAutoCompleteFilterOption: Exclude<
@@ -238,7 +238,7 @@ export function FormItem<T extends FieldType>({
           mask={mask}
           maskPlaceholder={maskPlaceholder}
           name={name}
-          onBlur={onBlur}
+          onBlur={handleBlur}
           onChange={handleChange}
           prefix={prefix}
           suffix={suffix}

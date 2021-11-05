@@ -7,16 +7,16 @@ import { isTouchDevice } from "../../utils";
 
 type SubmitButtonProps = ButtonProps & {
   disableShowInvalidFields?: boolean;
-  horizontal?: boolean;
+  isHorizontal?: boolean;
 };
 
 const defaultProps: SubmitButtonProps = {
   disableShowInvalidFields: false,
-  horizontal: false,
+  isHorizontal: false,
 };
 
 export function SubmitButton({
-  horizontal,
+  isHorizontal,
   disableShowInvalidFields,
   children,
 }: SubmitButtonProps): JSX.Element {
@@ -59,7 +59,7 @@ export function SubmitButton({
   return (
     <Form.Item
       wrapperCol={
-        horizontal
+        isHorizontal
           ? { sm: { offset: 6, span: 18 }, xs: { span: 24 } }
           : { span: 24 }
       }

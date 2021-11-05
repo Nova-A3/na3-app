@@ -8,7 +8,7 @@ import { MenuPage } from "../../components";
 export function LabelsManagePage(): JSX.Element {
   return (
     <MenuPage
-      description="Selecione um grupo de modelos para gerenciar."
+      description="Selecione um grupo de modelos de etiqueta para gerenciar."
       items={labelTemplateGroups}
       title="Gerenciar modelos"
     />
