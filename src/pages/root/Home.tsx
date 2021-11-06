@@ -23,11 +23,7 @@ export function HomePage(): JSX.Element {
         </>
       )}
 
-      <PageDescription
-        className={`${classes.HomeDescription} ${
-          !department ? classes.HomeDescriptionMarginTop : ""
-        }`}
-      >
+      <PageDescription className={classes.HomeDescription}>
         Comece selecionando uma aba no menu à esquerda.
       </PageDescription>
 

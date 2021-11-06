@@ -4,15 +4,12 @@
 }
 
 .HomeDescription {
-  margin: 0 auto;
-}
-
-.HomeDescriptionMarginTop {
-  margin-top: 12px;
+  margin: 0 auto !important;
 }
 
 @media (min-width: 768px) {
   .HomeDescription {
     text-align: center;
+    margin: 8px auto !important;
   }
 }
