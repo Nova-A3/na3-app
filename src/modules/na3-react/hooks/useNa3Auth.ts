@@ -2,6 +2,7 @@ import firebase from "firebase";
 import { useCallback } from "react";
 
 import type { Na3Department } from "../../na3-types";
+import { translateFirebaseError } from "../utils";
 import { useStateSlice } from "./useStateSlice";
 
 export type UseNa3AuthResult = {
@@ -30,7 +31,11 @@ export function useNa3Auth(): UseNa3AuthResult {
         .signInWithEmailAndPassword(`${dptId}@novaa3-app.com.br`, password);
       return { error: null, user };
     } catch (error) {
-      return { error: error as firebase.FirebaseError, user: null };
+      const fbError = error as firebase.FirebaseError;
+      return {
+        error: { ...fbError, message: translateFirebaseError(fbError.code) },
+        user: null,
+      };
     }
   }, []);
 
@@ -39,7 +44,11 @@ export function useNa3Auth(): UseNa3AuthResult {
       await firebase.auth().signOut();
       return { error: null };
     } catch (error) {
-      return { error: error as firebase.FirebaseError };
+      const fbError = error as firebase.FirebaseError;
+      return {
+        error: { ...fbError, message: translateFirebaseError(fbError.code) },
+        user: null,
+      };
     }
   }, []);
 
