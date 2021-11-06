@@ -1,19 +1,33 @@
 import { Form as AntdForm } from "antd";
 import React from "react";
-import type { FieldValues, UseFormReturn } from "react-hook-form";
+import type {
+  FieldValues,
+  UseFormReturn,
+  UseFormHandleSubmit,
+  SubmitHandler,
+  SubmitErrorHandler,
+} from "react-hook-form";
 import { FormProvider } from "react-hook-form";
+
+export type HandleSubmit<TFieldValues extends FieldValues = FieldValues> =
+  SubmitHandler<TFieldValues>;
+
+export type HandleSubmitFailed<TFieldValues extends FieldValues = FieldValues> =
+  SubmitErrorHandler<TFieldValues>;
 
 type FormProps<
   TFieldValues extends FieldValues = FieldValues,
-  TContext extends object = object
+  TContext extends Record<string, unknown> = Record<string, unknown>
 > = {
   children: React.ReactNode;
   form: UseFormReturn<TFieldValues, TContext>;
+  onSubmit: HandleSubmit<TFieldValues>;
+  onSubmitFailed: HandleSubmitFailed<TFieldValues>;
 };
 
 export function Form<
   TFieldValues extends FieldValues = FieldValues,
-  TContext extends object = object
+  TContext extends Record<string, unknown> = Record<string, unknown>
 >({
   form: {
     clearErrors,
@@ -32,6 +46,8 @@ export function Form<
     watch,
   },
   children,
+  onSubmit,
+  onSubmitFailed,
 }: FormProps<TFieldValues, TContext>): JSX.Element {
   return (
     <FormProvider
@@ -50,7 +66,9 @@ export function Form<
       unregister={unregister}
       watch={watch}
     >
-      <AntdForm onFinish={handleSubmit}>{children}</AntdForm>
+      <AntdForm onFinish={handleSubmit(onSubmit, onSubmitFailed)}>
+        {children}
+      </AntdForm>
     </FormProvider>
   );
 }

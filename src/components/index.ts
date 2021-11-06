@@ -7,6 +7,13 @@ export type {
 export { Form } from "./forms/Form";
 export { FormItem } from "./forms/FormItem";
 export { SubmitButton } from "./forms/SubmitButton";
+export type {
+  HandleSubmitFailed,
+  HandleSubmit as HandleSubmitV2,
+} from "./forms/v2/Form";
+export { Form as FormV2 } from "./forms/v2/Form";
+export { FormField } from "./forms/v2/FormField/FormField";
+export { SubmitButton as SubmitButtonV2 } from "./forms/v2/SubmitButton";
 export { Helmet } from "./helmet/Helmet";
 export { Content } from "./layout/content/Content";
 export { Footer } from "./layout/footer/Footer";

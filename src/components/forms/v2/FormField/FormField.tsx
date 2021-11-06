@@ -11,7 +11,7 @@ import type { Dayjs } from "dayjs";
 import dayjs from "dayjs";
 import { nanoid } from "nanoid";
 import React, { useCallback, useMemo } from "react";
-import { useController } from "react-hook-form";
+import { Control, useController, UseControllerProps } from "react-hook-form";
 
 import { isTouchDevice } from "../../../../utils";
 import { InputDate } from "../fields/InputDate/InputDate";
@@ -38,7 +38,9 @@ type InputTextAreaOptionalProps = Omit<
 
 type InputNumberOptionalProps = Partial<
   Pick<InputNumberProps, "max" | "min" | "step">
->;
+> & {
+  noDecimal?: boolean;
+};
 
 type InputDateOptionalProps = {
   allowClear?: boolean;
@@ -60,6 +62,7 @@ type SwitchOptionalProps = Partial<
 
 type FormFieldBaseProps = {
   name: string;
+  rules: UseControllerProps["rules"];
 } & (
   | (AutoCompleteOptionalProps & {
       options: { label: React.ReactNode; value: string }[];
@@ -93,6 +96,9 @@ type FormFieldOptionalProps = {
   notRequired?: boolean;
   placeholder?: string;
   tooltip?: FormItemProps["tooltip"];
+  labelCol?: FormItemProps["labelCol"];
+  wrapperCol?: FormItemProps["wrapperCol"];
+  autoUpperCase?: boolean;
 };
 
 type FormFieldProps = FormFieldBaseProps & FormFieldOptionalProps;
@@ -113,12 +119,16 @@ const defaultProps: Required<
   notRequired: false,
   placeholder: undefined,
   tooltip: undefined,
+  labelCol: undefined,
+  wrapperCol: undefined,
+  autoUpperCase: false,
 };
 
 export function FormField(props: FormFieldProps): JSX.Element {
   const {
     name,
     type,
+    rules,
     autoFocus,
     defaultHelpText,
     disabled: disabledProp,
@@ -129,13 +139,16 @@ export function FormField(props: FormFieldProps): JSX.Element {
     notRequired,
     placeholder: placeholderProp,
     tooltip,
+    labelCol,
+    wrapperCol,
+    autoUpperCase,
   } = props;
 
   const {
     field: { onChange, onBlur, ...field },
-    fieldState: { error, isTouched },
-    formState: { isSubmitting },
-  } = useController({ name });
+    fieldState: { error, isTouched, invalid, isDirty },
+    formState: { isSubmitting, ...formState },
+  } = useController({ name, rules, shouldUnregister: true });
 
   const handleChange = useCallback(
     (
@@ -147,9 +160,41 @@ export function FormField(props: FormFieldProps): JSX.Element {
         | string
         | null
     ) => {
-      onChange(eventOrValue);
+      function isEvent(
+        param: unknown
+      ): param is React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement> {
+        return typeof param === "object" && param !== null && "target" in param;
+      }
+
+      const extractedValue = isEvent(eventOrValue)
+        ? eventOrValue.target.value
+        : eventOrValue;
+
+      if (autoUpperCase) {
+        if (
+          isEvent(eventOrValue) &&
+          typeof eventOrValue.target.value === "string"
+        ) {
+          eventOrValue.target.value = eventOrValue.target.value.toUpperCase();
+        } else if (typeof eventOrValue === "string") {
+          eventOrValue = eventOrValue.toUpperCase();
+        }
+      }
+
+      if (type === "number" && typeof extractedValue === "string") {
+        if (
+          ("noDecimal" in props &&
+            !!props.noDecimal &&
+            !/^\d*$/.test(extractedValue)) ||
+          !/^\d*(?:,\d*)?$/.test(extractedValue)
+        ) {
+          return;
+        }
+      }
+
+      onChange(eventOrValue || null);
     },
-    [onChange]
+    [onChange, autoUpperCase]
   );
 
   const handleBlur = useCallback(() => {
@@ -178,14 +223,24 @@ export function FormField(props: FormFieldProps): JSX.Element {
   const helpText = useMemo(
     (): React.ReactNode => (
       <FieldHelp
+        isDirty={isDirty}
         defaultText={defaultHelpText}
         error={error?.message}
         isLoading={!!isLoading}
         isTouched={isTouched}
         loadingText={loadingHelpText}
+        isInvalid={invalid}
       />
     ),
-    [defaultHelpText, error?.message, isLoading, isTouched, loadingHelpText]
+    [
+      defaultHelpText,
+      error?.message,
+      isLoading,
+      isDirty,
+      isTouched,
+      loadingHelpText,
+      invalid,
+    ]
   );
 
   const placeholder = useMemo((): string => {
@@ -214,26 +269,29 @@ export function FormField(props: FormFieldProps): JSX.Element {
   );
 
   const fieldComponent = useMemo((): React.ReactNode => {
-    if (typeof field.value === "string") {
-      if (type === "input" || type === "password") {
-        const Component = type === "input" ? Input : Input.Password;
-        return (
-          <Component
-            addonAfter={props.addonAfter}
-            addonBefore={props.addonBefore}
-            allowClear={props.allowClear}
-            autoFocus={autoFocus}
-            disabled={disabled}
-            maxLength={props.maxLength}
-            onBlur={handleBlur}
-            onChange={handleChange}
-            placeholder={placeholder}
-            prefix={props.prefix}
-            suffix={props.suffix}
-            value={field.value}
-          />
-        );
-      } else if (type === "textArea") {
+    if (type === "input" || type === "password") {
+      if (!(typeof field.value === "string")) return null;
+      const Component = type === "input" ? Input : Input.Password;
+      return (
+        <Component
+          addonAfter={props.addonAfter}
+          addonBefore={props.addonBefore}
+          allowClear={props.allowClear}
+          autoFocus={autoFocus}
+          disabled={disabled}
+          maxLength={props.maxLength}
+          onBlur={handleBlur}
+          onChange={handleChange}
+          placeholder={placeholder}
+          prefix={props.prefix}
+          suffix={props.suffix}
+          value={field.value}
+        />
+      );
+    }
+    switch (type) {
+      case "textArea":
+        if (!(typeof field.value === "string")) return null;
         return (
           <Input.TextArea
             allowClear={props.allowClear}
@@ -246,7 +304,8 @@ export function FormField(props: FormFieldProps): JSX.Element {
             value={field.value}
           />
         );
-      } else if (type === "mask") {
+      case "mask":
+        if (!(typeof field.value === "string")) return null;
         return (
           <InputMask
             addonAfter={props.addonAfter || null}
@@ -263,16 +322,18 @@ export function FormField(props: FormFieldProps): JSX.Element {
             value={field.value}
           />
         );
-      } else if (type === "select") {
+      case "select":
+        if (!(typeof field.value === "string" || field.value === undefined))
+          return null;
         return (
-          <Select
+          <Select<string>
             allowClear={props.allowClear}
             autoFocus={autoFocus}
             disabled={disabled}
             onBlur={handleBlur}
             onChange={handleChange}
             placeholder={placeholder}
-            value={field.value}
+            value={(field.value as string) || undefined}
           >
             {props.options.map(({ value, label }) => (
               <Select.Option key={nanoid()} value={value}>
@@ -281,7 +342,9 @@ export function FormField(props: FormFieldProps): JSX.Element {
             ))}
           </Select>
         );
-      } else if (type === "autoComplete") {
+      case "autoComplete":
+        if (!(typeof field.value === "string" || field.value === undefined))
+          return null;
         return (
           <AutoComplete
             allowClear={props.allowClear}
@@ -293,48 +356,50 @@ export function FormField(props: FormFieldProps): JSX.Element {
             onChange={handleChange}
             options={props.options}
             placeholder={placeholder}
+            value={(field.value as string) || undefined}
+          />
+        );
+      case "number":
+        if (!(typeof field.value === "number")) return null;
+        return (
+          <InputNumber
+            autoFocus={autoFocus}
+            className={classes.InputNumber}
+            disabled={disabled}
+            max={props.max}
+            min={props.min}
+            onBlur={handleBlur}
+            onChange={handleChange}
+            placeholder={placeholder}
+            step={props.step}
             value={field.value}
           />
         );
-      }
-    } else if (typeof field.value === "number" && type === "number") {
-      return (
-        <InputNumber
-          autoFocus={autoFocus}
-          className={classes.InputNumber}
-          disabled={disabled}
-          max={props.max}
-          min={props.min}
-          onBlur={handleBlur}
-          onChange={handleChange}
-          placeholder={placeholder}
-          step={props.step}
-          value={field.value}
-        />
-      );
-    } else if (typeof field.value === "boolean" && type === "switch") {
-      return (
-        <Switch
-          checked={field.value}
-          checkedChildren={props.checkedChildren}
-          onChange={handleChange}
-          unCheckedChildren={props.unCheckedChildren}
-        />
-      );
-    } else if (dayjs.isDayjs(field.value) && type === "date") {
-      return (
-        <InputDate
-          allowClear={props.allowClear || false}
-          allowFutureDates={props.allowFutureDates || false}
-          autoFocus={autoFocus || false}
-          disabled={disabled}
-          format={props.format || "DD/MM/YYYY"}
-          onBlur={handleBlur}
-          onChange={handleChange}
-          placeholder={placeholder}
-          value={field.value}
-        />
-      );
+      case "switch":
+        if (!(typeof field.value === "boolean")) return null;
+        return (
+          <Switch
+            checked={field.value}
+            checkedChildren={props.checkedChildren}
+            onChange={handleChange}
+            unCheckedChildren={props.unCheckedChildren}
+          />
+        );
+      case "date":
+        if (!dayjs.isDayjs(field.value)) return null;
+        return (
+          <InputDate
+            allowClear={props.allowClear || false}
+            allowFutureDates={props.allowFutureDates || false}
+            autoFocus={autoFocus || false}
+            disabled={disabled}
+            format={props.format || "DD/MM/YYYY"}
+            onBlur={handleBlur}
+            onChange={handleChange}
+            placeholder={placeholder}
+            value={field.value}
+          />
+        );
     }
   }, [
     field.value,
@@ -361,12 +426,16 @@ export function FormField(props: FormFieldProps): JSX.Element {
       validateStatus={
         isLoading
           ? "validating"
-          : isTouched
-          ? error
+          : isTouched && isDirty
+          ? error || invalid
             ? "error"
             : "success"
           : undefined
       }
+      labelCol={labelCol || { span: 24 }}
+      wrapperCol={wrapperCol || { span: 24 }}
+      labelAlign="left"
+      colon={false}
     >
       {fieldComponent}
     </Form.Item>
