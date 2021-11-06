@@ -1,14 +1,14 @@
 import { LockOutlined, LoginOutlined, UserOutlined } from "@ant-design/icons";
-import { message } from "antd";
+import { message, notification } from "antd";
 import React, { useCallback } from "react";
+import { useForm } from "react-hook-form";
 
-import type { HandleSubmit } from "../../components";
 import {
-  Form,
-  FormItem,
+  FormField,
+  FormV2,
   PageDescription,
   PageTitle,
-  SubmitButton,
+  SubmitButtonV2,
 } from "../../components";
 import { useNa3Auth, useNa3Departments } from "../../modules/na3-react";
 import type { Na3Department } from "../../modules/na3-types";
@@ -17,23 +17,35 @@ type AuthProps = {
   authorizedDpts: Na3Department[];
 };
 
-type FormValues = { department: string; password: string };
+type FormValues = { dpt: string; password: string };
 
 export function AuthPage({ authorizedDpts }: AuthProps): JSX.Element {
   const auth = useNa3Auth();
   const departments = useNa3Departments();
 
-  const handleSubmit: HandleSubmit<FormValues> = useCallback(
-    async ({ department, password }, helpers) => {
+  const form = useForm<FormValues>({
+    criteriaMode: "all",
+    defaultValues: {
+      dpt:
+        authorizedDpts.length === 1
+          ? authorizedDpts[0].displayName.toUpperCase()
+          : "",
+      password: "",
+    },
+    mode: "onChange",
+  });
+
+  const handleSubmit = useCallback(
+    async ({ dpt, password }: FormValues): Promise<void> => {
       function setSignInError(message: string): void {
-        helpers.setFieldError("password", message);
+        form.setError("password", { message });
       }
 
-      const parsedDepartment = departments.helpers.getByDisplayName(department);
+      const parsedDepartment = departments.helpers.getByDisplayName(dpt);
 
       if (!parsedDepartment) {
         return setSignInError(
-          `Nenhuma conta encontrada para o setor "${department}".`
+          `Nenhuma conta encontrada para o setor "${dpt}".`
         );
       }
 
@@ -42,11 +54,22 @@ export function AuthPage({ authorizedDpts }: AuthProps): JSX.Element {
         password
       );
 
-      if (signInResult.error) setSignInError(signInResult.error.message);
-      else void message.success("Autenticado!");
+      if (signInResult.error) {
+        setSignInError(signInResult.error.message);
+      } else {
+        void message.success("Autenticado!");
+      }
     },
-    [auth.helpers, departments.helpers]
+    [form, auth.helpers, departments.helpers]
   );
+
+  const handleSubmitFailed = useCallback(() => {
+    notification.error({
+      description:
+        "Verifique as credenciais inseridas ou tente novamente mais tarde.",
+      message: "Erro ao entrar",
+    });
+  }, []);
 
   return (
     <>
@@ -55,66 +78,62 @@ export function AuthPage({ authorizedDpts }: AuthProps): JSX.Element {
         Por favor, autentique-se para continuar.
       </PageDescription>
 
-      <Form<FormValues>
-        initialValues={{
-          department:
-            authorizedDpts.length === 1
-              ? authorizedDpts[0].displayName.toUpperCase()
-              : "",
-          password: "",
-        }}
-        isHorizontal={true}
+      <FormV2
+        form={form}
         onSubmit={handleSubmit}
+        onSubmitFailed={handleSubmitFailed}
       >
-        {({ isSubmitting }): JSX.Element => (
-          <>
-            <FormItem
-              autoCapitalize={true}
-              autoFocus={authorizedDpts.length > 1}
-              disabled={authorizedDpts.length === 1}
-              label="Setor"
-              name="department"
-              options={authorizedDpts.map((dpt) => ({
-                label: dpt.displayName.toUpperCase(),
-                value: dpt.displayName.toUpperCase(),
-              }))}
-              prefix={<UserOutlined />}
-              tooltip={{
-                placement: "right",
-                title:
-                  authorizedDpts.length === 1 ? (
-                    <>
-                      Apenas o setor{" "}
-                      <strong>
-                        <em>{authorizedDpts[0].displayName}</em>
-                      </strong>{" "}
-                      tem acesso a esta área
-                    </>
-                  ) : (
-                    "Selecione seu setor"
-                  ),
-              }}
-              type={authorizedDpts.length === 1 ? "input" : "select"}
-            />
+        <FormField
+          disabled={authorizedDpts.length === 1}
+          label="Setor"
+          labelCol={{ span: 6 }}
+          name="dpt"
+          options={authorizedDpts.map((dpt) => ({
+            label: dpt.displayName.toUpperCase(),
+            value: dpt.displayName.toUpperCase(),
+          }))}
+          prefix={<UserOutlined />}
+          rules={{
+            minLength: { message: "Campo obrigatório", value: 1 },
+            required: "Campo obrigatório",
+            validate: (value): string | undefined =>
+              value === undefined ? "Campo obrigatório" : undefined,
+          }}
+          tooltip={{
+            placement: "right",
+            title:
+              authorizedDpts.length === 1 ? (
+                <>
+                  Apenas o setor{" "}
+                  <strong>
+                    <em>{authorizedDpts[0].displayName}</em>
+                  </strong>{" "}
+                  tem acesso a esta área
+                </>
+              ) : (
+                "Selecione seu setor"
+              ),
+          }}
+          type={authorizedDpts.length === 1 ? "input" : "select"}
+        />
 
-            <FormItem
-              label="Senha"
-              name="password"
-              prefix={<LockOutlined />}
-              tooltip={{ placement: "right", title: "Digite sua senha" }}
-              type="password"
-            />
+        <FormField
+          label="Senha"
+          labelCol={{ span: 6 }}
+          name="password"
+          prefix={<LockOutlined />}
+          rules={{ required: "Campo obrigatório" }}
+          tooltip={{ placement: "right", title: "Digite sua senha" }}
+          type="password"
+        />
 
-            <SubmitButton
-              disableShowInvalidFields={true}
-              icon={<LoginOutlined />}
-              isHorizontal={true}
-            >
-              {isSubmitting ? "Entrando..." : "Entrar"}
-            </SubmitButton>
-          </>
-        )}
-      </Form>
+        <SubmitButtonV2
+          icon={<LoginOutlined />}
+          label="Entrar"
+          labelWhenLoading="Entrando..."
+          wrapperCol={{ sm: { offset: 6, span: 18 }, xs: { span: 24 } }}
+        />
+      </FormV2>
     </>
   );
 }
