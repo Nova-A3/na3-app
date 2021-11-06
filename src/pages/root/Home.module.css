@@ -7,6 +7,10 @@
   margin: 0 auto;
 }
 
+.HomeDescriptionMarginTop {
+  margin-top: 12px;
+}
+
 @media (min-width: 768px) {
   .HomeDescription {
     text-align: center;

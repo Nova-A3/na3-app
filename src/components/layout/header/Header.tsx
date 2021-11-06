@@ -5,6 +5,7 @@ import { useThemeSwitcher } from "react-css-theme-switcher";
 import { MdDarkMode, MdLightMode } from "react-icons/md";
 
 import { useNa3Auth } from "../../../modules/na3-react";
+import { HomeLogo } from "../../specific/home/HomeLogo";
 import classes from "./Header.module.css";
 
 export function Header(): JSX.Element | null {
@@ -33,8 +34,8 @@ export function Header(): JSX.Element | null {
 
   return (
     <div className={classes.HeaderContainer}>
-      <div>
-        {auth.department && (
+      <div className={classes.Header}>
+        {auth.department ? (
           <PageHeader
             avatar={{
               className: classes.Avatar,
@@ -51,6 +52,8 @@ export function Header(): JSX.Element | null {
               </small>
             }
           />
+        ) : (
+          <HomeLogo hasNoMarginTop={true} height={24} />
         )}
       </div>
 
@@ -62,7 +65,6 @@ export function Header(): JSX.Element | null {
               <MdDarkMode />
             </div>
           }
-          className={!auth.department ? classes.SwitchExtraMargin : undefined}
           onChange={handleToggleTheme}
           size="small"
           unCheckedChildren={

@@ -5,18 +5,29 @@ import { nanoid } from "nanoid";
 import React from "react";
 
 import { HomeLogo, PageDescription, StaticListItem } from "../../components";
+import { useNa3Auth } from "../../modules/na3-react";
 import classes from "./Home.module.css";
 
 export function HomePage(): JSX.Element {
+  const { department } = useNa3Auth();
+
   return (
     <>
-      <HomeLogo />
+      {department && (
+        <>
+          <HomeLogo />
 
-      <div>
-        <Divider />
-      </div>
+          <div>
+            <Divider />
+          </div>
+        </>
+      )}
 
-      <PageDescription className={classes.HomeDescription}>
+      <PageDescription
+        className={`${classes.HomeDescription} ${
+          !department ? classes.HomeDescriptionMarginTop : ""
+        }`}
+      >
         Comece selecionando uma aba no menu à esquerda.
       </PageDescription>
 
