@@ -1,4 +1,3 @@
-import { LoadingOutlined } from "@ant-design/icons";
 import { Typography } from "antd";
 import React from "react";
 
@@ -21,14 +20,9 @@ export function FieldHelp({
 }: FieldHelpProps): JSX.Element | null {
   if (isLoading) {
     return (
-      <>
-        <span className={classes.LoadingIcon}>
-          <LoadingOutlined spin={true} />
-        </span>
-        <Typography.Text className={classes.LoadingText}>
-          {loadingText || "Carregando..."}
-        </Typography.Text>
-      </>
+      <Typography.Text className={classes.LoadingText}>
+        {loadingText || "Carregando..."}
+      </Typography.Text>
     );
   }
 
