@@ -1,6 +1,6 @@
 import { PlusCircleOutlined } from "@ant-design/icons";
 import { Button, Col, Divider, Grid, Row } from "antd";
-import React, { useCallback } from "react";
+import React, { useCallback, useMemo } from "react";
 import { useHistory } from "react-router-dom";
 
 import {
@@ -9,7 +9,7 @@ import {
   PageActionButtons,
   PageTitle,
 } from "../../../components";
-import { useNa3Auth } from "../../../modules/na3-react";
+import { useNa3Auth, useNa3ServiceOrders } from "../../../modules/na3-react";
 import type { Na3ServiceOrder } from "../../../modules/na3-types";
 import classes from "./MaintServiceOrdersHome.module.css";
 
@@ -18,15 +18,24 @@ export function MaintServiceOrdersHomePage(): JSX.Element {
   const breakpoint = Grid.useBreakpoint();
 
   const { department } = useNa3Auth();
+  const serviceOrders = useNa3ServiceOrders();
 
   const handleCreateServiceOrderClick = useCallback(() => {
     history.push("/manutencao/os/abrir-os");
   }, [history]);
 
-  const handleFilterUserServiceOrders = useCallback(
-    (serviceOrder: Na3ServiceOrder): boolean =>
-      serviceOrder.username === department?.id,
-    [department?.id]
+  const userOrders = useMemo(
+    () => serviceOrders.helpers.getDepartmentOrders(),
+    [serviceOrders.helpers]
+  );
+
+  const listData = useMemo(
+    () =>
+      serviceOrders.helpers.sortByStatus(
+        ["solved", "solving", "pending", "closed"],
+        userOrders
+      ),
+    [serviceOrders.helpers, userOrders]
   );
 
   const handleSelectServiceOrder = useCallback(() => {
@@ -36,6 +45,7 @@ export function MaintServiceOrdersHomePage(): JSX.Element {
   return (
     <>
       <PageTitle>Manutenção • Ordens de Serviço</PageTitle>
+
       {!breakpoint.md && (
         <PageActionButtons>
           <Button
@@ -56,7 +66,7 @@ export function MaintServiceOrdersHomePage(): JSX.Element {
 
           <div className={classes.PageContent}>
             <MaintServiceOrdersList
-              filterData={handleFilterUserServiceOrders}
+              data={listData}
               onSelectOrder={handleSelectServiceOrder}
             />
           </div>

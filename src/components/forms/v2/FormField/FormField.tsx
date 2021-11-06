@@ -11,13 +11,25 @@ import type { Dayjs } from "dayjs";
 import dayjs from "dayjs";
 import { nanoid } from "nanoid";
 import React, { useCallback, useMemo } from "react";
-import { Control, useController, UseControllerProps } from "react-hook-form";
+import type { UseControllerProps } from "react-hook-form";
+import { useController } from "react-hook-form";
 
 import { isTouchDevice } from "../../../../utils";
 import { InputDate } from "../fields/InputDate/InputDate";
 import { InputMask } from "../fields/InputMask/InputMask";
 import { FieldHelp } from "./FieldHelp/FieldHelp";
 import classes from "./FormField.module.css";
+
+type FieldType =
+  | "autoComplete"
+  | "date"
+  | "input"
+  | "mask"
+  | "number"
+  | "password"
+  | "select"
+  | "switch"
+  | "textArea";
 
 type BaseInputOptionalProps = Partial<
   Pick<
@@ -87,21 +99,23 @@ type FormFieldBaseProps = {
 
 type FormFieldOptionalProps = {
   autoFocus?: boolean;
+  autoUpperCase?: boolean;
   defaultHelpText?: string;
   disabled?: boolean;
   hidden?: boolean;
   isLoading?: boolean;
   label?: string;
+  labelCol?: FormItemProps["labelCol"];
   loadingHelpText?: string;
   notRequired?: boolean;
   placeholder?: string;
   tooltip?: FormItemProps["tooltip"];
-  labelCol?: FormItemProps["labelCol"];
   wrapperCol?: FormItemProps["wrapperCol"];
-  autoUpperCase?: boolean;
 };
 
-type FormFieldProps = FormFieldBaseProps & FormFieldOptionalProps;
+type FormFieldProps<T extends FieldType = FieldType> = FormFieldBaseProps &
+  FormFieldOptionalProps &
+  (T extends "number" ? { noDecimal?: number } : never);
 
 const defaultProps: Required<
   Record<
@@ -110,18 +124,18 @@ const defaultProps: Required<
   >
 > = {
   autoFocus: false,
+  autoUpperCase: false,
   defaultHelpText: undefined,
   disabled: false,
   hidden: false,
   isLoading: false,
   label: undefined,
+  labelCol: undefined,
   loadingHelpText: undefined,
   notRequired: false,
   placeholder: undefined,
   tooltip: undefined,
-  labelCol: undefined,
   wrapperCol: undefined,
-  autoUpperCase: false,
 };
 
 export function FormField(props: FormFieldProps): JSX.Element {
@@ -142,12 +156,13 @@ export function FormField(props: FormFieldProps): JSX.Element {
     labelCol,
     wrapperCol,
     autoUpperCase,
+    noDecimal,
   } = props;
 
   const {
     field: { onChange, onBlur, ...field },
     fieldState: { error, isTouched, invalid, isDirty },
-    formState: { isSubmitting, ...formState },
+    formState: { isSubmitting },
   } = useController({ name, rules, shouldUnregister: true });
 
   const handleChange = useCallback(
@@ -183,9 +198,7 @@ export function FormField(props: FormFieldProps): JSX.Element {
 
       if (type === "number" && typeof extractedValue === "string") {
         if (
-          ("noDecimal" in props &&
-            !!props.noDecimal &&
-            !/^\d*$/.test(extractedValue)) ||
+          (noDecimal && !/^\d*$/.test(extractedValue)) ||
           !/^\d*(?:,\d*)?$/.test(extractedValue)
         ) {
           return;
@@ -194,7 +207,7 @@ export function FormField(props: FormFieldProps): JSX.Element {
 
       onChange(eventOrValue || null);
     },
-    [onChange, autoUpperCase]
+    [onChange, autoUpperCase, type, noDecimal]
   );
 
   const handleBlur = useCallback(() => {
@@ -223,13 +236,13 @@ export function FormField(props: FormFieldProps): JSX.Element {
   const helpText = useMemo(
     (): React.ReactNode => (
       <FieldHelp
-        isDirty={isDirty}
         defaultText={defaultHelpText}
         error={error?.message}
+        isDirty={isDirty}
+        isInvalid={invalid}
         isLoading={!!isLoading}
         isTouched={isTouched}
         loadingText={loadingHelpText}
-        isInvalid={invalid}
       />
     ),
     [
@@ -417,10 +430,13 @@ export function FormField(props: FormFieldProps): JSX.Element {
 
   return (
     <Form.Item
+      colon={false}
       hasFeedback={true}
       help={helpText}
       hidden={hidden}
       label={label}
+      labelAlign="left"
+      labelCol={labelCol || { span: 24 }}
       required={!notRequired}
       tooltip={tooltip}
       validateStatus={
@@ -432,10 +448,7 @@ export function FormField(props: FormFieldProps): JSX.Element {
             : "success"
           : undefined
       }
-      labelCol={labelCol || { span: 24 }}
       wrapperCol={wrapperCol || { span: 24 }}
-      labelAlign="left"
-      colon={false}
     >
       {fieldComponent}
     </Form.Item>

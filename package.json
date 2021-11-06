@@ -38,7 +38,7 @@
     "web-vitals": "^1.0.1"
   },
   "scripts": {
-    "start": "react-scripts start",
+    "start": "NODE_ENV=\"development\" && react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
@@ -47,7 +47,7 @@
     "lint": "yarn eslint . --ext .ts,.tsx",
     "lint-fix": "yarn eslint . --fix --ext .ts,.tsx",
     "pre-push": "yarn prettier-write && yarn lint-fix",
-    "deploy": "yarn pre-push && yarn build && firebase deploy --only hosting:novaa3"
+    "deploy": "NODE_ENV=\"production\" && yarn pre-push && yarn build && firebase deploy --only hosting:novaa3"
   },
   "eslintConfig": {
     "extends": [

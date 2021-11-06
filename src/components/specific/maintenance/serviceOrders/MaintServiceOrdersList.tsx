@@ -6,25 +6,20 @@ import { List } from "../../../lists/List";
 import { MaintServiceOrderCard } from "./card/MaintServiceOrderCard";
 
 type MaintServiceOrdersListProps = {
-  filterData?: (serviceOrder: Na3ServiceOrder) => boolean;
+  data: Na3ServiceOrder[];
   onSelectOrder: (serviceOrder: Na3ServiceOrder) => void;
 };
 
-const defaultProps: Omit<MaintServiceOrdersListProps, "onSelectOrder"> = {
-  filterData: undefined,
-};
+const defaultProps: Omit<
+  MaintServiceOrdersListProps,
+  "data" | "onSelectOrder"
+> = {};
 
 export function MaintServiceOrdersList({
-  filterData,
+  data,
   onSelectOrder,
 }: MaintServiceOrdersListProps): JSX.Element {
   const serviceOrders = useNa3ServiceOrders();
-
-  const filteredServiceOrders = useMemo(
-    () =>
-      filterData ? serviceOrders.data?.filter(filterData) : serviceOrders.data,
-    [filterData, serviceOrders.data]
-  );
 
   const handleRenderItem = useCallback(
     (item: Na3ServiceOrder) => (
@@ -35,16 +30,16 @@ export function MaintServiceOrdersList({
 
   const handleFilterItemOnSearch = useCallback(
     (query: string): Na3ServiceOrder[] =>
-      filteredServiceOrders?.filter((order) => {
+      data?.filter((order) => {
         const formattedQuery = query.trim().toLowerCase();
         return order.description.toLowerCase().includes(formattedQuery);
       }) || [],
-    [filteredServiceOrders]
+    [data]
   );
 
   return (
     <List
-      data={filteredServiceOrders}
+      data={data}
       error={serviceOrders.error?.message}
       filterItem={handleFilterItemOnSearch}
       isLoading={serviceOrders.loading}
