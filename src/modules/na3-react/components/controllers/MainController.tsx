@@ -53,7 +53,10 @@ export function Na3MainController({ env }: Na3MainControllerProps): null {
     dispatch(
       setAuthError(
         fbUserError
-          ? { ...fbUserError, code: translateFirebaseError(fbUserError.code) }
+          ? {
+              ...fbUserError,
+              message: translateFirebaseError(fbUserError.code),
+            }
           : null
       )
     );

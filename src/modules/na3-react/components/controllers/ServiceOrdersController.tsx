@@ -55,9 +55,10 @@ export function Na3ServiceOrdersController(): null {
 
       dispatch(
         setServiceOrdersData(
-          serviceOrdersSnapshot.docs.map(
-            (doc) => doc.data() as Na3ServiceOrder
-          ) || null
+          serviceOrdersSnapshot.docs.map((doc) => ({
+            ...(doc.data() as Na3ServiceOrder),
+            id: doc.id,
+          })) || null
         )
       );
     }

@@ -1,5 +1,5 @@
 import firebase from "firebase";
-import { useEffect } from "react";
+import { useCallback, useEffect } from "react";
 import { useCollectionData } from "react-firebase-hooks/firestore";
 import { useDispatch } from "react-redux";
 
@@ -14,6 +14,7 @@ import { resolveCollectionId } from "../../utils";
 
 export function Na3TransfLabelTemplatesController(): null {
   const { environment } = useStateSlice("config");
+  const { department } = useStateSlice("auth");
 
   const dispatch = useDispatch();
 
@@ -46,6 +47,36 @@ export function Na3TransfLabelTemplatesController(): null {
   useEffect(() => {
     dispatch(setTransfLabelTemplatesError(fbTransfLabelTemplatesError || null));
   }, [dispatch, fbTransfLabelTemplatesError]);
+
+  /* Update on auth */
+
+  const forceRefreshTemplates = useCallback(async () => {
+    dispatch(setTransfLabelTemplatesLoading(true));
+    dispatch(setTransfLabelTemplatesError(null));
+    dispatch(setTransfLabelTemplatesData(null));
+
+    if (department) {
+      const templatesSnapshot = await firebase
+        .firestore()
+        .collection(resolveCollectionId("transf-label-templates", environment))
+        .get();
+
+      dispatch(
+        setTransfLabelTemplatesData(
+          templatesSnapshot.docs.map((doc) => ({
+            ...(doc.data() as Na3TransfLabelTemplate),
+            id: doc.id,
+          })) || null
+        )
+      );
+    }
+
+    dispatch(setTransfLabelTemplatesLoading(false));
+  }, [dispatch, department, environment]);
+
+  useEffect(() => {
+    void forceRefreshTemplates();
+  }, [forceRefreshTemplates]);
 
   return null;
 }
