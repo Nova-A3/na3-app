@@ -1,15 +1,17 @@
 import { PlusCircleOutlined } from "@ant-design/icons";
 import { Button, Col, Divider, Grid, Row } from "antd";
-import React, { useCallback, useMemo } from "react";
+import React, { useCallback, useMemo, useState } from "react";
 import { useHistory } from "react-router-dom";
 
 import {
   MaintCreateServiceOrderForm,
+  MaintServiceOrderDetailsModal,
   MaintServiceOrdersList,
   PageActionButtons,
   PageTitle,
 } from "../../../components";
 import { useNa3ServiceOrders } from "../../../modules/na3-react";
+import type { Na3ServiceOrder } from "../../../modules/na3-types";
 import classes from "./MaintServiceOrdersHome.module.css";
 
 export function MaintServiceOrdersHomePage(): JSX.Element {
@@ -17,6 +19,8 @@ export function MaintServiceOrdersHomePage(): JSX.Element {
   const breakpoint = Grid.useBreakpoint();
 
   const serviceOrders = useNa3ServiceOrders();
+
+  const [selectedOrder, setSelectedOrder] = useState<Na3ServiceOrder>();
 
   const handleCreateServiceOrderClick = useCallback(() => {
     history.push("/manutencao/os/abrir-os");
@@ -36,7 +40,15 @@ export function MaintServiceOrdersHomePage(): JSX.Element {
     [serviceOrders.helpers, userOrders]
   );
 
-  const handleSelectServiceOrder = useCallback(() => {
+  const handleCloseOrderDetailsModal = useCallback(() => {
+    setSelectedOrder(undefined);
+  }, []);
+
+  const handleAcceptOrderSolution = useCallback(() => {
+    return;
+  }, []);
+
+  const handleRefuseOrderSolution = useCallback(() => {
     return;
   }, []);
 
@@ -44,7 +56,7 @@ export function MaintServiceOrdersHomePage(): JSX.Element {
     <>
       <PageTitle>Manutenção • Ordens de Serviço</PageTitle>
 
-      {!breakpoint.md && (
+      {!breakpoint.lg && (
         <PageActionButtons>
           <Button
             icon={<PlusCircleOutlined />}
@@ -57,7 +69,7 @@ export function MaintServiceOrdersHomePage(): JSX.Element {
       )}
 
       <Row className={classes.PageRow} gutter={28}>
-        <Col className={classes.PageGridCol} md={8} xs={24}>
+        <Col className={classes.PageGridCol} lg={8} xs={24}>
           <div className={classes.ListTitle}>
             <Divider orientation="left">Suas OS</Divider>
           </div>
@@ -65,21 +77,30 @@ export function MaintServiceOrdersHomePage(): JSX.Element {
           <div className={classes.PageContent}>
             <MaintServiceOrdersList
               data={listData}
-              onSelectOrder={handleSelectServiceOrder}
+              onSelectOrder={setSelectedOrder}
             />
           </div>
         </Col>
 
-        <Col className={classes.PageGridCol} md={16} xs={0}>
-          <div>
-            <Divider orientation="left">Abrir OS</Divider>
-          </div>
+        {breakpoint.lg && (
+          <Col className={classes.PageGridCol} lg={16} xs={0}>
+            <div>
+              <Divider orientation="left">Abrir OS</Divider>
+            </div>
 
-          <div className={classes.PageContent}>
-            <MaintCreateServiceOrderForm />
-          </div>
-        </Col>
+            <div className={classes.PageContent}>
+              <MaintCreateServiceOrderForm />
+            </div>
+          </Col>
+        )}
       </Row>
+
+      <MaintServiceOrderDetailsModal
+        data={selectedOrder}
+        onAcceptSolution={handleAcceptOrderSolution}
+        onCancel={handleCloseOrderDetailsModal}
+        onRefuseSolution={handleRefuseOrderSolution}
+      />
     </>
   );
 }

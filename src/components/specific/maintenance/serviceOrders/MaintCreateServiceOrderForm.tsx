@@ -106,7 +106,7 @@ export function MaintCreateServiceOrderForm(): JSX.Element {
       <Divider className={classes.FormDivider} />
 
       <Row gutter={36}>
-        <Col span={breakpoint.md ? 8 : 24}>
+        <Col span={breakpoint.lg ? 8 : 24}>
           <FormField
             label="Parou produção?"
             labelSpan={16}
@@ -117,7 +117,7 @@ export function MaintCreateServiceOrderForm(): JSX.Element {
           />
         </Col>
 
-        <Col span={breakpoint.md ? 8 : 24}>
+        <Col span={breakpoint.lg ? 8 : 24}>
           <FormField
             label="Parou linha?"
             labelSpan={16}
@@ -128,7 +128,7 @@ export function MaintCreateServiceOrderForm(): JSX.Element {
           />
         </Col>
 
-        <Col span={breakpoint.md ? 8 : 24}>
+        <Col span={breakpoint.lg ? 8 : 24}>
           <FormField
             disabled={
               form.getValues().didStopProduction || form.getValues().didStopLine

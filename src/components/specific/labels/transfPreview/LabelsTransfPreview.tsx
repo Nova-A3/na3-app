@@ -100,7 +100,7 @@ export function LabelsTransfPreview({
       onCancel={onCancel}
       title="Pré-visualização"
       visible={!!label}
-      width={1000}
+      width={breakpoint.md ? "70%" : "90%"}
     >
       <div className={classes.LabelPreview}>
         <img alt="Layout impresso da etiqueta" src={labelLayout} />

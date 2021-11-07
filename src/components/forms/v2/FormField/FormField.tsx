@@ -42,7 +42,9 @@ type InputOptionalProps = Partial<
 type InputTextAreaOptionalProps = Omit<
   InputOptionalProps,
   "addonAfter" | "addonBefore" | "prefix" | "suffix"
->;
+> & {
+  rows?: { max?: number; min?: number };
+};
 
 type AutoCompleteOptionalProps = Partial<
   Pick<AutoCompleteProps, "allowClear" | "defaultActiveFirstOption">
@@ -366,6 +368,10 @@ export function FormField(props: FormFieldProps): JSX.Element {
           <Input.TextArea
             allowClear={props.allowClear}
             autoFocus={autoFocus}
+            autoSize={{
+              maxRows: props.rows?.max,
+              minRows: props.rows?.min || 3,
+            }}
             disabled={disabled}
             id={name}
             maxLength={props.maxLength}

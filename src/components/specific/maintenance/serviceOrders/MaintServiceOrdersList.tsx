@@ -1,3 +1,4 @@
+import { Badge } from "antd";
 import React, { useCallback } from "react";
 
 import { useNa3ServiceOrders } from "../../../../modules/na3-react";
@@ -22,9 +23,21 @@ export function MaintServiceOrdersList({
   const serviceOrders = useNa3ServiceOrders();
 
   const handleRenderItem = useCallback(
-    (item: Na3ServiceOrder) => (
-      <MaintServiceOrderCard data={item} onSelect={onSelectOrder} />
-    ),
+    (item: Na3ServiceOrder) => {
+      const card = (
+        <MaintServiceOrderCard data={item} onSelect={onSelectOrder} />
+      );
+
+      if (item.status === "closed") {
+        return (
+          <Badge.Ribbon color="red" text="Ação necessária">
+            {card}
+          </Badge.Ribbon>
+        );
+      } else {
+        return card;
+      }
+    },
     [onSelectOrder]
   );
 
