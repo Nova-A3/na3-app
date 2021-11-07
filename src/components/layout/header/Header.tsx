@@ -1,78 +1,33 @@
-import { LogoutOutlined, UserOutlined } from "@ant-design/icons";
-import { Button, message, PageHeader, Switch, Tooltip } from "antd";
-import React, { useCallback, useState } from "react";
-import { useThemeSwitcher } from "react-css-theme-switcher";
-import { MdDarkMode, MdLightMode } from "react-icons/md";
+import { LogoutOutlined } from "@ant-design/icons";
+import { Button, message, Tooltip } from "antd";
+import React, { useCallback } from "react";
 
 import { useNa3Auth } from "../../../modules/na3-react";
 import { HomeLogo } from "../../specific/home/HomeLogo";
 import classes from "./Header.module.css";
+import { ThemeSwitch } from "./ThemeSwitch";
+import { UserInfo } from "./UserInfo";
 
-export function Header(): JSX.Element | null {
+export function Header(): JSX.Element {
   const auth = useNa3Auth();
-
-  const [isDarkMode, setIsDarkMode] = useState<boolean>();
-  const { switcher, status, themes } = useThemeSwitcher();
-
-  const handleToggleTheme = useCallback(
-    (isChecked: boolean): void => {
-      setIsDarkMode(isChecked);
-      switcher({ theme: isChecked ? themes.dark : themes.light });
-    },
-    [switcher, themes.dark, themes.light]
-  );
 
   const handleSignOut = useCallback(async () => {
     await auth.helpers.signOut();
     await message.info("Você saiu.");
   }, [auth.helpers]);
 
-  // Avoid flickering when switching themes
-  if (status === "loading") {
-    return null;
-  }
-
   return (
     <div className={classes.HeaderContainer}>
       <div className={classes.Header}>
         {auth.department ? (
-          <PageHeader
-            avatar={{
-              className: classes.Avatar,
-              icon: <UserOutlined />,
-              size: "small",
-              style: {
-                backgroundColor: auth.department.style.colors.background,
-              },
-            }}
-            className={`${classes.Header} animate__animated animate__fadeIn`}
-            title={
-              <small className={classes.Username}>
-                {auth.department.displayName.toUpperCase()}
-              </small>
-            }
-          />
+          <UserInfo user={auth.department} />
         ) : (
           <HomeLogo hasNoMarginTop={true} height={24} />
         )}
       </div>
 
       <div className={classes.Actions}>
-        <Switch
-          checked={isDarkMode}
-          checkedChildren={
-            <div className={classes.SwitchIcon}>
-              <MdDarkMode />
-            </div>
-          }
-          onChange={handleToggleTheme}
-          size="small"
-          unCheckedChildren={
-            <div className={classes.SwitchIcon}>
-              <MdLightMode />
-            </div>
-          }
-        />
+        <ThemeSwitch />
 
         {auth.department && (
           <Tooltip color="#ff4d4f" title="Sair">

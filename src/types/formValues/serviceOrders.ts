@@ -4,7 +4,7 @@ export type MaintCreateServiceOrderFormValues = {
   additionalInfo: string;
   cause: "eletrica" | "machineAdjustment" | "mecanica";
   departmentDisplayName: string;
-  departmentId: Na3DepartmentId;
+  departmentId: Na3DepartmentId | "";
   didStopLine: boolean;
   didStopMachine: boolean;
   didStopProduction: boolean;

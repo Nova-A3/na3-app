@@ -12,20 +12,21 @@ import classes from "./InputDate.module.css";
 const DatePicker = generatePicker<Dayjs>(dayjsGenerateConfig);
 
 type InputDateProps = Required<
-  Pick<DatePickerProps, "allowClear" | "disabled"> & {
-    allowFutureDates: boolean;
-    autoFocus: boolean;
-    format: string;
-    onBlur: () => void;
-    onChange: (value: Dayjs | null) => void;
-    placeholder: string;
-    value: Dayjs;
-  }
->;
+  Pick<DatePickerProps, "allowClear" | "disabled" | "id">
+> & {
+  allowFutureDates: boolean;
+  autoFocus: boolean;
+  format: string;
+  onBlur: () => void;
+  onChange: (value: Dayjs | null) => void;
+  placeholder: string;
+  value: Dayjs;
+};
 
 export function InputDate({
   allowClear,
   disabled,
+  id,
   format,
   onBlur,
   onChange,
@@ -49,6 +50,7 @@ export function InputDate({
       disabled={disabled}
       disabledDate={handleSetDisabledDates}
       format={format}
+      id={id}
       onBlur={onBlur}
       onChange={onChange}
       placeholder={placeholder}

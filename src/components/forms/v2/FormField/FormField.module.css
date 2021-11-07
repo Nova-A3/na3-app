@@ -1,3 +1,11 @@
 .InputNumber {
   width: 100%;
 }
+
+.RadioGroup {
+  width: 100%;
+}
+
+.SwitchContainer {
+  text-align: right;
+}

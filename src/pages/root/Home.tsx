@@ -54,10 +54,10 @@ export function HomePage(): JSX.Element {
 const quickLinks = [
   {
     color: red[2],
-    description: "Gerencie ou abra uma nova ordem de serviço para a Manutenção",
+    description: "Gerencie ou abra uma nova Ordem de Serviço para a Manutenção",
     href: "/manutencao/os",
     icon: <SettingOutlined />,
-    title: "Ordens de serviço",
+    title: "Ordens de Serviço",
   },
   {
     color: blue[2],
@@ -65,7 +65,7 @@ const quickLinks = [
       "Imprima etiquetas de Transferência a partir dos modelos disponíveis",
     href: "/etiquetas/imprimir",
     icon: <TagsOutlined />,
-    title: "Imprimir etiquetas",
+    title: "Etiquetas",
   },
   {
     color: green[2],
@@ -73,6 +73,6 @@ const quickLinks = [
       "Emita documentos diversos, como o de Transferência de Materiais",
     href: "/docs",
     icon: <FileOutlined />,
-    title: "Emitir documentos",
+    title: "Documentos",
   },
 ];

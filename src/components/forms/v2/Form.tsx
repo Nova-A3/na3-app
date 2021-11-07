@@ -8,6 +8,9 @@ import type {
 } from "react-hook-form";
 import { FormProvider } from "react-hook-form";
 
+import { Spinner } from "../../ui/Spinner/Spinner";
+import classes from "./Form.module.css";
+
 export type HandleSubmit<TFieldValues extends FieldValues = FieldValues> =
   SubmitHandler<TFieldValues>;
 
@@ -20,13 +23,19 @@ type FormProps<
 > = {
   children: React.ReactNode;
   form: UseFormReturn<TFieldValues, TContext>;
+  isModal?: boolean;
   onSubmit: HandleSubmit<TFieldValues>;
-  onSubmitFailed: HandleSubmitFailed<TFieldValues>;
+  onSubmitFailed?: HandleSubmitFailed<TFieldValues>;
+};
+
+const defaultProps: Omit<FormProps, "children" | "form" | "onSubmit"> = {
+  isModal: false,
+  onSubmitFailed: undefined,
 };
 
 export function Form<
-  TFieldValues extends FieldValues = FieldValues,
-  TContext extends Record<string, unknown> = Record<string, unknown>
+  Fields extends FieldValues = FieldValues,
+  Context extends Record<string, unknown> = Record<string, unknown>
 >({
   form: {
     clearErrors,
@@ -47,7 +56,8 @@ export function Form<
   children,
   onSubmit,
   onSubmitFailed,
-}: FormProps<TFieldValues, TContext>): JSX.Element {
+  isModal,
+}: FormProps<Fields, Context>): JSX.Element {
   return (
     <FormProvider
       clearErrors={clearErrors}
@@ -65,9 +75,18 @@ export function Form<
       unregister={unregister}
       watch={watch}
     >
-      <AntdForm onFinish={handleSubmit(onSubmit, onSubmitFailed)}>
-        {children}
-      </AntdForm>
+      <Spinner
+        spinning={formState.isSubmitting}
+        wrapperClassName={`${classes.FormContainer} ${
+          isModal ? "" : classes.MobileAccessibleForm
+        }`}
+      >
+        <AntdForm onFinish={handleSubmit(onSubmit, onSubmitFailed)}>
+          {children}
+        </AntdForm>
+      </Spinner>
     </FormProvider>
   );
 }
+
+Form.defaultProps = defaultProps;

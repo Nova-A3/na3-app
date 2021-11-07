@@ -219,8 +219,6 @@ export function FormItem<T extends FieldType>({
     ]);
   }, [onValueChange, value, onBlur, onChange, fieldProps, meta, helpers]);
 
-  // process.env.NODE_ENV === "development" && console.log(name, field);
-
   let field: JSX.Element | null = null;
 
   switch (type) {

@@ -1,5 +1,10 @@
 import { Layout } from "antd";
 import React from "react";
+import {
+  ThemeSwitcherProvider,
+  useThemeSwitcher,
+} from "react-css-theme-switcher";
+import useLocalStorage from "react-use-localstorage";
 
 import classes from "./App.module.css";
 import {
@@ -13,12 +18,20 @@ import {
 } from "./components";
 import { useAppReady } from "./modules/na3-react";
 
-export function App(): JSX.Element {
+const themes = {
+  dark: `${process.env.PUBLIC_URL}/dark.theme.css`,
+  light: `${process.env.PUBLIC_URL}/light.theme.css`,
+};
+
+function Main(): JSX.Element | null {
   const appIsReady = useAppReady();
+
+  const { status: themeStatus } = useThemeSwitcher();
 
   return (
     <>
       <Helmet />
+
       <Spinner spinning={!appIsReady}>
         <Layout className={classes.App}>
           <Sider />
@@ -31,6 +44,26 @@ export function App(): JSX.Element {
           </Layout>
         </Layout>
       </Spinner>
+
+      {themeStatus === "loading" && (
+        <div className={classes.ThemeLoadingModal}>
+          <Spinner text={null} />
+        </div>
+      )}
     </>
+  );
+}
+
+export function App(): JSX.Element {
+  const [storedTheme] = useLocalStorage("NA3_APP_PREFERRED_THEME", "light");
+
+  return (
+    <ThemeSwitcherProvider
+      defaultTheme={storedTheme}
+      insertionPoint={document.getElementById("styles-insertion-point")}
+      themeMap={themes}
+    >
+      <Main />
+    </ThemeSwitcherProvider>
   );
 }

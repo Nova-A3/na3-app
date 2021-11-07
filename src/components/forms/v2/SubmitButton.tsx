@@ -22,8 +22,6 @@ export function SubmitButton({
 }: SubmitButtonProps): JSX.Element {
   const { formState } = useFormContext();
 
-  console.log("FORM STATE", formState);
-
   return (
     <Form.Item
       labelCol={labelCol || { span: 24 }}
@@ -31,7 +29,6 @@ export function SubmitButton({
     >
       <Button
         block={true}
-        disabled={!formState.isValid}
         htmlType="submit"
         icon={icon}
         loading={formState.isSubmitting}

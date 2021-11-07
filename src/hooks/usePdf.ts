@@ -27,10 +27,10 @@ type Pdf = {
   setFont: (options?: PdfSetFontOptions) => void;
 };
 
-const usePdf = (options?: {
+export function usePdf(options?: {
   format?: number[];
   orientation?: "landscape" | "portrait";
-}): Pdf => {
+}): Pdf {
   const [pdf, setPdf] = useState(new jsPDF(options));
   const [generatedPdf, setGeneratedPdf] = useState<jsPDF>();
 
@@ -111,6 +111,4 @@ const usePdf = (options?: {
   }, [pdf, generatedPdf, options]);
 
   return { addImage, addPage, addText, generate, setFont };
-};
-
-export default usePdf;
+}

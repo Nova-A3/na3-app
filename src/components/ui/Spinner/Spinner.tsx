@@ -5,12 +5,14 @@ import React from "react";
 
 import classes from "./Spinner.module.css";
 
-type SpinnerProps = SpinProps & {
+type SpinnerProps = Omit<SpinProps, "tip"> & {
   children?: React.ReactNode;
+  text?: string | null;
 };
 
 const defaultProps: SpinnerProps = {
   children: null,
+  text: undefined,
 };
 
 export function Spinner({
@@ -22,7 +24,7 @@ export function Spinner({
   size,
   spinning,
   style,
-  tip,
+  text,
   wrapperClassName,
 }: SpinnerProps): JSX.Element {
   return (
@@ -38,7 +40,7 @@ export function Spinner({
       size={size}
       spinning={spinning}
       style={style}
-      tip={tip || "Carregando..."}
+      tip={text === null ? undefined : text || "Carregando..."}
       wrapperClassName={wrapperClassName || classes.Spin}
     >
       {children}

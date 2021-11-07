@@ -1,7 +1,7 @@
 import { Layout } from "antd";
 import React from "react";
-import { useThemeSwitcher } from "react-css-theme-switcher";
 
+import { useTheme } from "../../../hooks";
 import { Breadcrumb } from "../breadcrumb/Breadcrumb";
 import classes from "./Content.module.css";
 
@@ -10,12 +10,12 @@ type ContentProps = {
 };
 
 export function Content({ children }: ContentProps): JSX.Element {
-  const { currentTheme } = useThemeSwitcher();
+  const [theme] = useTheme();
 
   return (
     <Layout.Content
       className={classes.Container}
-      style={{ backgroundColor: currentTheme === "light" ? "#fff" : "#111" }}
+      style={{ backgroundColor: theme === "light" ? "#fff" : "#111" }}
     >
       <Breadcrumb />
 

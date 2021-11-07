@@ -9,8 +9,7 @@ import {
   PageTitle,
   Result,
 } from "../../../components";
-import { useBreadcrumb } from "../../../hooks";
-import usePdf from "../../../hooks/usePdf";
+import { useBreadcrumb, usePdf } from "../../../hooks";
 import { useNa3TransfLabelTemplates } from "../../../modules/na3-react";
 import type { ApiLabel } from "../../../modules/na3-types";
 import type {

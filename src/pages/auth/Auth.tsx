@@ -1,5 +1,5 @@
 import { LockOutlined, LoginOutlined, UserOutlined } from "@ant-design/icons";
-import { message, notification } from "antd";
+import { message } from "antd";
 import React, { useCallback } from "react";
 import { useForm } from "react-hook-form";
 
@@ -63,14 +63,6 @@ export function AuthPage({ authorizedDpts }: AuthProps): JSX.Element {
     [form, auth.helpers, departments.helpers]
   );
 
-  const handleSubmitFailed = useCallback(() => {
-    notification.error({
-      description:
-        "Verifique as credenciais inseridas ou tente novamente mais tarde.",
-      message: "Erro ao entrar",
-    });
-  }, []);
-
   return (
     <>
       <PageTitle>Entrar</PageTitle>
@@ -78,11 +70,7 @@ export function AuthPage({ authorizedDpts }: AuthProps): JSX.Element {
         Por favor, autentique-se para continuar.
       </PageDescription>
 
-      <FormV2
-        form={form}
-        onSubmit={handleSubmit}
-        onSubmitFailed={handleSubmitFailed}
-      >
+      <FormV2 form={form} onSubmit={handleSubmit}>
         <FormField
           disabled={authorizedDpts.length === 1}
           label="Setor"

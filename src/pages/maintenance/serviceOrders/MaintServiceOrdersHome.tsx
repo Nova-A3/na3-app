@@ -9,15 +9,13 @@ import {
   PageActionButtons,
   PageTitle,
 } from "../../../components";
-import { useNa3Auth, useNa3ServiceOrders } from "../../../modules/na3-react";
-import type { Na3ServiceOrder } from "../../../modules/na3-types";
+import { useNa3ServiceOrders } from "../../../modules/na3-react";
 import classes from "./MaintServiceOrdersHome.module.css";
 
 export function MaintServiceOrdersHomePage(): JSX.Element {
   const history = useHistory();
   const breakpoint = Grid.useBreakpoint();
 
-  const { department } = useNa3Auth();
   const serviceOrders = useNa3ServiceOrders();
 
   const handleCreateServiceOrderClick = useCallback(() => {

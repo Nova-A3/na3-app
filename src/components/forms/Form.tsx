@@ -93,27 +93,22 @@ export function Form<Values extends Record<string, boolean | number | string>>({
       validate={onValidate}
     >
       {(formikProps): JSX.Element => (
-        <>
-          {process.env.NODE_ENV !== "production" &&
-            console.log("FORM", formikProps)}
-
-          <Spinner
-            spinning={formikProps.status === "loading"}
-            wrapperClassName={`${classes.FormContainer} ${
-              isOnModal ? "" : classes.MobileAccessibleForm
-            }`}
+        <Spinner
+          spinning={formikProps.status === "loading"}
+          wrapperClassName={`${classes.FormContainer} ${
+            isOnModal ? "" : classes.MobileAccessibleForm
+          }`}
+        >
+          <AntdForm
+            colon={false}
+            labelAlign="left"
+            labelCol={{ span: isHorizontal ? 6 : 24 }}
+            onFinish={formikProps.handleSubmit}
+            wrapperCol={{ span: isHorizontal ? 18 : 24 }}
           >
-            <AntdForm
-              colon={false}
-              labelAlign="left"
-              labelCol={{ span: isHorizontal ? 6 : 24 }}
-              onFinish={formikProps.handleSubmit}
-              wrapperCol={{ span: isHorizontal ? 18 : 24 }}
-            >
-              {children(formikProps)}
-            </AntdForm>
-          </Spinner>
-        </>
+            {children(formikProps)}
+          </AntdForm>
+        </Spinner>
       )}
     </Formik>
   );

@@ -1,0 +1,15 @@
+.FormContainer {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  overflow-x: hidden;
+  overflow-y: scroll;
+  margin: 0 -28px -18px;
+  padding: 0 28px 28px;
+}
+
+@media screen and (max-width: 768px) {
+  .MobileAccessibleForm {
+    padding-bottom: 130px;
+  }
+}
