@@ -2,10 +2,11 @@
 node_modules
 
 # testing
-coverage
+/coverage
 
 # production
-build
+/build
+/scripts/lib
 
 # compiled, minified stylesheets
 public/*.css

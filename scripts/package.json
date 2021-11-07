@@ -1,0 +1,13 @@
+{
+  "name": "@na3-app/scripts",
+  "version": "1.0.0",
+  "main": "lib/index.js",
+  "license": "MIT",
+  "scripts": {
+    "deploy": "node lib/deploy.js"
+  },
+  "dependencies": {
+    "chalk": "^4.1.2",
+    "ora": "^5.4.1"
+  }
+}

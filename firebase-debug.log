@@ -1,0 +1,254 @@
+[debug] [2021-11-07T09:18:58.109Z] ----------------------------------------------------------------------
+[debug] [2021-11-07T09:18:58.111Z] Command:       /usr/local/bin/node /usr/local/bin/firebase deploy --only hosting:novaa3
+[debug] [2021-11-07T09:18:58.111Z] CLI Version:   9.21.0
+[debug] [2021-11-07T09:18:58.112Z] Platform:      darwin
+[debug] [2021-11-07T09:18:58.112Z] Node Version:  v14.18.1
+[debug] [2021-11-07T09:18:58.113Z] Time:          Sun Nov 07 2021 06:18:58 GMT-0300 (Brasilia Standard Time)
+[debug] [2021-11-07T09:18:58.114Z] ----------------------------------------------------------------------
+[debug] 
+[debug] [2021-11-07T09:18:58.311Z] > command requires scopes: ["email","openid","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","https://www.googleapis.com/auth/cloud-platform"]
+[debug] [2021-11-07T09:18:58.311Z] > authorizing via signed-in user (eu@marco.rio.br)
+[debug] [2021-11-07T09:18:58.311Z] [iam] checking project nova-a3-ind for permissions ["firebase.projects.get","firebasehosting.sites.update"]
+[debug] [2021-11-07T09:18:58.314Z] > refreshing access token with scopes: ["email","https://www.googleapis.com/auth/cloud-platform","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","openid"]
+[debug] [2021-11-07T09:18:58.314Z] >>> HTTP REQUEST POST https://www.googleapis.com/oauth2/v3/token  
+ <request body omitted>
+[debug] [2021-11-07T09:18:58.548Z] <<< HTTP RESPONSE 200 {"date":"Sun, 07 Nov 2021 09:18:59 GMT","cache-control":"no-cache, no-store, max-age=0, must-revalidate","pragma":"no-cache","expires":"Mon, 01 Jan 1990 00:00:00 GMT","content-type":"application/json; charset=utf-8","vary":"X-Origin, Referer, Origin,Accept-Encoding","server":"scaffolding on HTTPServer2","x-xss-protection":"0","x-frame-options":"SAMEORIGIN","x-content-type-options":"nosniff","alt-svc":"h3=\":443\"; ma=2592000,h3-29=\":443\"; ma=2592000,h3-Q050=\":443\"; ma=2592000,h3-Q046=\":443\"; ma=2592000,h3-Q043=\":443\"; ma=2592000,quic=\":443\"; ma=2592000; v=\"46,43\"","accept-ranges":"none","transfer-encoding":"chunked"}
+[debug] [2021-11-07T09:18:58.567Z] >>> HTTP REQUEST POST https://cloudresourcemanager.googleapis.com/v1/projects/nova-a3-ind:testIamPermissions  
+ {"permissions":["firebase.projects.get","firebasehosting.sites.update"]}
+[debug] [2021-11-07T09:18:59.446Z] <<< HTTP RESPONSE 200 {"content-type":"application/json; charset=UTF-8","vary":"X-Origin, Referer, Origin,Accept-Encoding","date":"Sun, 07 Nov 2021 09:18:59 GMT","server":"ESF","cache-control":"private","x-xss-protection":"0","x-frame-options":"SAMEORIGIN","x-content-type-options":"nosniff","server-timing":"gfet4t7; dur=732","alt-svc":"h3=\":443\"; ma=2592000,h3-29=\":443\"; ma=2592000,h3-Q050=\":443\"; ma=2592000,h3-Q046=\":443\"; ma=2592000,h3-Q043=\":443\"; ma=2592000,quic=\":443\"; ma=2592000; v=\"46,43\"","accept-ranges":"none","transfer-encoding":"chunked"}
+[debug] [2021-11-07T09:18:59.447Z] > refreshing access token with scopes: []
+[debug] [2021-11-07T09:18:59.447Z] >>> HTTP REQUEST POST https://www.googleapis.com/oauth2/v3/token  
+ <request body omitted>
+[debug] [2021-11-07T09:18:59.603Z] <<< HTTP RESPONSE 200 {"expires":"Mon, 01 Jan 1990 00:00:00 GMT","date":"Sun, 07 Nov 2021 09:19:00 GMT","cache-control":"no-cache, no-store, max-age=0, must-revalidate","pragma":"no-cache","content-type":"application/json; charset=utf-8","vary":"X-Origin, Referer, Origin,Accept-Encoding","server":"scaffolding on HTTPServer2","x-xss-protection":"0","x-frame-options":"SAMEORIGIN","x-content-type-options":"nosniff","alt-svc":"h3=\":443\"; ma=2592000,h3-29=\":443\"; ma=2592000,h3-Q050=\":443\"; ma=2592000,h3-Q046=\":443\"; ma=2592000,h3-Q043=\":443\"; ma=2592000,quic=\":443\"; ma=2592000; v=\"46,43\"","accept-ranges":"none","transfer-encoding":"chunked"}
+[debug] [2021-11-07T09:18:59.620Z] >>> [apiv2][query] GET https://firebase.googleapis.com/v1beta1/projects/nova-a3-ind [none]
+[debug] [2021-11-07T09:19:00.699Z] <<< [apiv2][status] GET https://firebase.googleapis.com/v1beta1/projects/nova-a3-ind 200
+[debug] [2021-11-07T09:19:00.699Z] <<< [apiv2][body] GET https://firebase.googleapis.com/v1beta1/projects/nova-a3-ind {"projectId":"nova-a3-ind","projectNumber":"810900069450","displayName":"Nova A3","name":"projects/nova-a3-ind","resources":{"hostingSite":"nova-a3-ind","storageBucket":"nova-a3-ind.appspot.com","locationId":"southamerica-east1"},"state":"ACTIVE"}
+[info] 
+[info] === Deploying to 'nova-a3-ind'...
+[info] 
+[info] i  deploying hosting 
+[debug] [2021-11-07T09:19:00.711Z] > refreshing access token with scopes: ["email","https://www.googleapis.com/auth/cloud-platform","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","openid"]
+[debug] [2021-11-07T09:19:00.712Z] >>> HTTP REQUEST POST https://www.googleapis.com/oauth2/v3/token  
+ <request body omitted>
+[debug] [2021-11-07T09:19:00.715Z] Error: write EPIPE
+    at afterWriteDispatched (internal/stream_base_commons.js:156:25)
+    at writeGeneric (internal/stream_base_commons.js:147:3)
+    at Socket._writeGeneric (net.js:798:11)
+    at Socket._write (net.js:810:8)
+    at writeOrBuffer (internal/streams/writable.js:358:12)
+    at Socket.Writable.write (internal/streams/writable.js:303:10)
+    at Console.log (/usr/local/lib/node_modules/firebase-tools/node_modules/winston/lib/winston/transports/console.js:79:23)
+    at Console._write (/usr/local/lib/node_modules/firebase-tools/node_modules/winston-transport/index.js:103:17)
+    at doWrite (/usr/local/lib/node_modules/firebase-tools/node_modules/winston-transport/node_modules/readable-stream/lib/_stream_writable.js:428:64)
+    at writeOrBuffer (/usr/local/lib/node_modules/firebase-tools/node_modules/winston-transport/node_modules/readable-stream/lib/_stream_writable.js:417:5)
+    at Console.Writable.write (/usr/local/lib/node_modules/firebase-tools/node_modules/winston-transport/node_modules/readable-stream/lib/_stream_writable.js:334:11)
+    at DerivedLogger.ondata (/usr/local/lib/node_modules/firebase-tools/node_modules/readable-stream/lib/_stream_readable.js:681:20)
+    at DerivedLogger.emit (events.js:412:35)
+    at DerivedLogger.emit (domain.js:475:12)
+    at addChunk (/usr/local/lib/node_modules/firebase-tools/node_modules/readable-stream/lib/_stream_readable.js:298:12)
+    at readableAddChunk (/usr/local/lib/node_modules/firebase-tools/node_modules/readable-stream/lib/_stream_readable.js:280:11)
+[error] 
+[error] Error: An unexpected error has occurred.
+[debug] [2021-11-07T09:19:00.854Z] <<< HTTP RESPONSE 200 {"date":"Sun, 07 Nov 2021 09:19:01 GMT","pragma":"no-cache","expires":"Mon, 01 Jan 1990 00:00:00 GMT","cache-control":"no-cache, no-store, max-age=0, must-revalidate","content-type":"application/json; charset=utf-8","vary":"X-Origin, Referer, Origin,Accept-Encoding","server":"scaffolding on HTTPServer2","x-xss-protection":"0","x-frame-options":"SAMEORIGIN","x-content-type-options":"nosniff","alt-svc":"h3=\":443\"; ma=2592000,h3-29=\":443\"; ma=2592000,h3-Q050=\":443\"; ma=2592000,h3-Q046=\":443\"; ma=2592000,h3-Q043=\":443\"; ma=2592000,quic=\":443\"; ma=2592000; v=\"46,43\"","accept-ranges":"none","transfer-encoding":"chunked"}
+[debug] [2021-11-07T09:19:00.875Z] >>> HTTP REQUEST POST https://firebasehosting.googleapis.com/v1beta1/sites/novaa3/versions  
+ {"config":{"rewrites":[{"glob":"**","path":"/index.html"}]},"labels":{"deployment-tool":"cli-firebase"}}
+[debug] [2021-11-07T09:19:41.331Z] ----------------------------------------------------------------------
+[debug] [2021-11-07T09:19:41.333Z] Command:       /usr/local/bin/node /usr/local/bin/firebase deploy --only hosting:novaa3
+[debug] [2021-11-07T09:19:41.333Z] CLI Version:   9.21.0
+[debug] [2021-11-07T09:19:41.333Z] Platform:      darwin
+[debug] [2021-11-07T09:19:41.334Z] Node Version:  v14.18.1
+[debug] [2021-11-07T09:19:41.335Z] Time:          Sun Nov 07 2021 06:19:41 GMT-0300 (Brasilia Standard Time)
+[debug] [2021-11-07T09:19:41.335Z] ----------------------------------------------------------------------
+[debug] 
+[debug] [2021-11-07T09:19:41.559Z] > command requires scopes: ["email","openid","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","https://www.googleapis.com/auth/cloud-platform"]
+[debug] [2021-11-07T09:19:41.559Z] > authorizing via signed-in user (eu@marco.rio.br)
+[debug] [2021-11-07T09:19:41.560Z] [iam] checking project nova-a3-ind for permissions ["firebase.projects.get","firebasehosting.sites.update"]
+[debug] [2021-11-07T09:19:41.563Z] >>> HTTP REQUEST POST https://cloudresourcemanager.googleapis.com/v1/projects/nova-a3-ind:testIamPermissions  
+ {"permissions":["firebase.projects.get","firebasehosting.sites.update"]}
+[debug] [2021-11-07T09:19:42.469Z] <<< HTTP RESPONSE 200 {"content-type":"application/json; charset=UTF-8","vary":"X-Origin, Referer, Origin,Accept-Encoding","date":"Sun, 07 Nov 2021 09:19:42 GMT","server":"ESF","cache-control":"private","x-xss-protection":"0","x-frame-options":"SAMEORIGIN","x-content-type-options":"nosniff","server-timing":"gfet4t7; dur=727","alt-svc":"h3=\":443\"; ma=2592000,h3-29=\":443\"; ma=2592000,h3-Q050=\":443\"; ma=2592000,h3-Q046=\":443\"; ma=2592000,h3-Q043=\":443\"; ma=2592000,quic=\":443\"; ma=2592000; v=\"46,43\"","accept-ranges":"none","transfer-encoding":"chunked"}
+[debug] [2021-11-07T09:19:42.473Z] > refreshing access token with scopes: []
+[debug] [2021-11-07T09:19:42.473Z] >>> HTTP REQUEST POST https://www.googleapis.com/oauth2/v3/token  
+ <request body omitted>
+[debug] [2021-11-07T09:19:42.885Z] <<< HTTP RESPONSE 200 {"pragma":"no-cache","cache-control":"no-cache, no-store, max-age=0, must-revalidate","date":"Sun, 07 Nov 2021 09:19:43 GMT","expires":"Mon, 01 Jan 1990 00:00:00 GMT","content-type":"application/json; charset=utf-8","vary":"X-Origin, Referer, Origin,Accept-Encoding","server":"scaffolding on HTTPServer2","x-xss-protection":"0","x-frame-options":"SAMEORIGIN","x-content-type-options":"nosniff","alt-svc":"h3=\":443\"; ma=2592000,h3-29=\":443\"; ma=2592000,h3-Q050=\":443\"; ma=2592000,h3-Q046=\":443\"; ma=2592000,h3-Q043=\":443\"; ma=2592000,quic=\":443\"; ma=2592000; v=\"46,43\"","accept-ranges":"none","transfer-encoding":"chunked"}
+[debug] [2021-11-07T09:19:42.907Z] >>> [apiv2][query] GET https://firebase.googleapis.com/v1beta1/projects/nova-a3-ind [none]
+[debug] [2021-11-07T09:19:44.085Z] <<< [apiv2][status] GET https://firebase.googleapis.com/v1beta1/projects/nova-a3-ind 200
+[debug] [2021-11-07T09:19:44.085Z] <<< [apiv2][body] GET https://firebase.googleapis.com/v1beta1/projects/nova-a3-ind {"projectId":"nova-a3-ind","projectNumber":"810900069450","displayName":"Nova A3","name":"projects/nova-a3-ind","resources":{"hostingSite":"nova-a3-ind","storageBucket":"nova-a3-ind.appspot.com","locationId":"southamerica-east1"},"state":"ACTIVE"}
+[info] 
+[info] === Deploying to 'nova-a3-ind'...
+[info] 
+[info] i  deploying hosting 
+[debug] [2021-11-07T09:19:44.092Z] > refreshing access token with scopes: ["email","https://www.googleapis.com/auth/cloud-platform","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","openid"]
+[debug] [2021-11-07T09:19:44.092Z] >>> HTTP REQUEST POST https://www.googleapis.com/oauth2/v3/token  
+ <request body omitted>
+[debug] [2021-11-07T09:19:44.093Z] Error: write EPIPE
+    at afterWriteDispatched (internal/stream_base_commons.js:156:25)
+    at writeGeneric (internal/stream_base_commons.js:147:3)
+    at Socket._writeGeneric (net.js:798:11)
+    at Socket._write (net.js:810:8)
+    at writeOrBuffer (internal/streams/writable.js:358:12)
+    at Socket.Writable.write (internal/streams/writable.js:303:10)
+    at Console.log (/usr/local/lib/node_modules/firebase-tools/node_modules/winston/lib/winston/transports/console.js:79:23)
+    at Console._write (/usr/local/lib/node_modules/firebase-tools/node_modules/winston-transport/index.js:103:17)
+    at doWrite (/usr/local/lib/node_modules/firebase-tools/node_modules/winston-transport/node_modules/readable-stream/lib/_stream_writable.js:428:64)
+    at writeOrBuffer (/usr/local/lib/node_modules/firebase-tools/node_modules/winston-transport/node_modules/readable-stream/lib/_stream_writable.js:417:5)
+    at Console.Writable.write (/usr/local/lib/node_modules/firebase-tools/node_modules/winston-transport/node_modules/readable-stream/lib/_stream_writable.js:334:11)
+    at DerivedLogger.ondata (/usr/local/lib/node_modules/firebase-tools/node_modules/readable-stream/lib/_stream_readable.js:681:20)
+    at DerivedLogger.emit (events.js:412:35)
+    at DerivedLogger.emit (domain.js:475:12)
+    at addChunk (/usr/local/lib/node_modules/firebase-tools/node_modules/readable-stream/lib/_stream_readable.js:298:12)
+    at readableAddChunk (/usr/local/lib/node_modules/firebase-tools/node_modules/readable-stream/lib/_stream_readable.js:280:11)
+[error] 
+[error] Error: An unexpected error has occurred.
+[debug] [2021-11-07T09:19:44.241Z] <<< HTTP RESPONSE 200 {"pragma":"no-cache","cache-control":"no-cache, no-store, max-age=0, must-revalidate","expires":"Mon, 01 Jan 1990 00:00:00 GMT","date":"Sun, 07 Nov 2021 09:19:44 GMT","content-type":"application/json; charset=utf-8","vary":"X-Origin, Referer, Origin,Accept-Encoding","server":"scaffolding on HTTPServer2","x-xss-protection":"0","x-frame-options":"SAMEORIGIN","x-content-type-options":"nosniff","alt-svc":"h3=\":443\"; ma=2592000,h3-29=\":443\"; ma=2592000,h3-Q050=\":443\"; ma=2592000,h3-Q046=\":443\"; ma=2592000,h3-Q043=\":443\"; ma=2592000,quic=\":443\"; ma=2592000; v=\"46,43\"","accept-ranges":"none","transfer-encoding":"chunked"}
+[debug] [2021-11-07T09:19:44.267Z] >>> HTTP REQUEST POST https://firebasehosting.googleapis.com/v1beta1/sites/novaa3/versions  
+ {"config":{"rewrites":[{"glob":"**","path":"/index.html"}]},"labels":{"deployment-tool":"cli-firebase"}}
+[debug] [2021-11-07T09:24:17.622Z] ----------------------------------------------------------------------
+[debug] [2021-11-07T09:24:17.628Z] Command:       /usr/local/bin/node /usr/local/bin/firebase deploy --only hosting:novaa3
+[debug] [2021-11-07T09:24:17.687Z] CLI Version:   9.21.0
+[debug] [2021-11-07T09:24:17.687Z] Platform:      darwin
+[debug] [2021-11-07T09:24:17.687Z] Node Version:  v14.18.1
+[debug] [2021-11-07T09:24:17.688Z] Time:          Sun Nov 07 2021 06:24:17 GMT-0300 (Brasilia Standard Time)
+[debug] [2021-11-07T09:24:17.688Z] ----------------------------------------------------------------------
+[debug] 
+[debug] [2021-11-07T09:24:18.430Z] > command requires scopes: ["email","openid","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","https://www.googleapis.com/auth/cloud-platform"]
+[debug] [2021-11-07T09:24:18.431Z] > authorizing via signed-in user (eu@marco.rio.br)
+[debug] [2021-11-07T09:24:18.431Z] [iam] checking project nova-a3-ind for permissions ["firebase.projects.get","firebasehosting.sites.update"]
+[debug] [2021-11-07T09:24:18.434Z] >>> HTTP REQUEST POST https://cloudresourcemanager.googleapis.com/v1/projects/nova-a3-ind:testIamPermissions  
+ {"permissions":["firebase.projects.get","firebasehosting.sites.update"]}
+[debug] [2021-11-07T09:24:19.597Z] <<< HTTP RESPONSE 200 {"content-type":"application/json; charset=UTF-8","vary":"X-Origin, Referer, Origin,Accept-Encoding","date":"Sun, 07 Nov 2021 09:24:19 GMT","server":"ESF","cache-control":"private","x-xss-protection":"0","x-frame-options":"SAMEORIGIN","x-content-type-options":"nosniff","server-timing":"gfet4t7; dur=730","alt-svc":"h3=\":443\"; ma=2592000,h3-29=\":443\"; ma=2592000,h3-Q050=\":443\"; ma=2592000,h3-Q046=\":443\"; ma=2592000,h3-Q043=\":443\"; ma=2592000,quic=\":443\"; ma=2592000; v=\"46,43\"","accept-ranges":"none","transfer-encoding":"chunked"}
+[debug] [2021-11-07T09:24:19.601Z] > refreshing access token with scopes: []
+[debug] [2021-11-07T09:24:19.601Z] >>> HTTP REQUEST POST https://www.googleapis.com/oauth2/v3/token  
+ <request body omitted>
+[debug] [2021-11-07T09:24:19.751Z] <<< HTTP RESPONSE 200 {"expires":"Mon, 01 Jan 1990 00:00:00 GMT","cache-control":"no-cache, no-store, max-age=0, must-revalidate","date":"Sun, 07 Nov 2021 09:24:20 GMT","pragma":"no-cache","content-type":"application/json; charset=utf-8","vary":"X-Origin, Referer, Origin,Accept-Encoding","server":"scaffolding on HTTPServer2","x-xss-protection":"0","x-frame-options":"SAMEORIGIN","x-content-type-options":"nosniff","alt-svc":"h3=\":443\"; ma=2592000,h3-29=\":443\"; ma=2592000,h3-Q050=\":443\"; ma=2592000,h3-Q046=\":443\"; ma=2592000,h3-Q043=\":443\"; ma=2592000,quic=\":443\"; ma=2592000; v=\"46,43\"","accept-ranges":"none","transfer-encoding":"chunked"}
+[debug] [2021-11-07T09:24:19.788Z] >>> [apiv2][query] GET https://firebase.googleapis.com/v1beta1/projects/nova-a3-ind [none]
+[debug] [2021-11-07T09:24:20.814Z] <<< [apiv2][status] GET https://firebase.googleapis.com/v1beta1/projects/nova-a3-ind 200
+[debug] [2021-11-07T09:24:20.814Z] <<< [apiv2][body] GET https://firebase.googleapis.com/v1beta1/projects/nova-a3-ind {"projectId":"nova-a3-ind","projectNumber":"810900069450","displayName":"Nova A3","name":"projects/nova-a3-ind","resources":{"hostingSite":"nova-a3-ind","storageBucket":"nova-a3-ind.appspot.com","locationId":"southamerica-east1"},"state":"ACTIVE"}
+[info] 
+[info] === Deploying to 'nova-a3-ind'...
+[info] 
+[info] i  deploying hosting 
+[debug] [2021-11-07T09:24:20.820Z] > refreshing access token with scopes: ["email","https://www.googleapis.com/auth/cloud-platform","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","openid"]
+[debug] [2021-11-07T09:24:20.820Z] >>> HTTP REQUEST POST https://www.googleapis.com/oauth2/v3/token  
+ <request body omitted>
+[debug] [2021-11-07T09:24:20.822Z] Error: write EPIPE
+    at afterWriteDispatched (internal/stream_base_commons.js:156:25)
+    at writeGeneric (internal/stream_base_commons.js:147:3)
+    at Socket._writeGeneric (net.js:798:11)
+    at Socket._write (net.js:810:8)
+    at writeOrBuffer (internal/streams/writable.js:358:12)
+    at Socket.Writable.write (internal/streams/writable.js:303:10)
+    at Console.log (/usr/local/lib/node_modules/firebase-tools/node_modules/winston/lib/winston/transports/console.js:79:23)
+    at Console._write (/usr/local/lib/node_modules/firebase-tools/node_modules/winston-transport/index.js:103:17)
+    at doWrite (/usr/local/lib/node_modules/firebase-tools/node_modules/winston-transport/node_modules/readable-stream/lib/_stream_writable.js:428:64)
+    at writeOrBuffer (/usr/local/lib/node_modules/firebase-tools/node_modules/winston-transport/node_modules/readable-stream/lib/_stream_writable.js:417:5)
+    at Console.Writable.write (/usr/local/lib/node_modules/firebase-tools/node_modules/winston-transport/node_modules/readable-stream/lib/_stream_writable.js:334:11)
+    at DerivedLogger.ondata (/usr/local/lib/node_modules/firebase-tools/node_modules/readable-stream/lib/_stream_readable.js:681:20)
+    at DerivedLogger.emit (events.js:412:35)
+    at DerivedLogger.emit (domain.js:475:12)
+    at addChunk (/usr/local/lib/node_modules/firebase-tools/node_modules/readable-stream/lib/_stream_readable.js:298:12)
+    at readableAddChunk (/usr/local/lib/node_modules/firebase-tools/node_modules/readable-stream/lib/_stream_readable.js:280:11)
+[error] 
+[error] Error: An unexpected error has occurred.
+[debug] [2021-11-07T09:24:20.972Z] <<< HTTP RESPONSE 200 {"date":"Sun, 07 Nov 2021 09:24:21 GMT","cache-control":"no-cache, no-store, max-age=0, must-revalidate","expires":"Mon, 01 Jan 1990 00:00:00 GMT","pragma":"no-cache","content-type":"application/json; charset=utf-8","vary":"X-Origin, Referer, Origin,Accept-Encoding","server":"scaffolding on HTTPServer2","x-xss-protection":"0","x-frame-options":"SAMEORIGIN","x-content-type-options":"nosniff","alt-svc":"h3=\":443\"; ma=2592000,h3-29=\":443\"; ma=2592000,h3-Q050=\":443\"; ma=2592000,h3-Q046=\":443\"; ma=2592000,h3-Q043=\":443\"; ma=2592000,quic=\":443\"; ma=2592000; v=\"46,43\"","accept-ranges":"none","transfer-encoding":"chunked"}
+[debug] [2021-11-07T09:24:20.997Z] >>> HTTP REQUEST POST https://firebasehosting.googleapis.com/v1beta1/sites/novaa3/versions  
+ {"config":{"rewrites":[{"glob":"**","path":"/index.html"}]},"labels":{"deployment-tool":"cli-firebase"}}
+[debug] [2021-11-07T09:24:30.015Z] ----------------------------------------------------------------------
+[debug] [2021-11-07T09:24:30.018Z] Command:       /usr/local/bin/node /usr/local/bin/firebase deploy --only hosting:novaa3
+[debug] [2021-11-07T09:24:30.018Z] CLI Version:   9.21.0
+[debug] [2021-11-07T09:24:30.018Z] Platform:      darwin
+[debug] [2021-11-07T09:24:30.018Z] Node Version:  v14.18.1
+[debug] [2021-11-07T09:24:30.019Z] Time:          Sun Nov 07 2021 06:24:30 GMT-0300 (Brasilia Standard Time)
+[debug] [2021-11-07T09:24:30.019Z] ----------------------------------------------------------------------
+[debug] 
+[debug] [2021-11-07T09:24:30.219Z] > command requires scopes: ["email","openid","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","https://www.googleapis.com/auth/cloud-platform"]
+[debug] [2021-11-07T09:24:30.220Z] > authorizing via signed-in user (eu@marco.rio.br)
+[debug] [2021-11-07T09:24:30.220Z] [iam] checking project nova-a3-ind for permissions ["firebase.projects.get","firebasehosting.sites.update"]
+[debug] [2021-11-07T09:24:30.223Z] >>> HTTP REQUEST POST https://cloudresourcemanager.googleapis.com/v1/projects/nova-a3-ind:testIamPermissions  
+ {"permissions":["firebase.projects.get","firebasehosting.sites.update"]}
+[debug] [2021-11-07T09:24:31.111Z] <<< HTTP RESPONSE 200 {"content-type":"application/json; charset=UTF-8","vary":"X-Origin, Referer, Origin,Accept-Encoding","date":"Sun, 07 Nov 2021 09:24:31 GMT","server":"ESF","cache-control":"private","x-xss-protection":"0","x-frame-options":"SAMEORIGIN","x-content-type-options":"nosniff","server-timing":"gfet4t7; dur=733","alt-svc":"h3=\":443\"; ma=2592000,h3-29=\":443\"; ma=2592000,h3-Q050=\":443\"; ma=2592000,h3-Q046=\":443\"; ma=2592000,h3-Q043=\":443\"; ma=2592000,quic=\":443\"; ma=2592000; v=\"46,43\"","accept-ranges":"none","transfer-encoding":"chunked"}
+[debug] [2021-11-07T09:24:31.113Z] > refreshing access token with scopes: []
+[debug] [2021-11-07T09:24:31.113Z] >>> HTTP REQUEST POST https://www.googleapis.com/oauth2/v3/token  
+ <request body omitted>
+[debug] [2021-11-07T09:24:31.269Z] <<< HTTP RESPONSE 200 {"pragma":"no-cache","date":"Sun, 07 Nov 2021 09:24:31 GMT","expires":"Mon, 01 Jan 1990 00:00:00 GMT","cache-control":"no-cache, no-store, max-age=0, must-revalidate","content-type":"application/json; charset=utf-8","vary":"X-Origin, Referer, Origin,Accept-Encoding","server":"scaffolding on HTTPServer2","x-xss-protection":"0","x-frame-options":"SAMEORIGIN","x-content-type-options":"nosniff","alt-svc":"h3=\":443\"; ma=2592000,h3-29=\":443\"; ma=2592000,h3-Q050=\":443\"; ma=2592000,h3-Q046=\":443\"; ma=2592000,h3-Q043=\":443\"; ma=2592000,quic=\":443\"; ma=2592000; v=\"46,43\"","accept-ranges":"none","transfer-encoding":"chunked"}
+[debug] [2021-11-07T09:24:31.291Z] >>> [apiv2][query] GET https://firebase.googleapis.com/v1beta1/projects/nova-a3-ind [none]
+[debug] [2021-11-07T09:24:32.324Z] <<< [apiv2][status] GET https://firebase.googleapis.com/v1beta1/projects/nova-a3-ind 200
+[debug] [2021-11-07T09:24:32.324Z] <<< [apiv2][body] GET https://firebase.googleapis.com/v1beta1/projects/nova-a3-ind {"projectId":"nova-a3-ind","projectNumber":"810900069450","displayName":"Nova A3","name":"projects/nova-a3-ind","resources":{"hostingSite":"nova-a3-ind","storageBucket":"nova-a3-ind.appspot.com","locationId":"southamerica-east1"},"state":"ACTIVE"}
+[info] 
+[info] === Deploying to 'nova-a3-ind'...
+[info] 
+[info] i  deploying hosting 
+[debug] [2021-11-07T09:24:32.332Z] > refreshing access token with scopes: ["email","https://www.googleapis.com/auth/cloud-platform","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","openid"]
+[debug] [2021-11-07T09:24:32.332Z] >>> HTTP REQUEST POST https://www.googleapis.com/oauth2/v3/token  
+ <request body omitted>
+[debug] [2021-11-07T09:24:32.333Z] Error: write EPIPE
+    at afterWriteDispatched (internal/stream_base_commons.js:156:25)
+    at writeGeneric (internal/stream_base_commons.js:147:3)
+    at Socket._writeGeneric (net.js:798:11)
+    at Socket._write (net.js:810:8)
+    at writeOrBuffer (internal/streams/writable.js:358:12)
+    at Socket.Writable.write (internal/streams/writable.js:303:10)
+    at Console.log (/usr/local/lib/node_modules/firebase-tools/node_modules/winston/lib/winston/transports/console.js:79:23)
+    at Console._write (/usr/local/lib/node_modules/firebase-tools/node_modules/winston-transport/index.js:103:17)
+    at doWrite (/usr/local/lib/node_modules/firebase-tools/node_modules/winston-transport/node_modules/readable-stream/lib/_stream_writable.js:428:64)
+    at writeOrBuffer (/usr/local/lib/node_modules/firebase-tools/node_modules/winston-transport/node_modules/readable-stream/lib/_stream_writable.js:417:5)
+    at Console.Writable.write (/usr/local/lib/node_modules/firebase-tools/node_modules/winston-transport/node_modules/readable-stream/lib/_stream_writable.js:334:11)
+    at DerivedLogger.ondata (/usr/local/lib/node_modules/firebase-tools/node_modules/readable-stream/lib/_stream_readable.js:681:20)
+    at DerivedLogger.emit (events.js:412:35)
+    at DerivedLogger.emit (domain.js:475:12)
+    at addChunk (/usr/local/lib/node_modules/firebase-tools/node_modules/readable-stream/lib/_stream_readable.js:298:12)
+    at readableAddChunk (/usr/local/lib/node_modules/firebase-tools/node_modules/readable-stream/lib/_stream_readable.js:280:11)
+[error] 
+[error] Error: An unexpected error has occurred.
+[debug] [2021-11-07T09:24:32.481Z] <<< HTTP RESPONSE 200 {"pragma":"no-cache","cache-control":"no-cache, no-store, max-age=0, must-revalidate","date":"Sun, 07 Nov 2021 09:24:33 GMT","expires":"Mon, 01 Jan 1990 00:00:00 GMT","content-type":"application/json; charset=utf-8","vary":"X-Origin, Referer, Origin,Accept-Encoding","server":"scaffolding on HTTPServer2","x-xss-protection":"0","x-frame-options":"SAMEORIGIN","x-content-type-options":"nosniff","alt-svc":"h3=\":443\"; ma=2592000,h3-29=\":443\"; ma=2592000,h3-Q050=\":443\"; ma=2592000,h3-Q046=\":443\"; ma=2592000,h3-Q043=\":443\"; ma=2592000,quic=\":443\"; ma=2592000; v=\"46,43\"","accept-ranges":"none","transfer-encoding":"chunked"}
+[debug] [2021-11-07T09:24:32.500Z] >>> HTTP REQUEST POST https://firebasehosting.googleapis.com/v1beta1/sites/novaa3/versions  
+ {"config":{"rewrites":[{"glob":"**","path":"/index.html"}]},"labels":{"deployment-tool":"cli-firebase"}}
+[debug] [2021-11-07T09:44:11.219Z] ----------------------------------------------------------------------
+[debug] [2021-11-07T09:44:11.222Z] Command:       /usr/local/bin/node /usr/local/bin/firebase deploy --only hosting:novaa3
+[debug] [2021-11-07T09:44:11.222Z] CLI Version:   9.21.0
+[debug] [2021-11-07T09:44:11.222Z] Platform:      darwin
+[debug] [2021-11-07T09:44:11.222Z] Node Version:  v14.18.1
+[debug] [2021-11-07T09:44:11.223Z] Time:          Sun Nov 07 2021 06:44:11 GMT-0300 (Brasilia Standard Time)
+[debug] [2021-11-07T09:44:11.223Z] ----------------------------------------------------------------------
+[debug] 
+[debug] [2021-11-07T09:44:11.359Z] > command requires scopes: ["email","openid","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","https://www.googleapis.com/auth/cloud-platform"]
+[debug] [2021-11-07T09:44:11.360Z] > authorizing via signed-in user (eu@marco.rio.br)
+[debug] [2021-11-07T09:44:11.360Z] [iam] checking project nova-a3-ind for permissions ["firebase.projects.get","firebasehosting.sites.update"]
+[debug] [2021-11-07T09:44:11.362Z] >>> HTTP REQUEST POST https://cloudresourcemanager.googleapis.com/v1/projects/nova-a3-ind:testIamPermissions  
+ {"permissions":["firebase.projects.get","firebasehosting.sites.update"]}
+[debug] [2021-11-07T09:44:12.321Z] <<< HTTP RESPONSE 200 {"content-type":"application/json; charset=UTF-8","vary":"X-Origin, Referer, Origin,Accept-Encoding","date":"Sun, 07 Nov 2021 09:44:12 GMT","server":"ESF","cache-control":"private","x-xss-protection":"0","x-frame-options":"SAMEORIGIN","x-content-type-options":"nosniff","server-timing":"gfet4t7; dur=737","alt-svc":"h3=\":443\"; ma=2592000,h3-29=\":443\"; ma=2592000,h3-Q050=\":443\"; ma=2592000,h3-Q046=\":443\"; ma=2592000,h3-Q043=\":443\"; ma=2592000,quic=\":443\"; ma=2592000; v=\"46,43\"","accept-ranges":"none","transfer-encoding":"chunked"}
+[debug] [2021-11-07T09:44:12.323Z] > refreshing access token with scopes: []
+[debug] [2021-11-07T09:44:12.323Z] >>> HTTP REQUEST POST https://www.googleapis.com/oauth2/v3/token  
+ <request body omitted>
+[debug] [2021-11-07T09:44:12.491Z] <<< HTTP RESPONSE 200 {"date":"Sun, 07 Nov 2021 09:44:12 GMT","expires":"Mon, 01 Jan 1990 00:00:00 GMT","cache-control":"no-cache, no-store, max-age=0, must-revalidate","pragma":"no-cache","content-type":"application/json; charset=utf-8","vary":"X-Origin, Referer, Origin,Accept-Encoding","server":"scaffolding on HTTPServer2","x-xss-protection":"0","x-frame-options":"SAMEORIGIN","x-content-type-options":"nosniff","alt-svc":"h3=\":443\"; ma=2592000,h3-29=\":443\"; ma=2592000,h3-Q050=\":443\"; ma=2592000,h3-Q046=\":443\"; ma=2592000,h3-Q043=\":443\"; ma=2592000,quic=\":443\"; ma=2592000; v=\"46,43\"","accept-ranges":"none","transfer-encoding":"chunked"}
+[debug] [2021-11-07T09:44:12.529Z] >>> [apiv2][query] GET https://firebase.googleapis.com/v1beta1/projects/nova-a3-ind [none]
+[debug] [2021-11-07T09:44:13.569Z] <<< [apiv2][status] GET https://firebase.googleapis.com/v1beta1/projects/nova-a3-ind 200
+[debug] [2021-11-07T09:44:13.570Z] <<< [apiv2][body] GET https://firebase.googleapis.com/v1beta1/projects/nova-a3-ind {"projectId":"nova-a3-ind","projectNumber":"810900069450","displayName":"Nova A3","name":"projects/nova-a3-ind","resources":{"hostingSite":"nova-a3-ind","storageBucket":"nova-a3-ind.appspot.com","locationId":"southamerica-east1"},"state":"ACTIVE"}
+[info] 
+[info] === Deploying to 'nova-a3-ind'...
+[info] 
+[info] i  deploying hosting 
+[debug] [2021-11-07T09:44:13.579Z] > refreshing access token with scopes: ["email","https://www.googleapis.com/auth/cloud-platform","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","openid"]
+[debug] [2021-11-07T09:44:13.580Z] >>> HTTP REQUEST POST https://www.googleapis.com/oauth2/v3/token  
+ <request body omitted>
+[debug] [2021-11-07T09:44:13.581Z] Error: write EPIPE
+    at afterWriteDispatched (internal/stream_base_commons.js:156:25)
+    at writeGeneric (internal/stream_base_commons.js:147:3)
+    at Socket._writeGeneric (net.js:798:11)
+    at Socket._write (net.js:810:8)
+    at writeOrBuffer (internal/streams/writable.js:358:12)
+    at Socket.Writable.write (internal/streams/writable.js:303:10)
+    at Console.log (/usr/local/lib/node_modules/firebase-tools/node_modules/winston/lib/winston/transports/console.js:79:23)
+    at Console._write (/usr/local/lib/node_modules/firebase-tools/node_modules/winston-transport/index.js:103:17)
+    at doWrite (/usr/local/lib/node_modules/firebase-tools/node_modules/winston-transport/node_modules/readable-stream/lib/_stream_writable.js:428:64)
+    at writeOrBuffer (/usr/local/lib/node_modules/firebase-tools/node_modules/winston-transport/node_modules/readable-stream/lib/_stream_writable.js:417:5)
+    at Console.Writable.write (/usr/local/lib/node_modules/firebase-tools/node_modules/winston-transport/node_modules/readable-stream/lib/_stream_writable.js:334:11)
+    at DerivedLogger.ondata (/usr/local/lib/node_modules/firebase-tools/node_modules/readable-stream/lib/_stream_readable.js:681:20)
+    at DerivedLogger.emit (events.js:412:35)
+    at DerivedLogger.emit (domain.js:475:12)
+    at addChunk (/usr/local/lib/node_modules/firebase-tools/node_modules/readable-stream/lib/_stream_readable.js:298:12)
+    at readableAddChunk (/usr/local/lib/node_modules/firebase-tools/node_modules/readable-stream/lib/_stream_readable.js:280:11)
+[error] 
+[error] Error: An unexpected error has occurred.
+[debug] [2021-11-07T09:44:13.736Z] <<< HTTP RESPONSE 200 {"cache-control":"no-cache, no-store, max-age=0, must-revalidate","expires":"Mon, 01 Jan 1990 00:00:00 GMT","date":"Sun, 07 Nov 2021 09:44:14 GMT","pragma":"no-cache","content-type":"application/json; charset=utf-8","vary":"X-Origin, Referer, Origin,Accept-Encoding","server":"scaffolding on HTTPServer2","x-xss-protection":"0","x-frame-options":"SAMEORIGIN","x-content-type-options":"nosniff","alt-svc":"h3=\":443\"; ma=2592000,h3-29=\":443\"; ma=2592000,h3-Q050=\":443\"; ma=2592000,h3-Q046=\":443\"; ma=2592000,h3-Q043=\":443\"; ma=2592000,quic=\":443\"; ma=2592000; v=\"46,43\"","accept-ranges":"none","transfer-encoding":"chunked"}
+[debug] [2021-11-07T09:44:13.751Z] >>> HTTP REQUEST POST https://firebasehosting.googleapis.com/v1beta1/sites/novaa3/versions  
+ {"config":{"rewrites":[{"glob":"**","path":"/index.html"}]},"labels":{"deployment-tool":"cli-firebase"}}

@@ -23,7 +23,7 @@ module.exports = {
     },
     ecmaVersion: 13,
     sourceType: "module",
-    project: ["./tsconfig.json"],
+    project: ["./tsconfig.json", "./scripts/tsconfig.json"],
   },
   plugins: [
     "@typescript-eslint",
