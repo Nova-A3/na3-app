@@ -2,8 +2,6 @@ import type { AsyncCommandResult } from "./utils";
 import { execAsync } from "./utils";
 import { editFileAsync, registerCommands } from "./utils";
 
-let nextVersionString: string | undefined = undefined;
-
 function replaceMetaVariable(
   variable: "ENVIRONMENT" | "VERSION",
   updateOperation: (value: string) => string
@@ -26,11 +24,10 @@ function incrementMetaVersion(): Promise<AsyncCommandResult> {
   return replaceMetaVariable("VERSION", (value) => {
     const versionChunks = value.split(".");
     const incrementableChunk = versionChunks[2];
-    const newVersion = `${versionChunks.slice(0, 2).join(".")}.${
+
+    return `${versionChunks.slice(0, 2).join(".")}.${
       parseInt(incrementableChunk) + 1
     }`;
-    nextVersionString = newVersion;
-    return newVersion;
   });
 }
 

@@ -81,9 +81,9 @@ export function registerCommands(commands: CommandConfig[]): CommandRegistry {
   const immutableCommands = [...commands];
 
   async function runCommands(): Promise<void> {
-    await Promise.all(
-      immutableCommands.map(({ name, command }) => runCommand(name, command))
-    );
+    for (const { name, command } of immutableCommands) {
+      await runCommand(name, command);
+    }
   }
 
   return { run: runCommands };
