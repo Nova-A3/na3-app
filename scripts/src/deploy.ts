@@ -47,7 +47,7 @@ async function prepareMetaForDeployment(): Promise<AsyncCommandResult> {
   }
 }
 
-async function gitPush(): Promise<AsyncCommandResult> {
+async function gitCommit(): Promise<AsyncCommandResult> {
   return replaceMetaVariable("VERSION", (value) => {
     void (async (): Promise<void> => {
       await execAsync(`git add . && git commit -m "v${value}"`);
@@ -66,7 +66,7 @@ const commands = registerCommands([
   { command: "yarn eslint src/ --fix --ext .ts,.tsx", name: "eslint" },
   { command: "yarn build", name: "build" },
   { command: "firebase deploy --only hosting:novaa3", name: "deploy" },
-  { command: gitPush, name: "git push" },
+  { command: gitCommit, name: "git push" },
   { command: resetMetaForDevelopment, name: "resetting meta" },
 ]);
 

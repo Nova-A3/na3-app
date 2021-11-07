@@ -4,6 +4,7 @@ import {
   ThemeSwitcherProvider,
   useThemeSwitcher,
 } from "react-css-theme-switcher";
+import Div100vh from "react-div-100vh";
 import useLocalStorage from "react-use-localstorage";
 
 import classes from "./App.module.css";
@@ -33,16 +34,18 @@ function Main(): JSX.Element | null {
       <Helmet />
 
       <Spinner spinning={!appIsReady}>
-        <Layout className={classes.App}>
-          <Sider />
-          <Layout>
-            <Header />
-            <Content>
-              <RouteHandler />
-            </Content>
-            <Footer />
+        <Div100vh>
+          <Layout className={classes.App}>
+            <Sider />
+            <Layout>
+              <Header />
+              <Content>
+                <RouteHandler />
+              </Content>
+              <Footer />
+            </Layout>
           </Layout>
-        </Layout>
+        </Div100vh>
       </Spinner>
 
       {themeStatus === "loading" && (
