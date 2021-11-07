@@ -28,7 +28,7 @@ export function MaintServiceOrdersList({
         <MaintServiceOrderCard data={item} onSelect={onSelectOrder} />
       );
 
-      if (item.status === "closed") {
+      if (item.status === "solved") {
         return (
           <Badge.Ribbon color="red" text="Ação necessária">
             {card}
