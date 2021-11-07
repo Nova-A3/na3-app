@@ -10,6 +10,7 @@ export function ThemeSwitch(): JSX.Element {
 
   return (
     <Tooltip
+      placement="bottomRight"
       title={`Alternar para tema ${theme === "dark" ? "claro" : "escuro"}`}
     >
       <Switch
