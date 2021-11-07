@@ -1,5 +1,5 @@
-import { Form as AntdForm } from "antd";
-import React from "react";
+import { Form as AntdForm, message } from "antd";
+import React, { useCallback } from "react";
 import type {
   FieldValues,
   SubmitErrorHandler,
@@ -18,14 +18,14 @@ export type HandleSubmitFailed<TFieldValues extends FieldValues = FieldValues> =
   SubmitErrorHandler<TFieldValues>;
 
 type FormProps<
-  TFieldValues extends FieldValues = FieldValues,
-  TContext extends Record<string, unknown> = Record<string, unknown>
+  Fields extends FieldValues = FieldValues,
+  Context extends Record<string, unknown> = Record<string, unknown>
 > = {
   children: React.ReactNode;
-  form: UseFormReturn<TFieldValues, TContext>;
+  form: UseFormReturn<Fields, Context>;
   isModal?: boolean;
-  onSubmit: HandleSubmit<TFieldValues>;
-  onSubmitFailed?: HandleSubmitFailed<TFieldValues>;
+  onSubmit: HandleSubmit<Fields>;
+  onSubmitFailed?: HandleSubmitFailed<Fields>;
 };
 
 const defaultProps: Omit<FormProps, "children" | "form" | "onSubmit"> = {
@@ -58,6 +58,14 @@ export function Form<
   onSubmitFailed,
   isModal,
 }: FormProps<Fields, Context>): JSX.Element {
+  const handleSubmitFailed: SubmitErrorHandler<Fields> = useCallback(
+    (errors, event) => {
+      void message.error("Corrija os campos inválidos.");
+      onSubmitFailed?.(errors, event);
+    },
+    [onSubmitFailed]
+  );
+
   return (
     <FormProvider
       clearErrors={clearErrors}
@@ -81,7 +89,7 @@ export function Form<
           isModal ? "" : classes.MobileAccessibleForm
         }`}
       >
-        <AntdForm onFinish={handleSubmit(onSubmit, onSubmitFailed)}>
+        <AntdForm onFinish={handleSubmit(onSubmit, handleSubmitFailed)}>
           {children}
         </AntdForm>
       </Spinner>
