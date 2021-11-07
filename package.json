@@ -43,13 +43,11 @@
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
-    "prettier-check": "yarn prettier --check .",
-    "prettier-write": "yarn prettier --write .",
-    "lint": "yarn eslint . --ext .ts,.tsx",
-    "lint-fix": "yarn eslint . --fix --ext .ts,.tsx",
-    "pre-push": "yarn prettier-write && yarn lint-fix",
-    "deploy": "NODE_ENV=\"production\" && yarn pre-push && yarn build && firebase deploy --only hosting:novaa3",
-    "deploy2": "cd scripts && yarn deploy"
+    "prettier-check": "yarn prettier --check src/",
+    "prettier-write": "yarn prettier --write src/",
+    "lint": "yarn eslint src/ --ext .ts,.tsx",
+    "lint-fix": "yarn eslint src/ --fix --ext .ts,.tsx",
+    "deploy": "cd scripts && yarn deploy"
   },
   "eslintConfig": {
     "extends": [

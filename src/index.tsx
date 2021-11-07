@@ -12,6 +12,7 @@ import ReactDOM from "react-dom";
 import { BrowserRouter } from "react-router-dom";
 
 import { App } from "./App";
+import { DO_NOT_CHANGE_MANUALLY_ENVIRONMENT } from "./constants/meta";
 import { BreadcrumbProvider } from "./contexts";
 import { Na3Provider } from "./modules/na3-react";
 import reportWebVitals from "./reportWebVitals";
@@ -32,7 +33,7 @@ firebase.initializeApp({
 function Root(): JSX.Element {
   return (
     <AntdConfigProvider locale={ptBR}>
-      <Na3Provider env="production">
+      <Na3Provider env={DO_NOT_CHANGE_MANUALLY_ENVIRONMENT}>
         <BrowserRouter>
           <BreadcrumbProvider>
             <App />
