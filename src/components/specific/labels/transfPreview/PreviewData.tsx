@@ -19,13 +19,7 @@ export function PreviewData({
   children,
 }: PreviewDataProps): JSX.Element {
   return (
-    <code
-      style={{left: x,
-        position: "absolute",
-        top: y,
-        width: w,
-      }}
-    >
+    <code style={{ left: x, position: "absolute", top: y, width: w }}>
       {children}
     </code>
   );
