@@ -16,9 +16,11 @@ export type UseNa3ServiceOrdersResult = {
     getDepartmentOrders: (
       data?: Na3ServiceOrder[]
     ) => Na3ServiceOrder[] | undefined;
+    getWithActionRequired: (data?: Na3ServiceOrder[]) => Na3ServiceOrder[];
     mapByStatus: (
       data?: Na3ServiceOrder[]
     ) => Record<Na3ServiceOrder["status"], Na3ServiceOrder[]>;
+    orderRequiresAction: (serviceOrder: Na3ServiceOrder) => boolean;
     sortByStatus: (
       sortingOrder: Na3ServiceOrder["status"][],
       data?: Na3ServiceOrder[]
@@ -81,7 +83,10 @@ export function useNa3ServiceOrders(): UseNa3ServiceOrdersResult {
   );
 
   const sortByStatus = useCallback(
-    (sortingOrder: Na3ServiceOrder["status"][], data?: Na3ServiceOrder[]) => {
+    (
+      sortingOrder: Na3ServiceOrder["status"][],
+      data?: Na3ServiceOrder[]
+    ): Na3ServiceOrder[] => {
       const statusMap = mapByStatus(data);
       return sortingOrder.flatMap((status) =>
         [...statusMap[status]].sort((a, b) => b.id.localeCompare(a.id))
@@ -90,12 +95,32 @@ export function useNa3ServiceOrders(): UseNa3ServiceOrdersResult {
     [mapByStatus]
   );
 
+  const orderRequiresAction = useCallback(
+    (order: Na3ServiceOrder): boolean => {
+      if (!department) return false;
+      if (department.type === "shop-floor") return order.status === "solved";
+      else if (department.id === "manutencao")
+        return order.status === "pending" || order.status === "solving";
+      else return false;
+    },
+    [department]
+  );
+
+  const getWithActionRequired = useCallback(
+    (data?: Na3ServiceOrder[]): Na3ServiceOrder[] => {
+      return (data || serviceOrders.data)?.filter(orderRequiresAction) || [];
+    },
+    [serviceOrders.data, orderRequiresAction]
+  );
+
   return {
     ...serviceOrders,
     helpers: {
       getByStatus,
       getDepartmentOrders,
+      getWithActionRequired,
       mapByStatus,
+      orderRequiresAction,
       sortByStatus,
     },
   };

@@ -1,7 +1,6 @@
 import { LockOutlined, LoginOutlined, UserOutlined } from "@ant-design/icons";
 import { message } from "antd";
 import React, { useCallback } from "react";
-import { useForm } from "react-hook-form";
 
 import {
   FormField,
@@ -10,6 +9,7 @@ import {
   PageTitle,
   SubmitButtonV2,
 } from "../../components";
+import { useForm } from "../../hooks";
 import { useNa3Auth, useNa3Departments } from "../../modules/na3-react";
 import type { Na3Department } from "../../modules/na3-types";
 
@@ -24,7 +24,6 @@ export function AuthPage({ authorizedDpts }: AuthProps): JSX.Element {
   const departments = useNa3Departments();
 
   const form = useForm<FormValues>({
-    criteriaMode: "all",
     defaultValues: {
       dpt:
         authorizedDpts.length === 1
@@ -32,7 +31,6 @@ export function AuthPage({ authorizedDpts }: AuthProps): JSX.Element {
           : "",
       password: "",
     },
-    mode: "onChange",
   });
 
   const handleSubmit = useCallback(
@@ -81,12 +79,7 @@ export function AuthPage({ authorizedDpts }: AuthProps): JSX.Element {
             value: dpt.displayName.toUpperCase(),
           }))}
           prefix={<UserOutlined />}
-          rules={{
-            minLength: { message: "Campo obrigatório", value: 1 },
-            required: "Campo obrigatório",
-            validate: (value): string | undefined =>
-              value === undefined ? "Campo obrigatório" : undefined,
-          }}
+          rules={{ required: "Selecione seu setor" }}
           tooltip={{
             placement: "right",
             title:
@@ -110,7 +103,7 @@ export function AuthPage({ authorizedDpts }: AuthProps): JSX.Element {
           labelCol={{ span: 6 }}
           name="password"
           prefix={<LockOutlined />}
-          rules={{ required: "Campo obrigatório" }}
+          rules={{ required: "Digite sua senha" }}
           tooltip={{ placement: "right", title: "Digite sua senha" }}
           type="password"
         />

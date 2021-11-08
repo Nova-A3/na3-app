@@ -1,5 +1,7 @@
-import { Divider } from "antd";
-import React from "react";
+import { LeftOutlined } from "@ant-design/icons";
+import { Button, Divider, Grid } from "antd";
+import React, { useCallback } from "react";
+import { useHistory } from "react-router-dom";
 
 import classes from "./PageTitle.module.css";
 
@@ -14,8 +16,28 @@ const defaultProps: PageTitleProps = {
 };
 
 export function PageTitle({ icon, children }: PageTitleProps): JSX.Element {
+  const history = useHistory();
+
+  const breakpoint = Grid.useBreakpoint();
+
+  const handleNavigateBack = useCallback(() => {
+    history.goBack();
+  }, [history]);
+
   return (
     <div>
+      {!breakpoint.md && (
+        <Button
+          className={classes.BackButton}
+          icon={<LeftOutlined />}
+          onClick={handleNavigateBack}
+          size="small"
+          type="link"
+        >
+          Voltar
+        </Button>
+      )}
+
       <Divider className={classes.Container} orientation="left">
         {icon && <span className={classes.Icon}>{icon}</span>}
 

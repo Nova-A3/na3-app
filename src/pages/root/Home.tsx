@@ -15,10 +15,10 @@ export function HomePage(): JSX.Element {
     <>
       {department && (
         <>
-          <HomeLogo />
+          <HomeLogo className={classes.Logo} />
 
           <div>
-            <Divider />
+            <Divider className={classes.LogoDivider} />
           </div>
         </>
       )}
@@ -28,7 +28,7 @@ export function HomePage(): JSX.Element {
       </PageDescription>
 
       <div>
-        <Divider orientation="center">
+        <Divider className={classes.QuickLinksDivider} orientation="center">
           <em>ou</em>
         </Divider>
       </div>

@@ -13,7 +13,7 @@ export function Header(): JSX.Element {
 
   const handleSignOut = useCallback(async () => {
     await auth.helpers.signOut();
-    await message.info("Você saiu.");
+    await message.info("Você saiu");
   }, [auth.helpers]);
 
   return (
@@ -22,7 +22,7 @@ export function Header(): JSX.Element {
         {auth.department ? (
           <UserInfo user={auth.department} />
         ) : (
-          <HomeLogo hasNoMarginTop={true} height={24} />
+          <HomeLogo height={24} />
         )}
       </div>
 

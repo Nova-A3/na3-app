@@ -9,3 +9,10 @@
 .SwitchContainer {
   text-align: right;
 }
+
+/* up to md */
+@media screen and (max-width: 768px) {
+  .SwitchContainer {
+    text-align: left;
+  }
+}

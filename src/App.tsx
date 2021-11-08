@@ -20,13 +20,12 @@ import {
 import { useAppReady } from "./modules/na3-react";
 
 const themes = {
-  dark: `${process.env.PUBLIC_URL}/dark.theme.css`,
-  light: `${process.env.PUBLIC_URL}/light.theme.css`,
+  dark: `${process.env.PUBLIC_URL}/theme/dark.theme.css`,
+  light: `${process.env.PUBLIC_URL}/theme/light.theme.css`,
 };
 
 function Main(): JSX.Element | null {
   const appIsReady = useAppReady();
-
   const { status: themeStatus } = useThemeSwitcher();
 
   return (

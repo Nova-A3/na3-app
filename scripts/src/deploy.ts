@@ -3,7 +3,7 @@ import { execAsync } from "./utils";
 import { editFileAsync, registerCommands } from "./utils";
 
 function replaceMetaVariable(
-  variable: "ENVIRONMENT" | "VERSION",
+  variable: "VERSION",
   updateOperation: (value: string) => string
 ): Promise<AsyncCommandResult> {
   return editFileAsync("./src/constants/meta.ts", (content) => {
@@ -13,10 +13,9 @@ function replaceMetaVariable(
     const match = varRegex.exec(content);
     const varValue = match?.[2];
 
-    if (varValue) {
-      return content.replace(varRegex, `$1${updateOperation(varValue)}$3`);
-    }
-    return content;
+    return varValue
+      ? content.replace(varRegex, `$1${updateOperation(varValue)}$3`)
+      : content;
   });
 }
 
@@ -31,43 +30,23 @@ function incrementMetaVersion(): Promise<AsyncCommandResult> {
   });
 }
 
-function setMetaEnvironment(
-  environment: "development" | "production"
-): Promise<AsyncCommandResult> {
-  return replaceMetaVariable("ENVIRONMENT", () => environment);
-}
-
-async function prepareMetaForDeployment(): Promise<AsyncCommandResult> {
-  const setEnvResult = await setMetaEnvironment("production");
-  if (setEnvResult.error) {
-    return setEnvResult;
-  } else {
-    const incrementVersionResult = await incrementMetaVersion();
-    return incrementVersionResult;
-  }
-}
-
 async function gitCommit(): Promise<AsyncCommandResult> {
   return replaceMetaVariable("VERSION", (value) => {
     void (async (): Promise<void> => {
       await execAsync(`git add . && git commit -m "v${value}"`);
     })();
+
     return value;
   });
 }
 
-function resetMetaForDevelopment(): Promise<AsyncCommandResult> {
-  return setMetaEnvironment("development");
-}
-
 const commands = registerCommands([
-  { command: prepareMetaForDeployment, name: "preparing meta" },
+  { command: incrementMetaVersion, name: "update version" },
   { command: "yarn prettier --write src/", name: "prettier" },
   { command: "yarn eslint src/ --fix --ext .ts,.tsx", name: "eslint" },
   { command: "yarn build", name: "build" },
   { command: "firebase deploy --only hosting:novaa3", name: "deploy" },
-  { command: gitCommit, name: "git push" },
-  { command: resetMetaForDevelopment, name: "resetting meta" },
+  { command: gitCommit, name: "git commit" },
 ]);
 
 void commands.run();

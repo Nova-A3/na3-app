@@ -23,6 +23,20 @@ import { InputDate } from "../fields/InputDate/InputDate";
 import { InputMask } from "../fields/InputMask/InputMask";
 import classes from "./FormField.module.css";
 
+/*
+type FieldType =
+  | "autoComplete"
+  | "date"
+  | "input"
+  | "mask"
+  | "number"
+  | "password"
+  | "radio"
+  | "select"
+  | "switch"
+  | "textArea";
+*/
+
 type FieldValue = Dayjs | boolean | number | string;
 
 export type FieldStatus = "invalid" | "loading" | "untouched" | "valid";
@@ -125,7 +139,7 @@ type FormFieldOptionalProps = {
   wrapperCol?: FormItemProps["wrapperCol"];
 };
 
-type FormFieldProps = FormFieldBaseProps & FormFieldOptionalProps;
+export type FormFieldProps = FormFieldBaseProps & FormFieldOptionalProps;
 
 const defaultProps: FormFieldOptionalProps = {
   autoFocus: false,
@@ -177,7 +191,12 @@ export function FormField(props: FormFieldProps): JSX.Element {
     formState: { isSubmitting },
   } = useController({
     name: nameProp,
-    rules: rules || undefined,
+    rules: rules
+      ? {
+          required: required && (rules.required || "Campo obrigatório"),
+          ...rules,
+        }
+      : undefined,
     shouldUnregister: true,
   });
 
@@ -203,6 +222,7 @@ export function FormField(props: FormFieldProps): JSX.Element {
         | RadioChangeEvent
         | React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
         | null
+        | undefined
     ) => {
       function isInputChangeEvent(
         param: unknown
@@ -234,9 +254,9 @@ export function FormField(props: FormFieldProps): JSX.Element {
         }
       }
 
-      onChange(eventOrValue);
+      onChange(eventOrValue === undefined ? null : eventOrValue);
     },
-    [onChange, autoUpperCase, type, noDecimal]
+    [onChange, type, autoUpperCase, noDecimal]
   );
 
   const handleBlur = useCallback(() => {
@@ -262,8 +282,14 @@ export function FormField(props: FormFieldProps): JSX.Element {
   );
 
   useEffect(() => {
+    if (
+      (isTouched || !!value) &&
+      (type === "autoComplete" || type === "select" || type === "radio")
+    ) {
+      onBlur();
+    }
     onValueChange?.(value as never);
-  }, [value, onValueChange]);
+  }, [value, type, isTouched, onValueChange, onBlur]);
 
   const placeholder = useMemo((): string => {
     if (placeholderProp) return placeholderProp;
@@ -281,8 +307,8 @@ export function FormField(props: FormFieldProps): JSX.Element {
         case "date":
           return `${verb} para preencher/selecionar`;
         case "mask":
-        case "switch":
         case "radio":
+        case "switch":
           return "";
       }
     }
@@ -416,7 +442,6 @@ export function FormField(props: FormFieldProps): JSX.Element {
             id={name}
             onBlur={handleBlur}
             onChange={handleChange}
-            onSelect={handleBlur}
             options={props.options}
             placeholder={placeholder}
             ref={inputRef}
@@ -434,7 +459,6 @@ export function FormField(props: FormFieldProps): JSX.Element {
             id={name}
             onBlur={handleBlur}
             onChange={handleChange}
-            onSelect={handleBlur}
             placeholder={placeholder}
             ref={inputRef}
             value={value || undefined}
@@ -459,7 +483,11 @@ export function FormField(props: FormFieldProps): JSX.Element {
             {props.options.map(({ value, label }) => (
               <Radio.Button
                 key={nanoid()}
-                style={{ width: `${100 / props.options.length}%` }}
+                style={{
+                  width: `calc(${100 / props.options.length}% - ${
+                    status === "untouched" ? 0 : 40 / props.options.length
+                  }px)`,
+                }}
                 value={value}
               >
                 {label}
@@ -519,6 +547,7 @@ export function FormField(props: FormFieldProps): JSX.Element {
     name,
     type,
     value,
+    status,
     handleChange,
     handleBlur,
     handleAutoCompleteFilterOption,
@@ -536,6 +565,7 @@ export function FormField(props: FormFieldProps): JSX.Element {
       hasFeedback={true}
       help={helpComponent}
       hidden={hidden}
+      htmlFor={name}
       label={labelComponent}
       labelAlign="left"
       labelCol={labelCol || (labelSpan && { span: labelSpan }) || { span: 24 }}

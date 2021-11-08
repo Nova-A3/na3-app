@@ -17,7 +17,8 @@
   font-weight: normal;
 }
 
-@media (max-width: 768px) {
+/* up to md */
+@media screen and (max-width: 768px) {
   .Avatar {
     margin-right: 6px !important;
   }

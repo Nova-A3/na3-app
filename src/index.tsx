@@ -12,10 +12,10 @@ import ReactDOM from "react-dom";
 import { BrowserRouter } from "react-router-dom";
 
 import { App } from "./App";
-import { DO_NOT_CHANGE_MANUALLY_ENVIRONMENT } from "./constants/meta";
 import { BreadcrumbProvider } from "./contexts";
 import { Na3Provider } from "./modules/na3-react";
 import reportWebVitals from "./reportWebVitals";
+import * as serviceWorkerRegistration from "./serviceWorkerRegistration";
 
 dayjs.extend(utc);
 dayjs.extend(timezone);
@@ -33,7 +33,7 @@ firebase.initializeApp({
 function Root(): JSX.Element {
   return (
     <AntdConfigProvider locale={ptBR}>
-      <Na3Provider env={DO_NOT_CHANGE_MANUALLY_ENVIRONMENT}>
+      <Na3Provider>
         <BrowserRouter>
           <BreadcrumbProvider>
             <App />
@@ -50,6 +50,11 @@ ReactDOM.render(
   </React.StrictMode>,
   document.querySelector("#root")
 );
+
+// If you want your app to work offline and load faster, you can change
+// unregister() to register() below. Note this comes with some pitfalls.
+// Learn more about service workers: https://cra.link/PWA
+serviceWorkerRegistration.register();
 
 // If you want to start measuring performance in your app, pass a function
 // to log results (for example: reportWebVitals(console.log))

@@ -3,10 +3,13 @@ import { Button, Form } from "antd";
 import React from "react";
 import { useFormContext } from "react-hook-form";
 
-type SubmitButtonProps = Pick<FormItemProps, "labelCol" | "wrapperCol"> & {
+export type SubmitButtonProps = Pick<
+  FormItemProps,
+  "labelCol" | "wrapperCol"
+> & {
   icon?: React.ReactNode;
-  label: React.ReactNode;
-  labelWhenLoading: React.ReactNode;
+  label: string;
+  labelWhenLoading: string;
 };
 
 const defaultProps: Omit<SubmitButtonProps, "label" | "labelWhenLoading"> = {

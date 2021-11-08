@@ -17,7 +17,8 @@
   margin-right: -8px;
 }
 
-@media (max-width: 768px) {
+/* up to md */
+@media screen and (max-width: 768px) {
   .HeaderContainer {
     padding: 0 14px;
   }

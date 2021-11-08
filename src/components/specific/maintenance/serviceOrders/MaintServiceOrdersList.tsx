@@ -23,12 +23,12 @@ export function MaintServiceOrdersList({
   const serviceOrders = useNa3ServiceOrders();
 
   const handleRenderItem = useCallback(
-    (item: Na3ServiceOrder) => {
+    (order: Na3ServiceOrder) => {
       const card = (
-        <MaintServiceOrderCard data={item} onSelect={onSelectOrder} />
+        <MaintServiceOrderCard data={order} onSelect={onSelectOrder} />
       );
 
-      if (item.status === "solved") {
+      if (serviceOrders.helpers.orderRequiresAction(order)) {
         return (
           <Badge.Ribbon color="red" text="Ação necessária">
             {card}
@@ -38,7 +38,7 @@ export function MaintServiceOrdersList({
         return card;
       }
     },
-    [onSelectOrder]
+    [onSelectOrder, serviceOrders.helpers]
   );
 
   const handleFilterItemOnSearch = useCallback(

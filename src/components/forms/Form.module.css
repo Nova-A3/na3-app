@@ -8,6 +8,7 @@
   padding: 0 28px 28px;
 }
 
+/* up to md */
 @media screen and (max-width: 768px) {
   .MobileAccessibleForm {
     padding-bottom: 130px;

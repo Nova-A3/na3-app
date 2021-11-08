@@ -24,7 +24,7 @@ gulp.task("less", function (done) {
         debug: true,
       })
     )
-    .pipe(gulp.dest("./public"));
+    .pipe(gulp.dest("./public/theme"));
 
   done();
 });

@@ -14,7 +14,7 @@ type Na3ProviderProps = {
 
 const defaultProps: Na3ProviderProps = {
   children: null,
-  env: "development",
+  env: undefined,
 };
 
 export function Na3Provider({

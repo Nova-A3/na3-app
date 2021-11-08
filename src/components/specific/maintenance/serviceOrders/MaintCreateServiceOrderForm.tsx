@@ -1,8 +1,8 @@
 import { Col, Divider, Grid, Row } from "antd";
 import React, { useCallback } from "react";
-import { useForm } from "react-hook-form";
 import { Redirect } from "react-router";
 
+import { useForm } from "../../../../hooks";
 import { useNa3Auth } from "../../../../modules/na3-react";
 import type { MaintCreateServiceOrderFormValues } from "../../../../types";
 import { Form as FormV2 } from "../../../forms/v2/Form";
@@ -16,10 +16,9 @@ export function MaintCreateServiceOrderForm(): JSX.Element {
   const { department } = useNa3Auth();
 
   const form = useForm<MaintCreateServiceOrderFormValues>({
-    criteriaMode: "all",
     defaultValues: {
       additionalInfo: "",
-      cause: "eletrica",
+      cause: "",
       departmentDisplayName: department?.displayName.trim().toUpperCase() || "",
       departmentId: department?.id || "",
       didStopLine: false,
@@ -27,10 +26,9 @@ export function MaintCreateServiceOrderForm(): JSX.Element {
       didStopProduction: false,
       issue: "",
       machineId: "",
-      maintenanceType: "corretiva",
-      team: "eletrica",
+      maintenanceType: "",
+      team: "",
     },
-    mode: "onChange",
   });
 
   const handleSubmit = useCallback(() => {
@@ -64,7 +62,10 @@ export function MaintCreateServiceOrderForm(): JSX.Element {
         disabled={true}
         label="Setor"
         name="departmentDisplayName"
-        rules={{ required: "Setor não identificado." }}
+        rules={{
+          required:
+            "Não foi possível verificar seu setor. Tente novamente mais tarde.",
+        }}
         type="input"
       />
 
@@ -81,7 +82,7 @@ export function MaintCreateServiceOrderForm(): JSX.Element {
             ),
             value: machine.id,
           }))}
-        rules={{ required: "Selecione uma máquina." }}
+        rules={{ required: "Selecione uma máquina" }}
         type="select"
       />
 
@@ -93,7 +94,7 @@ export function MaintCreateServiceOrderForm(): JSX.Element {
           .filter((issue, idx, arr) => arr.indexOf(issue) === idx)
           .sort((a, b) => a.localeCompare(b))
           .map((issue) => ({ label: issue.toUpperCase(), value: issue }))}
-        rules={{ required: "Campo obrigatório." }}
+        rules={{ required: "Descreva o problema" }}
         tooltip={
           <>
             <strong>Lembre-se!</strong> Dê sempre preferência aos problemas
@@ -152,7 +153,7 @@ export function MaintCreateServiceOrderForm(): JSX.Element {
           { label: "Mecânica", value: "mecanica" },
           { label: "Predial", value: "predial" },
         ]}
-        rules={null}
+        rules={{ required: "Defina a equipe responsável" }}
         type={breakpoint.md ? "radio" : "select"}
       />
 
@@ -164,7 +165,7 @@ export function MaintCreateServiceOrderForm(): JSX.Element {
           { label: "Preventiva", value: "preventiva" },
           { label: "Preditiva", value: "preditiva" },
         ]}
-        rules={null}
+        rules={{ required: "Defina o tipo de manutenção" }}
         type={breakpoint.md ? "radio" : "select"}
       />
 
@@ -176,7 +177,7 @@ export function MaintCreateServiceOrderForm(): JSX.Element {
           { label: "Mecânica", value: "mecanica" },
           { label: "Ajuste de máquina", value: "machineAdjustment" },
         ]}
-        rules={null}
+        rules={{ required: "Defina o tipo de causa" }}
         type={breakpoint.md ? "radio" : "select"}
       />
 

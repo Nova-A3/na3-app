@@ -45,15 +45,8 @@ export function List<Item extends Record<string, unknown>>({
     [filterItem, searchInput, data]
   );
 
-  const verticalSpacedStyle = useMemo(
-    () => ({ marginBottom: verticalSpacing }),
-    [verticalSpacing]
-  );
-
   const listStyle = useMemo(
-    () => ({
-      paddingTop: verticalSpacing || 8,
-    }),
+    () => ({ paddingTop: (verticalSpacing || 8) * 1.5 }),
     [verticalSpacing]
   );
 
@@ -89,8 +82,13 @@ export function List<Item extends Record<string, unknown>>({
                   nanoid()
                 }
                 style={
-                  verticalSpacing && index < filteredData.length - 1
-                    ? verticalSpacedStyle
+                  verticalSpacing
+                    ? {
+                        marginBottom:
+                          index < filteredData.length - 1
+                            ? verticalSpacing
+                            : verticalSpacing * 2.5,
+                      }
                     : undefined
                 }
               >
