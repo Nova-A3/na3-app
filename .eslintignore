@@ -7,3 +7,6 @@ node_modules
 # production
 /build
 /scripts/lib
+
+# gulp
+gulpfile.js
