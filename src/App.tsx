@@ -34,12 +34,17 @@ function Main(): JSX.Element | null {
     function handleIsOnline(): void {
       if (connectionStatus.current === "offline") {
         void message.success("Você está online");
+        message.destroy("offlineMsg");
         connectionStatus.current = "online";
       }
     }
     function handleIsOffline(): void {
       if (connectionStatus.current === "online") {
-        void message.warn("Você está offline");
+        void message.warn({
+          content: "Você está offline",
+          duration: 0,
+          key: "offlineMsg",
+        });
         connectionStatus.current = "offline";
       }
     }
