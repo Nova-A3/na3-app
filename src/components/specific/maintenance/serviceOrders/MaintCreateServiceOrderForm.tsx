@@ -11,7 +11,17 @@ import { FormField } from "../../../forms/v2/FormField/FormField";
 import { SubmitButton as SubmitButtonV2 } from "../../../forms/v2/SubmitButton";
 import classes from "./MaintCreateServiceOrderForm.module.css";
 
-export function MaintCreateServiceOrderForm(): JSX.Element {
+type MaintCreateServiceOrderFormProps = {
+  onSubmit?: () => void;
+};
+
+const defaultProps = {
+  onSubmit: undefined,
+};
+
+export function MaintCreateServiceOrderForm({
+  onSubmit,
+}: MaintCreateServiceOrderFormProps): JSX.Element {
   const breakpoint = Grid.useBreakpoint();
 
   const { department } = useNa3Auth();
@@ -95,6 +105,7 @@ export function MaintCreateServiceOrderForm(): JSX.Element {
                 message: "OS aberta",
               });
               form.resetForm();
+              onSubmit?.();
             }
 
             resolve();
@@ -103,7 +114,7 @@ export function MaintCreateServiceOrderForm(): JSX.Element {
         });
       });
     },
-    [helpers, form]
+    [helpers, form, onSubmit]
   );
 
   const handleForceDidStopMachine = useCallback(
@@ -269,3 +280,5 @@ export function MaintCreateServiceOrderForm(): JSX.Element {
     </FormV2>
   );
 }
+
+MaintCreateServiceOrderForm.defaultProps = defaultProps;

@@ -58,8 +58,8 @@ export function Form<
   children,
   onSubmit,
   onSubmitFailed,
-  isModal,
-}: FormProps<Fields, Context>): JSX.Element {
+}: /* isModal, */
+FormProps<Fields, Context>): JSX.Element {
   const [spinnerText /* setSpinnerText */] = useState<string | null>(null);
 
   const handleSubmitFailed: SubmitErrorHandler<Fields> = useCallback(

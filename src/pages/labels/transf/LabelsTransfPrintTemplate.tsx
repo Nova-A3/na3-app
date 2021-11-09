@@ -44,7 +44,7 @@ export function LabelsTransfPrintTemplatePage({
     [templateId, getTemplate]
   );
 
-  const handleGoBack = useCallback(() => {
+  const handleNavigateBack = useCallback(() => {
     history.replace("/etiquetas/imprimir/transferencia");
   }, [history]);
 
@@ -213,7 +213,7 @@ export function LabelsTransfPrintTemplatePage({
     <Result
       description="O modelo de etiqueta solicitado não existe ou foi desabilitado."
       extra={
-        <Button onClick={handleGoBack} type="primary">
+        <Button onClick={handleNavigateBack} type="primary">
           Voltar
         </Button>
       }

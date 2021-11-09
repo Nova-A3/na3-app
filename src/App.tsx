@@ -1,5 +1,5 @@
-import { Layout } from "antd";
-import React from "react";
+import { Layout, message } from "antd";
+import React, { useEffect, useRef } from "react";
 import {
   ThemeSwitcherProvider,
   useThemeSwitcher,
@@ -27,6 +27,31 @@ const themes = {
 function Main(): JSX.Element | null {
   const appIsReady = useAppReady();
   const { status: themeStatus } = useThemeSwitcher();
+
+  const connectionStatus = useRef<"offline" | "online">("online");
+
+  useEffect(() => {
+    function handleIsOnline(): void {
+      if (connectionStatus.current === "offline") {
+        void message.success("Você está online");
+        connectionStatus.current = "online";
+      }
+    }
+    function handleIsOffline(): void {
+      if (connectionStatus.current === "online") {
+        void message.warn("Você está offline");
+        connectionStatus.current = "offline";
+      }
+    }
+
+    window.addEventListener("online", handleIsOnline);
+    window.addEventListener("offline", handleIsOffline);
+
+    return (): void => {
+      window.removeEventListener("online", handleIsOnline);
+      window.removeEventListener("offline", handleIsOffline);
+    };
+  }, []);
 
   return (
     <>
