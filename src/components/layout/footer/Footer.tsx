@@ -2,7 +2,7 @@ import { Col, Layout, Row, Typography } from "antd";
 import dayjs from "dayjs";
 import React from "react";
 
-import { DO_NOT_CHANGE_MANUALLY_VERSION } from "../../../constants/meta";
+import { APP_VERSION } from "../../../constants";
 import classes from "./Footer.module.css";
 
 export function Footer(): JSX.Element {
@@ -15,7 +15,7 @@ export function Footer(): JSX.Element {
           </Layout.Footer>
 
           <Typography.Text italic={true} type="secondary">
-            v{DO_NOT_CHANGE_MANUALLY_VERSION}
+            v{APP_VERSION}
           </Typography.Text>
         </div>
       </Col>
