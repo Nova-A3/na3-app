@@ -6,7 +6,6 @@ import { useHistory } from "react-router-dom";
 import { ROUTES } from "../../../constants";
 import { useTheme } from "../../../hooks";
 import { SiderLogo } from "./SiderLogo";
-import type { SiderMenuProps } from "./SiderMenu";
 import { SiderMenu } from "./SiderMenu";
 
 type SiderItemChild = {
