@@ -1,8 +1,10 @@
+import { MenuOutlined } from "@ant-design/icons";
 import { Grid, Layout } from "antd";
 import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { useHistory } from "react-router-dom";
 
 import { ROUTES } from "../../../constants";
+import { useTheme } from "../../../hooks";
 import { SiderLogo } from "./SiderLogo";
 import type { SiderMenuProps } from "./SiderMenu";
 import { SiderMenu } from "./SiderMenu";
@@ -23,8 +25,8 @@ export function Sider(): JSX.Element {
   const [isCollapsed, setIsCollapsed] = useState<boolean>();
 
   const history = useHistory();
-
   const breakpoint = Grid.useBreakpoint();
+  const [theme] = useTheme();
 
   const handleCollapse = useCallback((collapsed: boolean) => {
     setIsCollapsed(collapsed);
@@ -56,7 +58,20 @@ export function Sider(): JSX.Element {
     []
   );
 
-  const zeroWidthTriggerStyle = useMemo(() => ({ top: 120 }), []);
+  const zeroWidthTriggerStyle = useMemo(
+    () => ({
+      alignItems: "center",
+      background: "transparent",
+      color: theme === "light" ? "#111" : "#fff",
+      display: "flex",
+      height: 48,
+      justifyContent: "center",
+      right: -46,
+      top: 0,
+      width: 46,
+    }),
+    [theme]
+  );
 
   useEffect(() => {
     if (isCollapsed === undefined && "md" in breakpoint) {
@@ -70,6 +85,7 @@ export function Sider(): JSX.Element {
       collapsedWidth={breakpoint.md || !isCollapsed ? 80 : 0}
       collapsible={true}
       onCollapse={handleCollapse}
+      trigger={!breakpoint.md && isCollapsed && <MenuOutlined />}
       width={breakpoint.md ? 220 : "100%"}
       zeroWidthTriggerStyle={zeroWidthTriggerStyle}
     >

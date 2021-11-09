@@ -1,8 +1,6 @@
 import { Typography } from "antd";
 import React from "react";
 
-import classes from "./PageDescription.module.css";
-
 type PageDescriptionProps = {
   children?: React.ReactNode;
   className?: string;
@@ -18,11 +16,7 @@ export function PageDescription({
   className,
 }: PageDescriptionProps): JSX.Element {
   return (
-    <Typography.Paragraph
-      className={`${classes.Description} ${className ? className : ""}`}
-      italic={true}
-      type="secondary"
-    >
+    <Typography.Paragraph className={className} italic={true} type="secondary">
       {children}
     </Typography.Paragraph>
   );
