@@ -1,4 +1,4 @@
-export type { Na3App, Na3AppId } from "./Na3App";
+export type { Na3App, Na3AppDevice, Na3AppId } from "./Na3App";
 export type {
   Na3Department,
   Na3DepartmentId,

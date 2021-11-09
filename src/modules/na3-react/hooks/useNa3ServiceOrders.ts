@@ -1,14 +1,22 @@
 import firebase from "firebase";
 import { useCallback, useMemo } from "react";
 
-import type { Na3ServiceOrder } from "../../na3-types";
-import { resolveCollectionId } from "../utils";
+import type { Na3AppDevice, Na3ServiceOrder } from "../../na3-types";
+import type { FirebaseOperationResult } from "../types";
+import {
+  buildServiceOrder,
+  formatServiceOrderId,
+  resolveCollectionId,
+} from "../utils";
 import { useStateSlice } from "./useStateSlice";
 
 export type UseNa3ServiceOrdersResult = {
   data: Na3ServiceOrder[] | null;
   error: firebase.FirebaseError | null;
   helpers: {
+    add: (
+      ...args: Parameters<typeof buildServiceOrder>
+    ) => Promise<FirebaseOperationResult>;
     getByStatus: (
       status: Na3ServiceOrder["status"] | Na3ServiceOrder["status"][],
       data?: Na3ServiceOrder[]
@@ -16,6 +24,7 @@ export type UseNa3ServiceOrdersResult = {
     getDepartmentOrders: (
       data?: Na3ServiceOrder[]
     ) => Na3ServiceOrder[] | undefined;
+    getNextId: () => string | undefined;
     getWithActionRequired: (data?: Na3ServiceOrder[]) => Na3ServiceOrder[];
     mapByStatus: (
       data?: Na3ServiceOrder[]
@@ -28,18 +37,27 @@ export type UseNa3ServiceOrdersResult = {
   };
   loading: boolean;
 };
+
 export function useNa3ServiceOrders(): UseNa3ServiceOrdersResult {
   const { environment } = useStateSlice("config");
   const { department } = useStateSlice("auth");
   const serviceOrders = useStateSlice("serviceOrders");
 
-  const fbCollectionReference = useMemo(
+  const fbCollectionRef = useMemo(
     () =>
       firebase
         .firestore()
         .collection(resolveCollectionId("tickets", environment)),
     [environment]
   );
+
+  const getNextId = useCallback((): string | undefined => {
+    const lastId = serviceOrders.data
+      ?.map((so) => parseInt(so.id))
+      .sort((a, b) => a - b)
+      .pop();
+    return lastId ? formatServiceOrderId(lastId + 1) : undefined;
+  }, [serviceOrders.data]);
 
   const getDepartmentOrders = useCallback(
     (data?: Na3ServiceOrder[]) =>
@@ -113,11 +131,47 @@ export function useNa3ServiceOrders(): UseNa3ServiceOrdersResult {
     [serviceOrders.data, orderRequiresAction]
   );
 
+  const add = useCallback(
+    async (
+      id: string,
+      data: Required<
+        Pick<
+          Na3ServiceOrder,
+          | "additionalInfo"
+          | "cause"
+          | "description"
+          | "dpt"
+          | "interruptions"
+          | "machine"
+          | "maintenanceType"
+          | "team"
+          | "username"
+        >
+      >,
+      eventData: {
+        appVersion: string;
+        device: Na3AppDevice;
+      }
+    ): Promise<FirebaseOperationResult> => {
+      const serviceOrder = buildServiceOrder(id, data, eventData);
+      try {
+        const docRef = fbCollectionRef.doc(id);
+        await docRef.set(serviceOrder);
+        return { data: docRef, error: null };
+      } catch (error) {
+        return { data: null, error: error as firebase.FirebaseError };
+      }
+    },
+    [fbCollectionRef]
+  );
+
   return {
     ...serviceOrders,
     helpers: {
+      add,
       getByStatus,
       getDepartmentOrders,
+      getNextId,
       getWithActionRequired,
       mapByStatus,
       orderRequiresAction,

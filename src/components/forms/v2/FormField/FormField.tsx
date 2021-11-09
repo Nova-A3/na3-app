@@ -7,8 +7,15 @@ import type {
   SelectProps,
   SwitchProps,
 } from "antd";
-import { Radio } from "antd";
-import { AutoComplete, Form, Input, InputNumber, Select, Switch } from "antd";
+import {
+  AutoComplete,
+  Form,
+  Input,
+  InputNumber,
+  Radio,
+  Select,
+  Switch,
+} from "antd";
 import type { Dayjs } from "dayjs";
 import dayjs from "dayjs";
 import { nanoid } from "nanoid";
@@ -445,7 +452,7 @@ export function FormField(props: FormFieldProps): JSX.Element {
             options={props.options}
             placeholder={placeholder}
             ref={inputRef}
-            value={value || undefined}
+            value={value}
           />
         );
       case "select":
@@ -485,7 +492,7 @@ export function FormField(props: FormFieldProps): JSX.Element {
                 key={nanoid()}
                 style={{
                   width: `calc(${100 / props.options.length}% - ${
-                    status === "untouched" ? 0 : 40 / props.options.length
+                    status === "untouched" ? 0 : 32 / props.options.length
                   }px)`,
                 }}
                 value={value}
@@ -520,6 +527,7 @@ export function FormField(props: FormFieldProps): JSX.Element {
             <Switch
               checked={!!value}
               checkedChildren={props.checkedChildren}
+              disabled={disabled}
               onChange={handleChange}
               unCheckedChildren={props.unCheckedChildren}
             />

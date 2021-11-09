@@ -2,6 +2,10 @@ import firebase from "firebase";
 import { useCallback, useMemo } from "react";
 
 import type { Na3TransfLabelTemplate } from "../../na3-types";
+import type {
+  FirebaseNullOperationResult,
+  FirebaseOperationResult,
+} from "../types";
 import { resolveCollectionId } from "../utils";
 import { useStateSlice } from "./useStateSlice";
 
@@ -9,27 +13,15 @@ export type UseNa3TransfLabelTemplatesResult = {
   data: Na3TransfLabelTemplate[] | null;
   error: firebase.FirebaseError | null;
   helpers: {
-    add: (templateData: Omit<Na3TransfLabelTemplate, "id">) => Promise<
-      | {
-          data: firebase.firestore.DocumentReference<firebase.firestore.DocumentData>;
-          error: null;
-        }
-      | { data: null; error: firebase.FirebaseError }
-    >;
-    delete: (
-      templateId: string
-    ) => Promise<{ error: firebase.FirebaseError } | { error: null }>;
+    add: (
+      templateData: Omit<Na3TransfLabelTemplate, "id">
+    ) => Promise<FirebaseOperationResult>;
+    delete: (templateId: string) => Promise<FirebaseNullOperationResult>;
     getById: (id: string) => Na3TransfLabelTemplate | undefined;
     update: (
       templateId: string,
       templateData: Omit<Na3TransfLabelTemplate, "id">
-    ) => Promise<
-      | {
-          data: firebase.firestore.DocumentReference<firebase.firestore.DocumentData>;
-          error: null;
-        }
-      | { data: null; error: firebase.FirebaseError }
-    >;
+    ) => Promise<FirebaseOperationResult>;
   };
   loading: boolean;
 };
@@ -38,7 +30,7 @@ export function useNa3TransfLabelTemplates(): UseNa3TransfLabelTemplatesResult {
   const { environment } = useStateSlice("config");
   const { transf: transfLabelTemplates } = useStateSlice("labelTemplates");
 
-  const fbCollectionReference = useMemo(
+  const fbCollectionRef = useMemo(
     () =>
       firebase
         .firestore()
@@ -55,13 +47,13 @@ export function useNa3TransfLabelTemplates(): UseNa3TransfLabelTemplatesResult {
   const add = useCallback(
     async (templateData: Omit<Na3TransfLabelTemplate, "id">) => {
       try {
-        const documentReference = await fbCollectionReference.add(templateData);
-        return { data: documentReference, error: null };
+        const docRef = await fbCollectionRef.add(templateData);
+        return { data: docRef, error: null };
       } catch (error) {
         return { data: null, error: error as firebase.FirebaseError };
       }
     },
-    [fbCollectionReference]
+    [fbCollectionRef]
   );
 
   const update = useCallback(
@@ -70,27 +62,27 @@ export function useNa3TransfLabelTemplates(): UseNa3TransfLabelTemplatesResult {
       templateData: Omit<Na3TransfLabelTemplate, "id">
     ) => {
       try {
-        const documentReference = fbCollectionReference.doc(templateId);
-        await documentReference.update(templateData);
-        return { data: documentReference, error: null };
+        const docRef = fbCollectionRef.doc(templateId);
+        await docRef.update(templateData);
+        return { data: docRef, error: null };
       } catch (error) {
         return { data: null, error: error as firebase.FirebaseError };
       }
     },
-    [fbCollectionReference]
+    [fbCollectionRef]
   );
 
   const del = useCallback(
     async (templateId: string) => {
       try {
-        const documentReference = fbCollectionReference.doc(templateId);
-        await documentReference.delete();
+        const docRef = fbCollectionRef.doc(templateId);
+        await docRef.delete();
         return { error: null };
       } catch (error) {
         return { error: error as firebase.FirebaseError };
       }
     },
-    [fbCollectionReference]
+    [fbCollectionRef]
   );
 
   return {

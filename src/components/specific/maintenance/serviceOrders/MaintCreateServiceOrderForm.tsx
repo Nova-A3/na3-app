@@ -1,10 +1,13 @@
-import { Col, Divider, Grid, Row } from "antd";
-import React, { useCallback } from "react";
+import { InfoCircleOutlined } from "@ant-design/icons";
+import { Col, Divider, Grid, Modal, notification, Row } from "antd";
+import React, { useCallback, useState } from "react";
 import { Redirect } from "react-router";
 
+import { APP_VERSION } from "../../../../constants";
 import { useForm } from "../../../../hooks";
-import { useNa3Auth } from "../../../../modules/na3-react";
+import { useNa3Auth, useNa3ServiceOrders } from "../../../../modules/na3-react";
 import type { MaintCreateServiceOrderFormValues } from "../../../../types";
+import { getDevice } from "../../../../utils";
 import { Form as FormV2 } from "../../../forms/v2/Form";
 import { FormField } from "../../../forms/v2/FormField/FormField";
 import { SubmitButton as SubmitButtonV2 } from "../../../forms/v2/SubmitButton";
@@ -14,6 +17,9 @@ export function MaintCreateServiceOrderForm(): JSX.Element {
   const breakpoint = Grid.useBreakpoint();
 
   const { department } = useNa3Auth();
+  const { helpers } = useNa3ServiceOrders();
+
+  const [didStopMachineDisabled, setDidStopMachineDisabled] = useState(false);
 
   const form = useForm<MaintCreateServiceOrderFormValues>({
     defaultValues: {
@@ -31,22 +37,87 @@ export function MaintCreateServiceOrderForm(): JSX.Element {
     },
   });
 
-  const handleSubmit = useCallback(() => {
-    return;
-  }, []);
+  const handleSubmit = useCallback(
+    (values: MaintCreateServiceOrderFormValues) => {
+      function notifyError(message: string): void {
+        notification.error({
+          description: message,
+          message: "Erro ao abrir a OS",
+        });
+      }
+
+      const orderId = helpers.getNextId();
+
+      if (!orderId) {
+        notifyError(
+          "Não foi possível vincular um número para a OS. Recarregue a página ou tente novamente novamente mais tarde."
+        );
+        return;
+      }
+
+      return new Promise<void>((resolve) => {
+        const confirmModal = Modal.confirm({
+          cancelText: "Voltar",
+          okText: "Abrir OS",
+          onCancel: () => resolve(),
+          onOk: async () => {
+            confirmModal.update({ okText: "Enviando OS..." });
+
+            const operationRes = await helpers.add(
+              orderId,
+              {
+                additionalInfo: values.additionalInfo,
+                cause: values.cause,
+                description: values.issue,
+                dpt: values.departmentDisplayName,
+                interruptions: {
+                  equipment: values.didStopMachine,
+                  line: values.didStopLine,
+                  production: values.didStopProduction,
+                },
+                machine: values.machineId,
+                maintenanceType: values.maintenanceType,
+                team: values.team,
+                username: values.departmentId,
+              },
+              { appVersion: APP_VERSION, device: getDevice() }
+            );
+
+            if (operationRes.error) {
+              notifyError(operationRes.error.message);
+            } else {
+              notification.success({
+                description: `OS #${orderId} aberta com sucesso!`,
+                message: "OS aberta",
+              });
+              form.resetForm();
+            }
+
+            resolve();
+          },
+          title: `Confirma a abertura da OS #${orderId}?`,
+        });
+      });
+    },
+    [helpers, form]
+  );
 
   const handleForceDidStopMachine = useCallback(
     (switchValue): void => {
-      if (switchValue) {
-        form.setValue("didStopMachine", true);
-      }
+      if (switchValue) form.setValue("didStopMachine", true);
+
+      const { didStopProduction, didStopLine } = form.getValues();
+      if (didStopProduction || didStopLine) setDidStopMachineDisabled(true);
+      else setDidStopMachineDisabled(false);
     },
     [form]
   );
 
-  if (!(department && department.type === "shop-floor")) {
+  if (!department || department.type !== "shop-floor") {
     return <Redirect to="/manutencao" />;
   }
+
+  console.log(didStopMachineDisabled);
 
   return (
     <FormV2 form={form} onSubmit={handleSubmit}>
@@ -95,12 +166,15 @@ export function MaintCreateServiceOrderForm(): JSX.Element {
           .sort((a, b) => a.localeCompare(b))
           .map((issue) => ({ label: issue.toUpperCase(), value: issue }))}
         rules={{ required: "Descreva o problema" }}
-        tooltip={
-          <>
-            <strong>Lembre-se!</strong> Dê sempre preferência aos problemas
-            pré-definidos
-          </>
-        }
+        tooltip={{
+          icon: <InfoCircleOutlined />,
+          title: (
+            <>
+              <strong>Lembre-se!</strong> Dê sempre preferência aos problemas
+              pré-definidos
+            </>
+          ),
+        }}
         type="autoComplete"
       />
 
@@ -131,9 +205,7 @@ export function MaintCreateServiceOrderForm(): JSX.Element {
 
         <Col span={breakpoint.lg ? 8 : 24}>
           <FormField
-            disabled={
-              form.getValues().didStopProduction || form.getValues().didStopLine
-            }
+            disabled={didStopMachineDisabled}
             label="Parou máquina?"
             labelSpan={16}
             name="didStopMachine"

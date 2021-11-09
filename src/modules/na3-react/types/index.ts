@@ -1,3 +1,4 @@
+export * from "./firebase/FirebaseOperation";
 export * from "./store/Auth";
 export * from "./store/Config";
 export * from "./store/Departments";

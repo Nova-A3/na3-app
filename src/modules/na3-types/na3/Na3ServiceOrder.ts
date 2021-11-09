@@ -56,18 +56,18 @@ type LegacyTicket = {
     timestamp: string;
 
     type:
-      | "LegacyTicketClosed"
-      | "LegacyTicketConfirmed"
-      | "LegacyTicketCreated"
-      | "LegacyTicketEdited"
-      | "LegacyTicketReopened"
       | "maintainerChanged"
       | "poke"
       | "priorityChanged"
       | "solutionAccepted"
       | "solutionRefused"
       | "solutionStepAdded"
-      | "solutionTransmitted";
+      | "solutionTransmitted"
+      | "ticketClosed"
+      | "ticketConfirmed"
+      | "ticketCreated"
+      | "ticketEdited"
+      | "ticketReopened";
   }[];
   id: string;
 
@@ -101,9 +101,7 @@ type LegacyTicketStatsItem<T extends string | number> = {
   pos: number | string;
   best: T | string;
 };
-*/
 
-/*
 type LegacyTicketStats = {
   // Tempo até 1a Confirmação
   timeToFirstConfirmation: LegacyTicketStatsItem<string>;

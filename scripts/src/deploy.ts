@@ -7,9 +7,7 @@ function replaceMetaVariable(
   updateOperation: (value: string) => string
 ): Promise<AsyncCommandResult> {
   return editFileAsync("./src/constants/meta.ts", (content) => {
-    const varRegex = new RegExp(
-      `(DO_NOT_CHANGE_MANUALLY_${variable}\\s*=\\s*")(.+)(")`
-    );
+    const varRegex = new RegExp(`(APP_${variable}\\s*=\\s*")(.+)(")`);
     const match = varRegex.exec(content);
     const varValue = match?.[2];
 
