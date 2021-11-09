@@ -1,4 +1,4 @@
-import { Layout, message } from "antd";
+import { Layout, message, notification } from "antd";
 import React, { useEffect, useRef } from "react";
 import {
   ThemeSwitcherProvider,
@@ -23,6 +23,8 @@ const themes = {
   dark: `${process.env.PUBLIC_URL}/theme/dark.theme.css`,
   light: `${process.env.PUBLIC_URL}/theme/light.theme.css`,
 };
+
+notification.config({ duration: 6 });
 
 function Main(): JSX.Element | null {
   const appIsReady = useAppReady();
