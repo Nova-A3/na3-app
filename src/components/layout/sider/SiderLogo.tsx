@@ -7,38 +7,41 @@ import classes from "./SiderLogo.module.css";
 
 type SiderLogoProps = {
   isCollapsed: boolean;
+  onClick: () => void;
 };
 
-export function SiderLogo({ isCollapsed }: SiderLogoProps): JSX.Element {
+export function SiderLogo({
+  isCollapsed,
+  onClick,
+}: SiderLogoProps): JSX.Element {
   return (
-    <Link className={classes.Link} to="/">
-      <div
-        className={
-          classes.Logo + (isCollapsed ? " " + classes.LogoCollapsed : "")
-        }
-      >
-        {!isCollapsed && (
-          <img
-            alt="Logotipo Nova A3"
-            className={`animate__animated ${
-              isCollapsed ? "animate__fadeOut" : "animate__fadeIn"
-            }`}
-            height={32}
-            src={logo}
-          />
-        )}
+    <div
+      className={
+        classes.Logo + (isCollapsed ? " " + classes.LogoCollapsed : "")
+      }
+      onClick={onClick}
+    >
+      {!isCollapsed && (
+        <img
+          alt="Logotipo Nova A3"
+          className={`animate__animated ${
+            isCollapsed ? "animate__fadeOut" : "animate__fadeIn"
+          }`}
+          height={32}
+          src={logo}
+        />
+      )}
 
-        {isCollapsed && (
-          <img
-            alt="Logotipo Nova A3"
-            className={`animate__animated ${
-              isCollapsed ? "animate__fadeIn" : "animate__fadeOut"
-            }`}
-            height={32}
-            src={logoIcon}
-          />
-        )}
-      </div>
-    </Link>
+      {isCollapsed && (
+        <img
+          alt="Logotipo Nova A3"
+          className={`animate__animated ${
+            isCollapsed ? "animate__fadeIn" : "animate__fadeOut"
+          }`}
+          height={32}
+          src={logoIcon}
+        />
+      )}
+    </div>
   );
 }

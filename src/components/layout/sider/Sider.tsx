@@ -32,28 +32,31 @@ export function Sider(): JSX.Element {
     setIsCollapsed(collapsed);
   }, []);
 
-  const handleMenuNavigation: SiderMenuProps["onNavigation"] = useCallback(
-    ({ key }) => {
+  const handleMenuNavigation = useCallback(
+    ({ key }: { key: string }) => {
       history.push(key);
       setIsCollapsed(true);
     },
     [history]
   );
 
+  const handleLogoNavigation = useCallback(() => {
+    handleMenuNavigation({ key: "/" });
+  }, [handleMenuNavigation]);
+
   const siderItems = useMemo(
     (): (SiderItem | null)[] =>
       Object.entries(ROUTES).map(([path, { siderConfig, title, icon }]) => {
         const itemTitle = title || siderConfig?.title;
 
-        if (!siderConfig || !itemTitle) {
-          return null;
-        }
-        return {
-          children: siderConfig.children,
-          icon,
-          path,
-          title: itemTitle,
-        };
+        if (!siderConfig || !itemTitle) return null;
+        else
+          return {
+            children: siderConfig.children,
+            icon,
+            path,
+            title: itemTitle,
+          };
       }),
     []
   );
@@ -89,7 +92,7 @@ export function Sider(): JSX.Element {
       width={breakpoint.md ? 220 : "100%"}
       zeroWidthTriggerStyle={zeroWidthTriggerStyle}
     >
-      <SiderLogo isCollapsed={!!isCollapsed} />
+      <SiderLogo isCollapsed={!!isCollapsed} onClick={handleLogoNavigation} />
       <SiderMenu
         items={siderItems.filter((item): item is SiderItem => !!item)}
         onNavigation={handleMenuNavigation}
