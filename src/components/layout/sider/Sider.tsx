@@ -56,7 +56,7 @@ export function Sider(): JSX.Element {
     []
   );
 
-  const zeroWidthTriggerStyle = useMemo(() => ({ top: 117 }), []);
+  const zeroWidthTriggerStyle = useMemo(() => ({ top: 120 }), []);
 
   useEffect(() => {
     if (isCollapsed === undefined && "md" in breakpoint) {
