@@ -4,9 +4,12 @@ import { useLocation } from "react-router-dom";
 
 import type { AppRoute } from "../../constants";
 import { ROUTES } from "../../constants";
+import { useTheme } from "../../hooks";
 
 export function Helmet(): JSX.Element {
   const { pathname } = useLocation();
+
+  const [theme] = useTheme();
 
   const title = useMemo((): string => {
     const pathChunks = pathname
@@ -29,7 +32,10 @@ export function Helmet(): JSX.Element {
 
   return (
     <ReactHelmet>
-      <meta content="#ffffff" name="theme-color" />
+      <meta
+        content={theme === "dark" ? "#000000" : "#ffffff"}
+        name="theme-color"
+      />
 
       <title>{title}</title>
     </ReactHelmet>
