@@ -101,9 +101,12 @@ export function Form<
       <Spinner
         spinning={formState.isSubmitting}
         text={spinnerText}
+        wrapperClassName={classes.FormContainer}
+        /*
         wrapperClassName={`${classes.FormContainer} ${
           isModal ? "" : classes.MobileAccessibleForm
         }`}
+        */
       >
         <AntdForm onFinish={handleSubmit(onSubmit, handleSubmitFailed)}>
           {children}

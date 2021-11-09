@@ -56,6 +56,8 @@ export function Sider(): JSX.Element {
     []
   );
 
+  const zeroWidthTriggerStyle = useMemo(() => ({ top: 115 }), []);
+
   useEffect(() => {
     if (isCollapsed === undefined && "md" in breakpoint) {
       setIsCollapsed(!breakpoint.md);
@@ -65,9 +67,11 @@ export function Sider(): JSX.Element {
   return (
     <Layout.Sider
       collapsed={!!isCollapsed}
+      collapsedWidth={breakpoint.md || !isCollapsed ? 80 : 0}
       collapsible={true}
       onCollapse={handleCollapse}
       width={breakpoint.md ? 220 : "100%"}
+      zeroWidthTriggerStyle={zeroWidthTriggerStyle}
     >
       <SiderLogo isCollapsed={!!isCollapsed} />
       <SiderMenu

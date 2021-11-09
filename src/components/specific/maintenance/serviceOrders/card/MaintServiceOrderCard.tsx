@@ -1,4 +1,4 @@
-import { Card, Divider, Row, Typography } from "antd";
+import { Card, Divider, Grid, Row, Typography } from "antd";
 import React, { useCallback, useMemo } from "react";
 import {
   IoCheckmarkDoneOutline,
@@ -22,13 +22,19 @@ export function MaintServiceOrderCard({
   data,
   onSelect,
 }: MaintServiceOrderCardProps): JSX.Element {
+  const breakpoint = Grid.useBreakpoint();
+
   const handleClick = useCallback(() => {
     if (onSelect) onSelect(data);
   }, [onSelect, data]);
 
   const cardBodyStyle = useMemo(
-    () => ({ paddingBottom: 20, paddingTop: 12 }),
-    []
+    () => ({
+      padding: 12,
+      paddingLeft: breakpoint.md ? 20 : 12,
+      paddingRight: breakpoint.md ? 20 : 12,
+    }),
+    [breakpoint.md]
   );
 
   return (

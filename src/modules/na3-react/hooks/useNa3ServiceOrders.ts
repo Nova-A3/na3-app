@@ -1,10 +1,12 @@
+import dayjs from "dayjs";
 import firebase from "firebase";
-import { useCallback, useMemo } from "react";
+import { useCallback, useRef } from "react";
 
-import type { Na3AppDevice, Na3ServiceOrder } from "../../na3-types";
+import type { Na3ServiceOrder } from "../../na3-types";
 import type { FirebaseOperationResult } from "../types";
 import {
   buildServiceOrder,
+  buildServiceOrderEvents,
   formatServiceOrderId,
   resolveCollectionId,
 } from "../utils";
@@ -14,8 +16,10 @@ export type UseNa3ServiceOrdersResult = {
   data: Na3ServiceOrder[] | null;
   error: firebase.FirebaseError | null;
   helpers: {
+    acceptSolution: (id: string) => Promise<FirebaseOperationResult>;
     add: (
-      ...args: Parameters<typeof buildServiceOrder>
+      id: string,
+      data: Parameters<typeof buildServiceOrder>[1]
     ) => Promise<FirebaseOperationResult>;
     getByStatus: (
       status: Na3ServiceOrder["status"] | Na3ServiceOrder["status"][],
@@ -30,6 +34,10 @@ export type UseNa3ServiceOrdersResult = {
       data?: Na3ServiceOrder[]
     ) => Record<Na3ServiceOrder["status"], Na3ServiceOrder[]>;
     orderRequiresAction: (serviceOrder: Na3ServiceOrder) => boolean;
+    rejectSolution: (
+      id: string,
+      payload: { reason: string }
+    ) => Promise<FirebaseOperationResult>;
     sortByStatus: (
       sortingOrder: Na3ServiceOrder["status"][],
       data?: Na3ServiceOrder[]
@@ -40,15 +48,12 @@ export type UseNa3ServiceOrdersResult = {
 
 export function useNa3ServiceOrders(): UseNa3ServiceOrdersResult {
   const { environment } = useStateSlice("config");
+  const { device } = useStateSlice("global");
   const { department } = useStateSlice("auth");
   const serviceOrders = useStateSlice("serviceOrders");
 
-  const fbCollectionRef = useMemo(
-    () =>
-      firebase
-        .firestore()
-        .collection(resolveCollectionId("tickets", environment)),
-    [environment]
+  const fbCollectionRef = useRef(
+    firebase.firestore().collection(resolveCollectionId("tickets", environment))
   );
 
   const getNextId = useCallback((): string | undefined => {
@@ -147,27 +152,93 @@ export function useNa3ServiceOrders(): UseNa3ServiceOrdersResult {
           | "team"
           | "username"
         >
-      >,
-      eventData: {
-        appVersion: string;
-        device: Na3AppDevice;
-      }
+      >
     ): Promise<FirebaseOperationResult> => {
-      const serviceOrder = buildServiceOrder(id, data, eventData);
+      const serviceOrder = buildServiceOrder(id, data, device);
       try {
-        const docRef = fbCollectionRef.doc(id);
+        const docRef = fbCollectionRef.current.doc(id);
         await docRef.set(serviceOrder);
         return { data: docRef, error: null };
       } catch (error) {
         return { data: null, error: error as firebase.FirebaseError };
       }
     },
-    [fbCollectionRef]
+    [device]
+  );
+
+  const acceptSolution = useCallback(
+    async (id: string): Promise<FirebaseOperationResult> => {
+      try {
+        const docRef = fbCollectionRef.current.doc(id);
+        await docRef.update({
+          closedAt: dayjs().format(),
+          events: firebase.firestore.FieldValue.arrayUnion(
+            ...buildServiceOrderEvents(
+              [
+                { type: "solutionAccepted" },
+                { type: "ticketClosed" },
+                {
+                  payload: { solutionStep: { type: "solutionAccepted" } },
+                  type: "solutionStepAdded",
+                },
+              ],
+              device
+            )
+          ),
+          status: "closed",
+        });
+        return { data: docRef, error: null };
+      } catch (error) {
+        return { data: null, error: error as firebase.FirebaseError };
+      }
+    },
+    [device]
+  );
+
+  const rejectSolution = useCallback(
+    async (
+      id: string,
+      payload: { reason: string }
+    ): Promise<FirebaseOperationResult> => {
+      try {
+        const docRef = fbCollectionRef.current.doc(id);
+        await docRef.update({
+          acceptedAt: null,
+          events: firebase.firestore.FieldValue.arrayUnion(
+            ...buildServiceOrderEvents(
+              [
+                {
+                  payload: { refusalReason: payload.reason },
+                  type: "solutionRefused",
+                },
+                { type: "ticketReopened" },
+                {
+                  payload: { solutionStep: { type: "solutionRefused" } },
+                  type: "solutionStepAdded",
+                },
+              ],
+              device
+            )
+          ),
+          priority: null,
+          refusalReason: payload.reason.trim(),
+          reopenedAt: dayjs().format(),
+          solution: null,
+          solvedAt: null,
+          status: "pending",
+        });
+        return { data: docRef, error: null };
+      } catch (error) {
+        return { data: null, error: error as firebase.FirebaseError };
+      }
+    },
+    [device]
   );
 
   return {
     ...serviceOrders,
     helpers: {
+      acceptSolution,
       add,
       getByStatus,
       getDepartmentOrders,
@@ -175,6 +246,7 @@ export function useNa3ServiceOrders(): UseNa3ServiceOrdersResult {
       getWithActionRequired,
       mapByStatus,
       orderRequiresAction,
+      rejectSolution,
       sortByStatus,
     },
   };

@@ -1,4 +1,7 @@
+import type { Na3AppDevice } from "../../../na3-types";
+
 export type GlobalState = {
+  device: Na3AppDevice;
   loading: boolean;
 };
 
@@ -7,4 +10,9 @@ export type GlobalSetLoadingAction = {
   type: "GLOBAL_SET_LOADING";
 };
 
-export type GlobalAction = GlobalSetLoadingAction;
+export type GlobalSetDeviceAction = {
+  device: GlobalState["device"];
+  type: "GLOBAL_SET_DEVICE";
+};
+
+export type GlobalAction = GlobalSetDeviceAction | GlobalSetLoadingAction;

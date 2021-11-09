@@ -19,42 +19,65 @@ export function buildServiceOrder(
       | "username"
     >
   >,
-  eventData: {
-    appVersion: string;
-    device: Na3AppDevice;
-  }
+  device: Na3AppDevice
 ): Na3ServiceOrder {
-  const creationEvent = buildOrderEvent("ticketCreated", eventData.device);
+  const creationEvent = buildServiceOrderEvents(
+    { type: "ticketCreated" },
+    device
+  );
   const serviceOrder: Na3ServiceOrder = {
-    additionalInfo: data.additionalInfo,
-    cause: data.cause,
+    additionalInfo: data.additionalInfo?.trim(),
+    cause: data.cause.trim(),
     createdAt: creationEvent.timestamp,
-    description: data.description,
-    dpt: data.dpt,
+    description: data.description.trim(),
+    dpt: data.dpt.trim(),
     events: [creationEvent],
-    id: id,
+    id: id.trim(),
     interruptions: data.interruptions,
-    machine: data.machine,
-    maintenanceType: data.maintenanceType,
+    machine: data.machine.trim(),
+    maintenanceType: data.maintenanceType.trim(),
     solutionSteps: [],
     status: "pending",
-    team: data.team,
-    username: data.username,
-    version: "web-" + eventData.appVersion,
+    team: data.team.trim(),
+    username: data.username.trim(),
+    version: "web-" + device.os.version.trim(),
   };
+
   return serviceOrder;
 }
 
-function buildOrderEvent<T extends Na3ServiceOrder["events"][0]["type"]>(
-  type: T,
-  originDevice: Na3AppDevice,
-  payload?: Na3ServiceOrder["events"][0]["payload"]
-): Na3ServiceOrder["events"][0] {
-  return {
-    device: originDevice,
-    id: nanoid(),
-    payload: payload || null,
-    timestamp: dayjs().format(),
-    type,
-  };
+type EventBuildConfig = {
+  payload?: Na3ServiceOrder["events"][0]["payload"];
+  type: Na3ServiceOrder["events"][0]["type"];
+};
+
+export function buildServiceOrderEvents(
+  events: EventBuildConfig[],
+  originDevice: Na3AppDevice
+): Na3ServiceOrder["events"][0][];
+export function buildServiceOrderEvents(
+  events: EventBuildConfig,
+  originDevice: Na3AppDevice
+): Na3ServiceOrder["events"][0];
+export function buildServiceOrderEvents(
+  events: EventBuildConfig | EventBuildConfig[],
+  originDevice: Na3AppDevice
+): Na3ServiceOrder["events"][0] | Na3ServiceOrder["events"][0][] {
+  function buildOneEvent(
+    config: EventBuildConfig
+  ): Na3ServiceOrder["events"][0] {
+    return {
+      device: originDevice,
+      id: nanoid(),
+      payload: config.payload || null,
+      timestamp: dayjs().format(),
+      type: config.type,
+    };
+  }
+
+  if (!("length" in events)) {
+    return buildOneEvent(events);
+  } else {
+    return events.map(buildOneEvent);
+  }
 }

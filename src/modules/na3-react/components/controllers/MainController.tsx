@@ -14,16 +14,21 @@ import {
   setDepartmentsData,
   setDepartmentsError,
   setDepartmentsLoading,
+  setGlobalDevice,
   setGlobalLoading,
 } from "../../store/actions";
 import type { ConfigState } from "../../types";
-import { translateFirebaseError } from "../../utils";
+import { getDevice, translateFirebaseError } from "../../utils";
 
 type Na3MainControllerProps = {
+  appVersion: string;
   env: ConfigState["environment"] | undefined;
 };
 
-export function Na3MainController({ env }: Na3MainControllerProps): null {
+export function Na3MainController({
+  env,
+  appVersion,
+}: Na3MainControllerProps): null {
   const dispatch = useDispatch();
 
   const [fbUser, fbUserLoading, fbUserError] = useAuthState(firebase.auth());
@@ -96,6 +101,10 @@ export function Na3MainController({ env }: Na3MainControllerProps): null {
   useEffect(() => {
     dispatch(setGlobalLoading(fbUserLoading || fbDepartmentsLoading));
   }, [dispatch, fbUserLoading, fbDepartmentsLoading]);
+
+  useEffect(() => {
+    dispatch(setGlobalDevice(getDevice({ appVersion })));
+  }, [dispatch, appVersion]);
 
   return null;
 }

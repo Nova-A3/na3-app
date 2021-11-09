@@ -8,22 +8,24 @@ import { Na3ServiceOrdersController } from "./controllers/ServiceOrdersControlle
 import { Na3TransfLabelTemplatesController } from "./controllers/TransfLabelTemplatesController";
 
 type Na3ProviderProps = {
+  appVersion: string;
   children?: React.ReactNode;
   env?: ConfigState["environment"];
 };
 
-const defaultProps: Na3ProviderProps = {
+const defaultProps: Omit<Na3ProviderProps, "appVersion"> = {
   children: null,
   env: undefined,
 };
 
 export function Na3Provider({
+  appVersion,
   env,
   children,
-}: Na3ProviderProps = defaultProps): JSX.Element {
+}: Na3ProviderProps): JSX.Element {
   return (
     <StoreProvider store={store}>
-      <Na3MainController env={env} />
+      <Na3MainController appVersion={appVersion} env={env} />
       <Na3TransfLabelTemplatesController />
       <Na3ServiceOrdersController />
 

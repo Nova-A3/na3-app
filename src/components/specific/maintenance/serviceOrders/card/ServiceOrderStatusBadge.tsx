@@ -24,6 +24,7 @@ export function ServiceOrderStatusBadge({
 
   return (
     <Badge
+      color={badgePropsMap[orderStatus].color}
       status={badgePropsMap[orderStatus].status}
       text={badgePropsMap[orderStatus].text}
     />

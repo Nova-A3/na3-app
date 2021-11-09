@@ -3,11 +3,9 @@ import { Col, Divider, Grid, Modal, notification, Row } from "antd";
 import React, { useCallback, useState } from "react";
 import { Redirect } from "react-router";
 
-import { APP_VERSION } from "../../../../constants";
 import { useForm } from "../../../../hooks";
 import { useNa3Auth, useNa3ServiceOrders } from "../../../../modules/na3-react";
 import type { MaintCreateServiceOrderFormValues } from "../../../../types";
-import { getDevice } from "../../../../utils";
 import { Form as FormV2 } from "../../../forms/v2/Form";
 import { FormField } from "../../../forms/v2/FormField/FormField";
 import { SubmitButton as SubmitButtonV2 } from "../../../forms/v2/SubmitButton";
@@ -57,37 +55,43 @@ export function MaintCreateServiceOrderForm(): JSX.Element {
 
       return new Promise<void>((resolve) => {
         const confirmModal = Modal.confirm({
-          cancelText: "Voltar",
+          content: (
+            <>
+              Confirma a abertura da OS #{orderId} —{" "}
+              <em>{values.issue.trim()}</em>?
+            </>
+          ),
           okText: "Abrir OS",
           onCancel: () => resolve(),
           onOk: async () => {
-            confirmModal.update({ okText: "Enviando OS..." });
+            confirmModal.update({ okText: "Enviando..." });
 
-            const operationRes = await helpers.add(
-              orderId,
-              {
-                additionalInfo: values.additionalInfo,
-                cause: values.cause,
-                description: values.issue,
-                dpt: values.departmentDisplayName,
-                interruptions: {
-                  equipment: values.didStopMachine,
-                  line: values.didStopLine,
-                  production: values.didStopProduction,
-                },
-                machine: values.machineId,
-                maintenanceType: values.maintenanceType,
-                team: values.team,
-                username: values.departmentId,
+            const operationRes = await helpers.add(orderId, {
+              additionalInfo: values.additionalInfo,
+              cause: values.cause,
+              description: values.issue,
+              dpt: values.departmentDisplayName,
+              interruptions: {
+                equipment: values.didStopMachine,
+                line: values.didStopLine,
+                production: values.didStopProduction,
               },
-              { appVersion: APP_VERSION, device: getDevice() }
-            );
+              machine: values.machineId,
+              maintenanceType: values.maintenanceType,
+              team: values.team,
+              username: values.departmentId,
+            });
 
             if (operationRes.error) {
               notifyError(operationRes.error.message);
             } else {
               notification.success({
-                description: `OS #${orderId} aberta com sucesso!`,
+                description: (
+                  <>
+                    OS #{orderId} <em>({values.issue.trim()})</em> aberta com
+                    sucesso!
+                  </>
+                ),
                 message: "OS aberta",
               });
               form.resetForm();
@@ -95,7 +99,7 @@ export function MaintCreateServiceOrderForm(): JSX.Element {
 
             resolve();
           },
-          title: `Confirma a abertura da OS #${orderId}?`,
+          title: `Abrir OS?`,
         });
       });
     },

@@ -12,6 +12,7 @@ import ReactDOM from "react-dom";
 import { BrowserRouter } from "react-router-dom";
 
 import { App } from "./App";
+import { APP_VERSION } from "./constants";
 import { BreadcrumbProvider } from "./contexts";
 import { Na3Provider } from "./modules/na3-react";
 import reportWebVitals from "./reportWebVitals";
@@ -33,7 +34,7 @@ firebase.initializeApp({
 function Root(): JSX.Element {
   return (
     <AntdConfigProvider locale={ptBR}>
-      <Na3Provider>
+      <Na3Provider appVersion={APP_VERSION}>
         <BrowserRouter>
           <BreadcrumbProvider>
             <App />
