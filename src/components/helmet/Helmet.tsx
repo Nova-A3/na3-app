@@ -29,6 +29,8 @@ export function Helmet(): JSX.Element {
 
   return (
     <ReactHelmet>
+      <meta content="#ffffff" name="theme-color" />
+
       <title>{title}</title>
     </ReactHelmet>
   );

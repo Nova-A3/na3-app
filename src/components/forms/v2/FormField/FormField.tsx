@@ -560,7 +560,7 @@ export function FormField(props: FormFieldProps): JSX.Element {
     props,
   ]);
 
-  console.log("RENDER", name, { error, invalid, isTouched, value });
+  // console.log("RENDER", name, { error, invalid, isTouched, value });
 
   return (
     <Form.Item

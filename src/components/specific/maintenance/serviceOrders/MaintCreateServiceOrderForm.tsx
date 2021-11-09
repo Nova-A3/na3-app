@@ -121,8 +121,6 @@ export function MaintCreateServiceOrderForm(): JSX.Element {
     return <Redirect to="/manutencao" />;
   }
 
-  console.log(didStopMachineDisabled);
-
   return (
     <FormV2 form={form} onSubmit={handleSubmit}>
       <FormField
