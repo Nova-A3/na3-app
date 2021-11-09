@@ -1,0 +1,6 @@
+/* up to md */
+@media screen and (max-width: 768px) {
+  .Description {
+    text-indent: 36px;
+  }
+}
