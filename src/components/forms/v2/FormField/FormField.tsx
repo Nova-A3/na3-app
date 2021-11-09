@@ -490,11 +490,7 @@ export function FormField(props: FormFieldProps): JSX.Element {
             {props.options.map(({ value, label }) => (
               <Radio.Button
                 key={nanoid()}
-                style={{
-                  width: `calc(${100 / props.options.length}% - ${
-                    status === "untouched" ? 0 : 32 / props.options.length
-                  }px)`,
-                }}
+                style={{ width: `${100 / props.options.length}%` }}
                 value={value}
               >
                 {label}
@@ -555,7 +551,6 @@ export function FormField(props: FormFieldProps): JSX.Element {
     name,
     type,
     value,
-    status,
     handleChange,
     handleBlur,
     handleAutoCompleteFilterOption,
