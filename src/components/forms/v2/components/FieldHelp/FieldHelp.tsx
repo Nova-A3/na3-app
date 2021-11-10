@@ -1,6 +1,6 @@
 import { LoadingOutlined } from "@ant-design/icons";
 import { Typography } from "antd";
-import React from "react";
+import React, { useMemo } from "react";
 
 import type { FieldStatus } from "../../FormField/FormField";
 import classes from "./FieldHelp.module.css";
@@ -9,6 +9,7 @@ type FieldHelpProps = {
   defaultText: string | undefined;
   error: string | undefined;
   fieldStatus: FieldStatus;
+  isFormSubmitting: boolean;
   isHidden: boolean;
   textWhenLoading: string | undefined;
 };
@@ -17,9 +18,15 @@ export function FieldHelp({
   defaultText,
   error,
   fieldStatus,
+  isFormSubmitting,
   isHidden,
-  textWhenLoading,
+  textWhenLoading: textWhenLoadingProp,
 }: FieldHelpProps): JSX.Element | null {
+  const textWhenLoading = useMemo(
+    () => (isFormSubmitting ? "Validando..." : textWhenLoadingProp),
+    [isFormSubmitting, textWhenLoadingProp]
+  );
+
   if (isHidden) return null;
 
   switch (fieldStatus) {

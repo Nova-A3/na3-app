@@ -5,6 +5,7 @@ export type Na3TransfLabelTemplate = Pick<
   ApiLabel<"transf">,
   | "batchIdFormat"
   | "customerName"
+  | "departmentId"
   | "productCode"
   | "productName"
   | "productUnitAbbreviation"

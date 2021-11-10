@@ -7,18 +7,15 @@ import { LabelsTransfCard } from "./transfCard/LabelsTransfCard";
 
 type LabelsTransfListProps = {
   cardTooltipActionText?: string;
-  onDeleteTemplate?: (template: Na3TransfLabelTemplate) => void;
   onSelectTemplate: (template: Na3TransfLabelTemplate) => void;
 };
 
 const defaultProps: Omit<LabelsTransfListProps, "onSelectTemplate"> = {
   cardTooltipActionText: undefined,
-  onDeleteTemplate: undefined,
 };
 
 export function LabelsTransfList({
   onSelectTemplate,
-  onDeleteTemplate,
   cardTooltipActionText,
 }: LabelsTransfListProps): JSX.Element {
   const transfLabelTemplates = useNa3TransfLabelTemplates();
@@ -27,12 +24,11 @@ export function LabelsTransfList({
     (item: Na3TransfLabelTemplate) => (
       <LabelsTransfCard
         data={item}
-        onDelete={onDeleteTemplate}
         onSelect={onSelectTemplate}
         tooltipActionText={cardTooltipActionText}
       />
     ),
-    [onSelectTemplate, onDeleteTemplate, cardTooltipActionText]
+    [onSelectTemplate, cardTooltipActionText]
   );
 
   const handleFilterItem = useCallback(

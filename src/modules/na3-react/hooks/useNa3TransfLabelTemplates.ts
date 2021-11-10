@@ -31,7 +31,9 @@ export function useNa3TransfLabelTemplates(): UseNa3TransfLabelTemplatesResult {
   const { transf: transfLabelTemplates } = useStateSlice("labelTemplates");
 
   const fbCollectionRef = useRef(
-    firebase.firestore().collection(resolveCollectionId("tickets", environment))
+    firebase
+      .firestore()
+      .collection(resolveCollectionId("transf-label-templates", environment))
   );
 
   const getById = useCallback(

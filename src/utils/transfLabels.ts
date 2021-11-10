@@ -16,6 +16,7 @@ export function createTransfLabelFromPrintForm({
   productQuantity,
   productUnitAbbreviation,
   productUnitName,
+  departmentId,
 }: LabelsTransfPrintFormOnSubmitValues): ApiLabel<"transf"> {
   return {
     barcodeData: productCode,
@@ -23,6 +24,7 @@ export function createTransfLabelFromPrintForm({
     batchIdFormat,
     customerName,
     date,
+    departmentId,
     invoiceNumber,
     productCode,
     productName,

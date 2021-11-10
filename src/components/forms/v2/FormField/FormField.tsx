@@ -222,8 +222,6 @@ export function FormField(props: FormFieldProps): JSX.Element {
     return "untouched";
   }, [isLoading, error?.message, invalid, isTouched, value]);
 
-  console.log(isLoading, error?.message, invalid, isTouched, value, status);
-
   const handleChange = useCallback(
     (
       eventOrValue:
@@ -263,7 +261,7 @@ export function FormField(props: FormFieldProps): JSX.Element {
         }
       }
 
-      onChange(eventOrValue === undefined ? null : eventOrValue);
+      onChange(eventOrValue);
     },
     [onChange, type, autoUpperCase, noDecimal]
   );
@@ -339,6 +337,7 @@ export function FormField(props: FormFieldProps): JSX.Element {
         defaultText={defaultHelpText}
         error={error?.message}
         fieldStatus={status}
+        isFormSubmitting={isSubmitting}
         isHidden={status === "valid" ? !!hideHelpWhenValid : false}
         textWhenLoading={helpTextWhenLoading}
       />
@@ -347,6 +346,7 @@ export function FormField(props: FormFieldProps): JSX.Element {
       defaultHelpText,
       error?.message,
       status,
+      isSubmitting,
       hideHelpWhenValid,
       helpTextWhenLoading,
     ]
@@ -561,8 +561,6 @@ export function FormField(props: FormFieldProps): JSX.Element {
     placeholder,
     props,
   ]);
-
-  // console.log("RENDER", name, { error, invalid, isTouched, value });
 
   return (
     <Form.Item

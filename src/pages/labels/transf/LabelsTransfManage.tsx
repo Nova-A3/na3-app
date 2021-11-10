@@ -1,5 +1,5 @@
 import { PlusCircleOutlined } from "@ant-design/icons";
-import { Button, Modal, notification } from "antd";
+import { Button, Modal } from "antd";
 import React, { useCallback, useState } from "react";
 import { useHistory } from "react-router-dom";
 
@@ -9,7 +9,7 @@ import {
   PageActionButtons,
   PageTitle,
 } from "../../../components";
-import { useNa3TransfLabelTemplates } from "../../../modules/na3-react";
+// import { useNa3TransfLabelTemplates } from "../../../modules/na3-react";
 import type { Na3TransfLabelTemplate } from "../../../modules/na3-types";
 
 export function LabelsTransfManagePage(): JSX.Element {
@@ -18,7 +18,7 @@ export function LabelsTransfManagePage(): JSX.Element {
 
   const history = useHistory();
 
-  const transfLabelTemplates = useNa3TransfLabelTemplates();
+  // const transfLabelTemplates = useNa3TransfLabelTemplates();
 
   const handleCreateTemplateClick = useCallback(() => {
     history.push("/etiquetas/gerenciar/transferencia/criar-modelo");
@@ -35,6 +35,7 @@ export function LabelsTransfManagePage(): JSX.Element {
     setSelectedTemplate(undefined);
   }, []);
 
+  /*
   const handleDeleteTemplate = useCallback(
     (template: Na3TransfLabelTemplate) => {
       const onConfirmDelete = async (): Promise<void> => {
@@ -64,6 +65,7 @@ export function LabelsTransfManagePage(): JSX.Element {
     },
     [transfLabelTemplates.helpers]
   );
+  */
 
   return (
     <>
@@ -80,22 +82,23 @@ export function LabelsTransfManagePage(): JSX.Element {
 
       <LabelsTransfList
         cardTooltipActionText="editar"
-        onDeleteTemplate={handleDeleteTemplate}
         onSelectTemplate={handleSelectTemplate}
       />
 
-      <Modal
-        footer={null}
-        onCancel={handleCloseModal}
-        title={selectedTemplate?.name.trim().toUpperCase()}
-        visible={!!selectedTemplate}
-        width="80vw"
-      >
-        <LabelsTransfTemplateForm
-          editingTemplate={selectedTemplate}
-          onSubmit={handleCloseModal}
-        />
-      </Modal>
+      {selectedTemplate && (
+        <Modal
+          footer={null}
+          onCancel={handleCloseModal}
+          title={selectedTemplate.name.trim().toUpperCase()}
+          visible={true}
+          width="80vw"
+        >
+          <LabelsTransfTemplateForm
+            editingTemplate={selectedTemplate}
+            onSubmit={handleCloseModal}
+          />
+        </Modal>
+      )}
     </>
   );
 }

@@ -60,8 +60,8 @@ export function LabelsTransfPrintForm({
       productQuantity,
     }: LabelsTransfPrintFormValues): void => {
       onSubmit({
+        ...template,
         batchId: na3.batchId(batchId).value,
-        batchIdFormat: template.batchIdFormat,
         copies: parseInt(copies),
         customerName,
         date: dayjs(date).format("DD/MM/YYYY"),
@@ -71,16 +71,10 @@ export function LabelsTransfPrintForm({
         productQuantity: parseFloat(productQuantity.replace(",", "."))
           .toString()
           .replace(".", ","),
-        productUnitAbbreviation: template.productUnitAbbreviation,
-        productUnitName: template.productUnitName,
+        templateId: template.id,
       });
     },
-    [
-      onSubmit,
-      template.batchIdFormat,
-      template.productUnitAbbreviation,
-      template.productUnitName,
-    ]
+    [onSubmit, template]
   );
 
   return (

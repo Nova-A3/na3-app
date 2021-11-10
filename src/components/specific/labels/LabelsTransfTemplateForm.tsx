@@ -3,16 +3,21 @@ import React, { useCallback, useEffect, useState } from "react";
 
 import { useForm } from "../../../hooks";
 import na3 from "../../../modules/na3";
-import { useNa3TransfLabelTemplates } from "../../../modules/na3-react";
+import {
+  useNa3Departments,
+  useNa3TransfLabelTemplates,
+} from "../../../modules/na3-react";
 import type {
   ApiPerson,
   ApiProduct,
+  Na3DepartmentId,
   Na3TransfLabelTemplate,
 } from "../../../modules/na3-types";
 import { formatProductUnit } from "../../../utils";
 import { FormCollapse } from "../../forms/v2/components/FormCollapse/FormCollapse";
 import { Form } from "../../forms/v2/Form";
 import { FormField } from "../../forms/v2/FormField/FormField";
+import { SubmitButton } from "../../forms/v2/SubmitButton";
 
 type LabelTemplateFormProps = {
   editingTemplate?: Na3TransfLabelTemplate;
@@ -25,13 +30,16 @@ const defaultProps: LabelTemplateFormProps = {
 };
 
 type FormValues = {
-  batchIdFormat: "brazil" | "mexico";
+  batchIdFormat: "brazil" | "commercial" | "mexico";
   customerName: string;
+  departmentId: Na3DepartmentId<"shop-floor"> | "";
   productCode: string;
   productName: string;
   productUnitDisplay: string;
   templateName: string;
 };
+
+const DEFAULT_BATCH_ID_FORMAT = "commercial";
 
 export function LabelsTransfTemplateForm({
   editingTemplate,
@@ -47,12 +55,16 @@ export function LabelsTransfTemplateForm({
   const [customersLoading, setCustomersLoading] = useState(false);
   const [customersData, setCustomersData] = useState<ApiPerson[]>();
 
-  const transfLabelTemplates = useNa3TransfLabelTemplates();
+  const [hasInitializedEdit, setHasInitializedEdit] = useState(false);
+
+  const { helpers } = useNa3TransfLabelTemplates();
+  const departments = useNa3Departments();
 
   const form = useForm<FormValues>({
     defaultValues: {
-      batchIdFormat: editingTemplate?.batchIdFormat || "brazil",
+      batchIdFormat: editingTemplate?.batchIdFormat || DEFAULT_BATCH_ID_FORMAT,
       customerName: editingTemplate?.customerName || "",
+      departmentId: editingTemplate?.departmentId || "",
       productCode: editingTemplate?.productCode.replace("-", "") || "",
       productName: editingTemplate?.productName || "",
       productUnitDisplay: editingTemplate
@@ -65,29 +77,22 @@ export function LabelsTransfTemplateForm({
     },
   });
 
-  const resetApiData = useCallback(() => {
-    setCustomersData(undefined);
-    setCustomersLoading(false);
-
-    setProductData(undefined);
-    setProductLoading(false);
-  }, []);
-
   const fetchAndSetApiData = useCallback(
     async (productCode: string): Promise<{ error?: string }> => {
       setProductLoading(true);
+      setCustomersLoading(true);
 
       const productRes = await na3.products.getByCode(productCode);
 
       if (productRes.error) {
         return { error: productRes.error.message };
-      } else {
-        const productRef = productRes.data;
-        const customers = await productRef.getCustomers({ ignoreErrors: true });
-
-        setProductData(productRef.get());
-        setCustomersData(customers);
       }
+
+      const productRef = productRes.data;
+      const customers = await productRef.getCustomers({ ignoreErrors: true });
+
+      setProductData(productRef.get());
+      setCustomersData(customers);
 
       setProductLoading(false);
       setCustomersLoading(false);
@@ -96,6 +101,14 @@ export function LabelsTransfTemplateForm({
     },
     []
   );
+
+  const resetApiData = useCallback(() => {
+    setCustomersData(undefined);
+    setCustomersLoading(false);
+
+    setProductData(undefined);
+    setProductLoading(false);
+  }, []);
 
   const handleValidateProductCode = useCallback(
     async (value: string) => {
@@ -127,12 +140,17 @@ export function LabelsTransfTemplateForm({
       productName,
       customerName,
       batchIdFormat,
+      departmentId,
     }: FormValues) => {
       function notifyError(message: string): void {
         notification.error({
           description: message,
           message: `Erro ao ${editingTemplate ? "editar" : "criar"} o modelo`,
         });
+      }
+
+      if (departmentId === "") {
+        return notifyError("Você precisa atribuir um setor ao modelo.");
       }
 
       if (!productData || productData.name !== productName) {
@@ -144,22 +162,23 @@ export function LabelsTransfTemplateForm({
       );
       const template: Omit<Na3TransfLabelTemplate, "id"> = {
         batchIdFormat: batchIdFormat,
-        customerId: customer?.id.toUpperCase().trim() || null,
-        customerName: customer?.name.toUpperCase().trim() || customerName,
-        name: templateName.toUpperCase().trim(),
-        productCode: productData.code.toUpperCase().trim(),
-        productId: productData.id.toUpperCase().trim(),
-        productName: productData.name.toUpperCase().trim(),
+        customerId: customer?.id.trim().toUpperCase() || null,
+        customerName: customer?.name.trim().toUpperCase() || customerName,
+        departmentId,
+        name: templateName.trim().toUpperCase(),
+        productCode: productData.code.trim().toUpperCase(),
+        productId: productData.id.trim().toUpperCase(),
+        productName: productData.name.trim().toUpperCase(),
         productSnapshot: productData,
         productUnitAbbreviation: productData.unit.abbreviation
-          .toUpperCase()
-          .trim(),
-        productUnitName: productData.unit.name.toUpperCase().trim(),
+          .trim()
+          .toUpperCase(),
+        productUnitName: productData.unit.name.trim().toUpperCase(),
       };
 
       const operationRes = await (editingTemplate
-        ? transfLabelTemplates.helpers.update(editingTemplate.id, template)
-        : transfLabelTemplates.helpers.add(template));
+        ? helpers.update(editingTemplate.id, template)
+        : helpers.add(template));
 
       if (operationRes.error) {
         notifyError(operationRes.error.message);
@@ -174,13 +193,7 @@ export function LabelsTransfTemplateForm({
 
       onSubmit?.();
     },
-    [
-      editingTemplate,
-      onSubmit,
-      productData,
-      customersData,
-      transfLabelTemplates.helpers,
-    ]
+    [editingTemplate, productData, customersData, helpers, onSubmit]
   );
 
   useEffect(() => {
@@ -190,12 +203,39 @@ export function LabelsTransfTemplateForm({
         "productUnitDisplay",
         formatProductUnit(productData.unit.name, productData.unit.abbreviation)
       );
+
+      if (productData.isMexicoProduct) {
+        form.setValue("batchIdFormat", "mexico");
+      }
+
+      if (editingTemplate && !hasInitializedEdit) {
+        form.setValue("customerName", editingTemplate.customerName);
+        form.setValue("departmentId", editingTemplate.departmentId || "");
+        form.setValue("batchIdFormat", editingTemplate.batchIdFormat);
+        setHasInitializedEdit(true);
+      }
     } else {
       form.setValue("productName", "");
       form.setValue("customerName", "");
       form.setValue("productUnitDisplay", "");
+      form.setValue("batchIdFormat", DEFAULT_BATCH_ID_FORMAT);
     }
-  }, [productData, form]);
+  }, [productData, form, editingTemplate, hasInitializedEdit]);
+
+  useEffect(() => {
+    if (editingTemplate && !(productData && customersData)) {
+      form.setValue("templateName", editingTemplate.name, {
+        shouldTouch: true,
+        shouldValidate: true,
+      });
+      form.setValue("productCode", editingTemplate.productCode, {
+        shouldTouch: true,
+        shouldValidate: true,
+      });
+    }
+  }, [editingTemplate, productData, customersData, form]);
+
+  console.log(editingTemplate);
 
   return (
     <Form form={form} onSubmit={handleSubmit}>
@@ -258,41 +298,61 @@ export function LabelsTransfTemplateForm({
         type="input"
       />
 
+      <FormField
+        hidden={!productData || !customersData}
+        label="Setor"
+        name="departmentId"
+        options={(departments.helpers.getByType("shop-floor") || []).map(
+          (dpt) => ({
+            label: dpt.displayName.trim().toUpperCase(),
+            value: dpt.id,
+          })
+        )}
+        rules={{ required: "Atribua um setor ao modelo" }}
+        type="select"
+      />
+
       {productData && customersData && (
-        <FormCollapse title="Avançado">
-          <FormField
-            hidden={!productData || !customersData}
-            label="Formato de numeração dos lotes"
-            name="batchIdFormat"
-            options={batchIdFormatOptions}
-            rules={{
-              required: "Selecione um formato para a numeração dos lotes",
-            }}
-            type="select"
+        <>
+          <FormCollapse title="Avançado">
+            <FormField
+              hidden={!productData || !customersData}
+              label="Formato de numeração dos lotes"
+              name="batchIdFormat"
+              options={Object.entries(batchIdFormats).map(
+                ([formatId, format]) => ({
+                  label: (
+                    <>
+                      {format.name} <em>({format.example})</em>
+                    </>
+                  ),
+                  value: formatId,
+                })
+              )}
+              rules={{
+                required: "Selecione um formato para a numeração dos lotes",
+              }}
+              type="select"
+            />
+          </FormCollapse>
+
+          <SubmitButton
+            label={editingTemplate ? "Salvar alterações" : "Criar modelo"}
+            labelWhenLoading={editingTemplate ? "Salvando..." : "Enviando..."}
           />
-        </FormCollapse>
+        </>
       )}
     </Form>
   );
 }
 
-const batchIdFormatOptions = [
-  {
-    label: (
-      <>
-        Brasil <em>(AA11-222-33344 B)</em>
-      </>
-    ),
-    value: "brazil",
-  },
-  {
-    label: (
-      <>
-        México <em>(AA-BB-1111)</em>
-      </>
-    ),
-    value: "mexico",
-  },
-];
+const batchIdFormats: Record<
+  Na3TransfLabelTemplate["batchIdFormat"],
+  { example: string; name: string }
+> = {
+  brazil: { example: "KA01-123-21200 A", name: "Brasil" },
+  commercial: { example: "KA-123-21 A", name: "Comercial" },
+  mexico: { example: "KA-21-123...", name: "México" },
+};
 
 LabelsTransfTemplateForm.defaultProps = defaultProps;
