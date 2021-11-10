@@ -1,3 +1,4 @@
+import { LoadingOutlined } from "@ant-design/icons";
 import { Typography } from "antd";
 import React from "react";
 
@@ -25,7 +26,7 @@ export function FieldHelp({
     case "loading":
       return (
         <Typography.Text className={classes.Loading}>
-          {textWhenLoading || "Carregando..."}
+          <LoadingOutlined /> {textWhenLoading || "Carregando..."}
         </Typography.Text>
       );
     case "invalid":
