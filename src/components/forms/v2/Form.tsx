@@ -1,5 +1,5 @@
 import { Form as AntdForm, message } from "antd";
-import React, { useCallback, useState } from "react";
+import React, { useCallback } from "react";
 import type {
   FieldValues,
   SubmitErrorHandler,
@@ -10,28 +10,24 @@ import { FormProvider } from "react-hook-form";
 
 import { Spinner } from "../../ui/Spinner/Spinner";
 import classes from "./Form.module.css";
-import type { FormFieldProps } from "./FormField/FormField";
-import type { SubmitButtonProps } from "./SubmitButton";
 
-export type HandleSubmit<TFieldValues extends FieldValues = FieldValues> =
-  SubmitHandler<TFieldValues>;
+export type HandleSubmit<Fields extends FieldValues = FieldValues> =
+  SubmitHandler<Fields>;
 
-export type HandleSubmitFailed<TFieldValues extends FieldValues = FieldValues> =
-  SubmitErrorHandler<TFieldValues>;
+export type HandleSubmitFailed<Fields extends FieldValues = FieldValues> =
+  SubmitErrorHandler<Fields>;
 
 type FormProps<
   Fields extends FieldValues = FieldValues,
   Context extends Record<string, unknown> = Record<string, unknown>
 > = {
-  children: React.ReactElement<FormFieldProps | SubmitButtonProps>[];
+  children: React.ReactNode;
   form: UseFormReturn<Fields, Context>;
-  isModal?: boolean;
   onSubmit: HandleSubmit<Fields>;
   onSubmitFailed?: HandleSubmitFailed<Fields>;
 };
 
 const defaultProps: Omit<FormProps, "children" | "form" | "onSubmit"> = {
-  isModal: false,
   onSubmitFailed: undefined,
 };
 
@@ -58,10 +54,7 @@ export function Form<
   children,
   onSubmit,
   onSubmitFailed,
-}: /* isModal, */
-FormProps<Fields, Context>): JSX.Element {
-  const [spinnerText /* setSpinnerText */] = useState<string | null>(null);
-
+}: FormProps<Fields, Context>): JSX.Element {
   const handleSubmitFailed: SubmitErrorHandler<Fields> = useCallback(
     (errors, event) => {
       void message.error("Corrija os erros");
@@ -69,17 +62,6 @@ FormProps<Fields, Context>): JSX.Element {
     },
     [onSubmitFailed]
   );
-
-  /*
-  useEffect(() => {
-    React.Children.forEach(children, (child) => {
-      // Check if is SubmitButton
-      if (React.isValidElement(child) && "labelWhenLoading" in child.props) {
-        setSpinnerText(child.props.labelWhenLoading);
-      }
-    });
-  }, [children]);
-  */
 
   return (
     <FormProvider
@@ -100,13 +82,8 @@ FormProps<Fields, Context>): JSX.Element {
     >
       <Spinner
         spinning={formState.isSubmitting}
-        text={spinnerText}
+        text={null}
         wrapperClassName={classes.FormContainer}
-        /*
-        wrapperClassName={`${classes.FormContainer} ${
-          isModal ? "" : classes.MobileAccessibleForm
-        }`}
-        */
       >
         <AntdForm onFinish={handleSubmit(onSubmit, handleSubmitFailed)}>
           {children}

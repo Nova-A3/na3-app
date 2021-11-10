@@ -1,331 +1,298 @@
 import { notification } from "antd";
-import React, { useCallback, useMemo, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 
-import {
-  useNa3Product,
-  useNa3ProductCustomers,
-  useNa3TransfLabelTemplates,
-} from "../../../modules/na3-react";
-import type { Na3TransfLabelTemplate } from "../../../modules/na3-types";
-import type { LabelsTransfCreateTemplateFormValues } from "../../../types";
-import { formatProductUnit, isTouchDevice } from "../../../utils";
-import { FormCollapse } from "../../forms/components/FormCollapse";
-import type { HandleSubmit, HandleValidate } from "../../forms/Form";
-import { Form } from "../../forms/Form";
-import { FormItem } from "../../forms/FormItem";
-import { SubmitButton } from "../../forms/SubmitButton";
+import { useForm } from "../../../hooks";
+import na3 from "../../../modules/na3";
+import { useNa3TransfLabelTemplates } from "../../../modules/na3-react";
+import type {
+  ApiPerson,
+  ApiProduct,
+  Na3TransfLabelTemplate,
+} from "../../../modules/na3-types";
+import { formatProductUnit } from "../../../utils";
+import { FormCollapse } from "../../forms/v2/components/FormCollapse/FormCollapse";
+import { Form } from "../../forms/v2/Form";
+import { FormField } from "../../forms/v2/FormField/FormField";
 
 type LabelTemplateFormProps = {
   editingTemplate?: Na3TransfLabelTemplate;
-  isOnModal?: boolean;
   onSubmit?: () => void;
 };
 
 const defaultProps: LabelTemplateFormProps = {
   editingTemplate: undefined,
-  isOnModal: false,
   onSubmit: undefined,
+};
+
+type FormValues = {
+  batchIdFormat: "brazil" | "mexico";
+  customerName: string;
+  productCode: string;
+  productName: string;
+  productUnitDisplay: string;
+  templateName: string;
 };
 
 export function LabelsTransfTemplateForm({
   editingTemplate,
   onSubmit,
-  isOnModal,
 }: LabelTemplateFormProps): JSX.Element {
-  const [productCode, setProductCode] = useState(
-    editingTemplate?.productCode || ""
-  );
-  // const [showSameProductModal, setShowSameProductModal] = useState(false);
+  const [productCodeMaskType, setProductCodeMaskType] = useState<
+    "dart" | "default"
+  >("default");
+
+  const [productLoading, setProductLoading] = useState(false);
+  const [productData, setProductData] = useState<ApiProduct>();
+
+  const [customersLoading, setCustomersLoading] = useState(false);
+  const [customersData, setCustomersData] = useState<ApiPerson[]>();
 
   const transfLabelTemplates = useNa3TransfLabelTemplates();
 
-  const product = useNa3Product(productCode);
-  const productCustomers = useNa3ProductCustomers(product.data);
+  const form = useForm<FormValues>({
+    defaultValues: {
+      batchIdFormat: editingTemplate?.batchIdFormat || "brazil",
+      customerName: editingTemplate?.customerName || "",
+      productCode: editingTemplate?.productCode.replace("-", "") || "",
+      productName: editingTemplate?.productName || "",
+      productUnitDisplay: editingTemplate
+        ? formatProductUnit(
+            editingTemplate.productUnitName,
+            editingTemplate.productUnitAbbreviation
+          )
+        : "",
+      templateName: editingTemplate?.name || "",
+    },
+  });
 
-  const handleValidate: HandleValidate<LabelsTransfCreateTemplateFormValues> =
-    useCallback(
-      ({ templateName, productCode, productName, customerName }) => {
-        const errors: Partial<LabelsTransfCreateTemplateFormValues> = {};
-        if (!templateName) errors.templateName = "Campo obrigatório";
-        if (!productCode) errors.productCode = "Campo obrigatório";
-        if (product.error) errors.productCode = product.error;
-        if (productName && !customerName)
-          errors.customerName = "Campo obrigatório";
-        return errors;
-      },
-      [product.error]
-    );
+  const resetApiData = useCallback(() => {
+    setCustomersData(undefined);
+    setCustomersLoading(false);
 
-  const handleSubmit: HandleSubmit<LabelsTransfCreateTemplateFormValues> =
-    useCallback(
-      async (
-        { templateName, productName, customerName, batchIdFormat },
-        helpers
-      ) => {
-        const notifyError = (message: string): void => {
-          notification.error({
-            description: message,
-            message: `Erro ao ${editingTemplate ? "editar" : "criar"} o modelo`,
-          });
-        };
+    setProductData(undefined);
+    setProductLoading(false);
+  }, []);
 
-        if (!product.data || product.data.name !== productName) {
-          return notifyError("Não foi possível vincular um produto ao modelo.");
-        }
+  const fetchAndSetApiData = useCallback(
+    async (productCode: string): Promise<{ error?: string }> => {
+      setProductLoading(true);
 
-        helpers.setStatus("loading");
+      const productRes = await na3.products.getByCode(productCode);
 
-        const customer = productCustomers.data?.find(
-          (customer) => customer.name === customerName
-        );
-        const template: Omit<Na3TransfLabelTemplate, "id"> = {
-          batchIdFormat: batchIdFormat,
-          customerId: customer?.id.toUpperCase().trim() || null,
-          customerName: customer?.name.toUpperCase().trim() || customerName,
-          name: templateName.toUpperCase().trim(),
-          productCode: product.data.code.toUpperCase().trim(),
-          productId: product.data.id.toUpperCase().trim(),
-          productName: product.data.name.toUpperCase().trim(),
-          productSnapshot: product.data.get(),
-          productUnitAbbreviation: product.data.unit.abbreviation
-            .toUpperCase()
-            .trim(),
-          productUnitName: product.data.unit.name.toUpperCase().trim(),
-        };
+      if (productRes.error) {
+        return { error: productRes.error.message };
+      } else {
+        const productRef = productRes.data;
+        const customers = await productRef.getCustomers({ ignoreErrors: true });
 
-        const operationRes = await (editingTemplate
-          ? transfLabelTemplates.helpers.update(editingTemplate.id, template)
-          : transfLabelTemplates.helpers.add(template));
+        setProductData(productRef.get());
+        setCustomersData(customers);
+      }
 
-        if (operationRes.error) {
-          notifyError(operationRes.error.message);
-        } else {
-          notification.success({
-            description: `O modelo "${template.name}" foi ${
-              editingTemplate ? "editado" : "criado"
-            } com sucesso!`,
-            message: `Modelo ${editingTemplate ? "editado" : "criado"}`,
-          });
-        }
+      setProductLoading(false);
+      setCustomersLoading(false);
 
-        helpers.setStatus("ready");
-
-        if (onSubmit) onSubmit();
-      },
-      [
-        editingTemplate,
-        onSubmit,
-        product.data,
-        productCustomers.data,
-        transfLabelTemplates.helpers,
-      ]
-    );
-
-  const batchIdFormatOptions = useMemo(
-    () => [
-      {
-        label: (
-          <>
-            Brasil <em>(AA11-222-33344 B)</em>
-          </>
-        ),
-        value: "brazil",
-      },
-      {
-        label: (
-          <>
-            México <em>(AA-BB-1111)</em>
-          </>
-        ),
-        value: "mexico",
-      },
-    ],
+      return {};
+    },
     []
   );
 
-  /*
+  const handleValidateProductCode = useCallback(
+    async (value: string) => {
+      const productCode = na3.products.utils.fixQuery(value);
+
+      if (!na3.products.isProductCode(productCode)) {
+        resetApiData();
+        return "Código do produto inválido";
+      }
+
+      const apiRes = await fetchAndSetApiData(productCode);
+
+      if (apiRes.error) {
+        resetApiData();
+        return apiRes.error;
+      }
+    },
+    [resetApiData, fetchAndSetApiData]
+  );
+
+  const handleProductCodeChange = useCallback((value: string) => {
+    if (value.startsWith("S")) setProductCodeMaskType("dart");
+    else setProductCodeMaskType("default");
+  }, []);
+
+  const handleSubmit = useCallback(
+    async ({
+      templateName,
+      productName,
+      customerName,
+      batchIdFormat,
+    }: FormValues) => {
+      function notifyError(message: string): void {
+        notification.error({
+          description: message,
+          message: `Erro ao ${editingTemplate ? "editar" : "criar"} o modelo`,
+        });
+      }
+
+      if (!productData || productData.name !== productName) {
+        return notifyError("Não foi possível vincular um produto ao modelo.");
+      }
+
+      const customer = customersData?.find(
+        (customer) => customer.name === customerName
+      );
+      const template: Omit<Na3TransfLabelTemplate, "id"> = {
+        batchIdFormat: batchIdFormat,
+        customerId: customer?.id.toUpperCase().trim() || null,
+        customerName: customer?.name.toUpperCase().trim() || customerName,
+        name: templateName.toUpperCase().trim(),
+        productCode: productData.code.toUpperCase().trim(),
+        productId: productData.id.toUpperCase().trim(),
+        productName: productData.name.toUpperCase().trim(),
+        productSnapshot: productData,
+        productUnitAbbreviation: productData.unit.abbreviation
+          .toUpperCase()
+          .trim(),
+        productUnitName: productData.unit.name.toUpperCase().trim(),
+      };
+
+      const operationRes = await (editingTemplate
+        ? transfLabelTemplates.helpers.update(editingTemplate.id, template)
+        : transfLabelTemplates.helpers.add(template));
+
+      if (operationRes.error) {
+        notifyError(operationRes.error.message);
+      } else {
+        notification.success({
+          description: `O modelo "${template.name}" foi ${
+            editingTemplate ? "editado" : "criado"
+          } com sucesso!`,
+          message: `Modelo ${editingTemplate ? "editado" : "criado"}`,
+        });
+      }
+
+      onSubmit?.();
+    },
+    [
+      editingTemplate,
+      onSubmit,
+      productData,
+      customersData,
+      transfLabelTemplates.helpers,
+    ]
+  );
+
   useEffect(() => {
-    if (editingTemplate || showSameProductModal) return;
-
-    const sameProductTemplates = transfLabelTemplates.data?.filter(
-      ({ productCode }) => productCode === product.data?.code
-    );
-
-    if (sameProductTemplates && sameProductTemplates.length > 0) {
-      Modal.info({
-        content: (
-          <>
-            <ul>
-              {sameProductTemplates.map((template) => (
-                <li key={template.id}>{template.name.toUpperCase()}</li>
-              ))}
-            </ul>
-            {isTouchDevice() ? "Toque" : "Clique"} em {'"OK"'} para continuar.
-          </>
-        ),
-        title: `Já existe${sameProductTemplates.length > 1 ? "m" : ""} ${
-          sameProductTemplates.length > 1 ? sameProductTemplates.length : "um"
-        } modelo${
-          sameProductTemplates.length > 1 ? "s" : ""
-        } para este produto`,
-      });
-
-      setShowSameProductModal(true);
+    if (productData) {
+      form.setValue("productName", productData.name.trim().toUpperCase());
+      form.setValue(
+        "productUnitDisplay",
+        formatProductUnit(productData.unit.name, productData.unit.abbreviation)
+      );
+    } else {
+      form.setValue("productName", "");
+      form.setValue("customerName", "");
+      form.setValue("productUnitDisplay", "");
     }
-  }, [
-    product,
-    transfLabelTemplates.data,
-    editingTemplate,
-    showSameProductModal,
-  ]);
-  */
+  }, [productData, form]);
 
   return (
-    <Form<LabelsTransfCreateTemplateFormValues>
-      initialTouched={
-        editingTemplate && { productCode: true, templateName: true }
-      }
-      initialValues={{
-        batchIdFormat: editingTemplate?.batchIdFormat || "brazil",
-        customerName: editingTemplate?.customerName || "",
-        productCode: editingTemplate?.productCode.replace("-", "") || "",
-        productName: editingTemplate?.productName || "",
-        productUnitDisplay: editingTemplate
-          ? formatProductUnit(
-              editingTemplate.productUnitName,
-              editingTemplate.productUnitAbbreviation
-            )
-          : "",
-        templateName: editingTemplate?.name || "",
-      }}
-      isOnModal={isOnModal}
-      onSubmit={handleSubmit}
-      onValidate={handleValidate}
-    >
-      {({ values, touched, setFieldValue, setFieldTouched }): JSX.Element => (
-        <>
-          <FormItem
-            autoCapitalize={true}
-            label="Nome do modelo"
-            name="templateName"
-            type="input"
+    <Form form={form} onSubmit={handleSubmit}>
+      <FormField
+        autoUpperCase={true}
+        label="Nome do modelo"
+        name="templateName"
+        rules={{ required: "Atribua um nome para o modelo" }}
+        type="input"
+      />
+
+      <FormField
+        autoUpperCase={true}
+        isLoading={productLoading}
+        label="Código do produto"
+        mask={[
+          /[\ds]/i,
+          ...(productCodeMaskType === "dart"
+            ? ["-", /\d/, /\d/, /\d/, /\d/, /\d/, /\d/, /\d/]
+            : [/\d/, /\d/, /\d/, /\d/, /\d/, /\d/, /\d/, /\d/, /\d/]),
+        ]}
+        name="productCode"
+        onValueChange={handleProductCodeChange}
+        rules={{
+          required: "Forneça o código do produto",
+          validate: handleValidateProductCode,
+        }}
+        type="mask"
+      />
+
+      <FormField
+        disabled={true}
+        hidden={!productData}
+        label="Produto"
+        name="productName"
+        rules={null}
+        type="input"
+      />
+
+      <FormField
+        autoUpperCase={true}
+        hidden={!productData || !customersData}
+        isLoading={customersLoading}
+        label="Cliente"
+        name="customerName"
+        options={(customersData || []).map((customer) => ({
+          label: customer.name.trim().toUpperCase(),
+          value: customer.name.trim().toUpperCase(),
+        }))}
+        rules={{ required: "Selecione ou defina um cliente" }}
+        type="autoComplete"
+      />
+
+      <FormField
+        disabled={true}
+        hidden={!productData || !customersData}
+        label="Unidade"
+        name="productUnitDisplay"
+        rules={null}
+        type="input"
+      />
+
+      {productData && customersData && (
+        <FormCollapse title="Avançado">
+          <FormField
+            hidden={!productData || !customersData}
+            label="Formato de numeração dos lotes"
+            name="batchIdFormat"
+            options={batchIdFormatOptions}
+            rules={{
+              required: "Selecione um formato para a numeração dos lotes",
+            }}
+            type="select"
           />
-
-          <FormItem
-            autoCapitalize={true}
-            disabled={product.loading}
-            help={product.loading && "Buscando produto..."}
-            label="Código do produto"
-            loading={product.loading}
-            mask={[
-              /[\ds]/i,
-              ...(values.productCode.startsWith("S")
-                ? ["-", /\d/, /\d/, /\d/, /\d/, /\d/, /\d/, /\d/]
-                : [/\d/, /\d/, /\d/, /\d/, /\d/, /\d/, /\d/, /\d/, /\d/]),
-            ]}
-            name="productCode"
-            onValueChange={setProductCode}
-            type="mask"
-          />
-
-          {product.data ? (
-            <>
-              {values.productName !== product.data.name &&
-                setFieldValue("productName", product.data.name)}
-              {values.productUnitDisplay !==
-                formatProductUnit(
-                  product.data.unit.name,
-                  product.data.unit.abbreviation
-                ) &&
-                setFieldValue(
-                  "productUnitDisplay",
-                  formatProductUnit(
-                    product.data.unit.name,
-                    product.data.unit.abbreviation
-                  )
-                )}
-              {product.data.isMexicoProduct &&
-                !editingTemplate &&
-                !touched.batchIdFormat &&
-                setFieldTouched("batchIdFormat", true) &&
-                setFieldValue("batchIdFormat", "mexico")}
-
-              <FormItem
-                disabled={true}
-                label="Produto"
-                name="productName"
-                type="input"
-              />
-
-              <FormItem
-                autoCapitalize={true}
-                disabled={productCustomers.loading}
-                help={productCustomers.loading && "Buscando clientes..."}
-                helpDefault={
-                  (!productCustomers.data ||
-                    productCustomers.data.length === 0) &&
-                  values.customerName.trim().length === 0 && (
-                    <em>Nenhum cliente para sugerir</em>
-                  )
-                }
-                label="Cliente"
-                loading={productCustomers.loading}
-                name="customerName"
-                options={(productCustomers.data || []).map((customer) => ({
-                  label: customer.name.toUpperCase(),
-                  value: customer.name.toUpperCase(),
-                }))}
-                placeholder={
-                  !productCustomers.data || productCustomers.data.length === 0
-                    ? `${isTouchDevice() ? "Toque" : "Clique"} para preencher`
-                    : undefined
-                }
-                type="autoComplete"
-              />
-              {(productCustomers.data || []).length > 0 &&
-                editingTemplate &&
-                !touched.customerName &&
-                values.customerName === "" &&
-                setFieldTouched("customerName") &&
-                setFieldValue(
-                  "customerName",
-                  editingTemplate.customerName,
-                  true
-                )}
-
-              <FormItem
-                disabled={true}
-                label="Unidade"
-                name="productUnitDisplay"
-                type="input"
-              />
-
-              <FormCollapse title="Avançado">
-                <FormItem
-                  label="Formato de numeração dos lotes"
-                  name="batchIdFormat"
-                  options={batchIdFormatOptions}
-                  type="select"
-                />
-              </FormCollapse>
-
-              <SubmitButton disableShowInvalidFields={!!editingTemplate}>
-                {editingTemplate ? "Salvar alterações" : "Criar modelo"}
-              </SubmitButton>
-            </>
-          ) : (
-            <>
-              {values.productName !== "" && setFieldValue("productName", "")}
-              {values.customerName !== "" &&
-                setFieldValue("customerName", "", true)}
-              {values.productUnitDisplay !== "" &&
-                setFieldValue("productUnitDisplay", "")}
-            </>
-          )}
-        </>
+        </FormCollapse>
       )}
     </Form>
   );
 }
+
+const batchIdFormatOptions = [
+  {
+    label: (
+      <>
+        Brasil <em>(AA11-222-33344 B)</em>
+      </>
+    ),
+    value: "brazil",
+  },
+  {
+    label: (
+      <>
+        México <em>(AA-BB-1111)</em>
+      </>
+    ),
+    value: "mexico",
+  },
+];
 
 LabelsTransfTemplateForm.defaultProps = defaultProps;

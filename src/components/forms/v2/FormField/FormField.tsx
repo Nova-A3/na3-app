@@ -222,6 +222,8 @@ export function FormField(props: FormFieldProps): JSX.Element {
     return "untouched";
   }, [isLoading, error?.message, invalid, isTouched, value]);
 
+  console.log(isLoading, error?.message, invalid, isTouched, value, status);
+
   const handleChange = useCallback(
     (
       eventOrValue:

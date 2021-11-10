@@ -93,7 +93,6 @@ export function LabelsTransfManagePage(): JSX.Element {
       >
         <LabelsTransfTemplateForm
           editingTemplate={selectedTemplate}
-          isOnModal={true}
           onSubmit={handleCloseModal}
         />
       </Modal>
