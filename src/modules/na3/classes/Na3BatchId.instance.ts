@@ -8,6 +8,7 @@ export class Na3BatchId implements BatchId {
   private _hasBeenFixed = false;
   private _isBrazilian = false;
   private _isMexican = false;
+  private _isCommercial = false;
   private _isValid = false;
 
   constructor(value: string) {
@@ -22,6 +23,10 @@ export class Na3BatchId implements BatchId {
       this.initialize("mexico");
       return;
     }
+    if (this.validateCommercial()) {
+      this.initialize("commercial");
+      return;
+    }
 
     this._value = this.fixAgainstFormat("brazil");
     if (this.validateBrazilian()) {
@@ -32,6 +37,12 @@ export class Na3BatchId implements BatchId {
     this._value = this.fixAgainstFormat("mexico");
     if (this.validateMexican()) {
       this.initialize("mexico", { fixed: true });
+      return;
+    }
+
+    this._value = this.fixAgainstFormat("commercial");
+    if (this.validateCommercial()) {
+      this.initialize("commercial", { fixed: true });
       return;
     }
   }
@@ -71,6 +82,13 @@ export class Na3BatchId implements BatchId {
     this._isMexican = isMexican;
   }
 
+  get isCommercial(): boolean {
+    return this._isCommercial;
+  }
+  private set isCommercial(isCommercial: boolean) {
+    this._isCommercial = isCommercial;
+  }
+
   get isValid(): boolean {
     return this._isValid;
   }
@@ -82,29 +100,43 @@ export class Na3BatchId implements BatchId {
     this.type = type;
     this.isBrazilian = type === "brazil";
     this.isMexican = type === "mexico";
+    this.isCommercial = type === "commercial";
     this.isValid = type !== "invalid";
     this.hasBeenFixed = !!options?.fixed;
   }
 
-  private fixAgainstFormat(format: "brazil" | "mexico"): string {
-    if (format === "brazil") {
-      return (
-        this.originalValue.substring(0, 4) +
-        "-" +
-        this.originalValue.substring(4, 7) +
-        "-" +
-        this.originalValue.substring(7, 12) +
-        " " +
-        this.originalValue.substring(12)
-      );
-    } else {
-      return (
-        "KA-" +
-        this.originalValue[1] +
-        (this.originalValue[1] === "N" ? "T" : "I") +
-        "-" +
-        this.originalValue.substring(2)
-      );
+  private fixAgainstFormat(format: Exclude<BatchIdType, "invalid">): string {
+    switch (format) {
+      case "brazil":
+        return (
+          this.originalValue.substring(0, 4) +
+          "-" +
+          this.originalValue.substring(4, 7) +
+          "-" +
+          this.originalValue.substring(7, 12) +
+          " " +
+          this.originalValue.substring(12)
+        );
+      case "mexico":
+        return (
+          "KA-" +
+          this.originalValue[1] +
+          (this.originalValue[1] === "N" ? "T" : "I") +
+          "-" +
+          this.originalValue.substring(2)
+        );
+      case "commercial":
+        return (
+          this.originalValue.substring(0, 2) +
+          "-" +
+          this.originalValue.substring(2, 5) +
+          "-" +
+          this.originalValue.substring(5, 7) +
+          " " +
+          this.originalValue.substring(7)
+        );
+      default:
+        return this.originalValue;
     }
   }
 
@@ -116,5 +148,9 @@ export class Na3BatchId implements BatchId {
 
   private validateMexican(): boolean {
     return /^(ka-((nt)|(ci))-\d+)$/i.test(this.value);
+  }
+
+  private validateCommercial(): boolean {
+    return /^([c-fikr][a-dfgk-mx]-\d{3}-[2-4]\d [a-g])$/i.test(this.value);
   }
 }

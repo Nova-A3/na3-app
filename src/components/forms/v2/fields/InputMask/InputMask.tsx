@@ -20,7 +20,6 @@ export type InputMaskProps = Required<
   maskPlaceholder: string;
   onBlur: () => void;
   onChange: (value: string) => void;
-  ref: React.RefObject<Input>;
   value: string;
 };
 
@@ -38,7 +37,6 @@ export function InputMask({
   onBlur,
   onChange,
   value: valueProp,
-  ref,
 }: InputMaskProps): JSX.Element {
   const {
     "data-value": dataValue,
@@ -72,7 +70,6 @@ export function InputMask({
       onKeyUp={handleKeyUp}
       placeholder={placeholder}
       prefix={prefix}
-      ref={ref}
       suffix={suffix}
       value={value}
     />

@@ -6,25 +6,25 @@ import type { FieldStatus } from "../../FormField/FormField";
 import classes from "./FieldHelp.module.css";
 
 type FieldHelpProps = {
-  defaultText: string | undefined;
+  contentWhenLoading: React.ReactNode | undefined;
+  defaultContent: React.ReactNode | undefined;
   error: string | undefined;
   fieldStatus: FieldStatus;
   isFormSubmitting: boolean;
   isHidden: boolean;
-  textWhenLoading: string | undefined;
 };
 
 export function FieldHelp({
-  defaultText,
+  contentWhenLoading: contentWhenLoadingProp,
+  defaultContent,
   error,
   fieldStatus,
   isFormSubmitting,
   isHidden,
-  textWhenLoading: textWhenLoadingProp,
 }: FieldHelpProps): JSX.Element | null {
-  const textWhenLoading = useMemo(
-    () => (isFormSubmitting ? "Validando..." : textWhenLoadingProp),
-    [isFormSubmitting, textWhenLoadingProp]
+  const contentWhenLoading = useMemo(
+    () => (isFormSubmitting ? "Validando..." : contentWhenLoadingProp),
+    [isFormSubmitting, contentWhenLoadingProp]
   );
 
   if (isHidden) return null;
@@ -33,7 +33,7 @@ export function FieldHelp({
     case "loading":
       return (
         <Typography.Text className={classes.Loading}>
-          <LoadingOutlined /> {textWhenLoading || "Carregando..."}
+          <LoadingOutlined /> {contentWhenLoading || "Carregando..."}
         </Typography.Text>
       );
     case "invalid":
@@ -45,11 +45,13 @@ export function FieldHelp({
     case "valid":
       return (
         <Typography.Text type="success">
-          {defaultText || "Parece bom!"}
+          {defaultContent || "Parece bom!"}
         </Typography.Text>
       );
     case "untouched":
     default:
-      return <Typography.Text type="secondary">{defaultText}</Typography.Text>;
+      return (
+        <Typography.Text type="secondary">{defaultContent}</Typography.Text>
+      );
   }
 }

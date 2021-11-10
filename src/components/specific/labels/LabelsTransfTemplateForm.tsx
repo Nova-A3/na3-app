@@ -110,7 +110,7 @@ export function LabelsTransfTemplateForm({
     setProductLoading(false);
   }, []);
 
-  const handleValidateProductCode = useCallback(
+  const handleProductCodeValidate = useCallback(
     async (value: string) => {
       const productCode = na3.products.utils.fixQuery(value);
 
@@ -261,7 +261,7 @@ export function LabelsTransfTemplateForm({
         onValueChange={handleProductCodeChange}
         rules={{
           required: "Forneça o código do produto",
-          validate: handleValidateProductCode,
+          validate: handleProductCodeValidate,
         }}
         type="mask"
       />

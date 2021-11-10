@@ -1,5 +1,5 @@
 import { Card, Divider, Tooltip, Typography } from "antd";
-import React, { useCallback, useMemo, useState } from "react";
+import React, { useCallback, useState } from "react";
 import { IoPersonCircleOutline, IoPricetagOutline } from "react-icons/io5";
 
 import type { Na3TransfLabelTemplate } from "../../../../modules/na3-types";

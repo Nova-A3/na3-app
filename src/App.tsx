@@ -26,7 +26,7 @@ const themes = {
 
 notification.config({ duration: 6 });
 
-function Main(): JSX.Element | null {
+function Main(): JSX.Element {
   const appIsReady = useAppReady();
   const { status: themeStatus } = useThemeSwitcher();
 

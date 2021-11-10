@@ -1,36 +1,25 @@
 import type {
   AutoCompleteProps,
   FormItemProps,
-  InputNumberProps,
   InputProps,
   RadioChangeEvent,
   SelectProps,
   SwitchProps,
 } from "antd";
-import {
-  AutoComplete,
-  Form,
-  Input,
-  InputNumber,
-  Radio,
-  Select,
-  Switch,
-} from "antd";
-import type { Dayjs } from "dayjs";
-import dayjs from "dayjs";
+import { AutoComplete, Form, Input, Radio, Select, Switch } from "antd";
 import { nanoid } from "nanoid";
-import React, { useCallback, useEffect, useMemo, useRef } from "react";
+import React, { useCallback, useEffect, useMemo } from "react";
 import type { UseControllerProps } from "react-hook-form";
 import { useController } from "react-hook-form";
 
 import { isTouchDevice } from "../../../../utils";
 import { FieldHelp } from "../components/FieldHelp/FieldHelp";
 import { FieldLabel } from "../components/FieldLabel/FieldLabel";
+import { FieldPreSuffix } from "../components/FieldPreSuffix/FieldPreSuffix";
 import { InputDate } from "../fields/InputDate/InputDate";
 import { InputMask } from "../fields/InputMask/InputMask";
 import classes from "./FormField.module.css";
 
-/*
 type FieldType =
   | "autoComplete"
   | "date"
@@ -42,9 +31,8 @@ type FieldType =
   | "select"
   | "switch"
   | "textArea";
-*/
 
-type FieldValue = Dayjs | boolean | number | string;
+type FieldValue = boolean | string;
 
 export type FieldStatus = "invalid" | "loading" | "untouched" | "valid";
 
@@ -75,9 +63,10 @@ type SelectOptionalProps = Partial<
   Pick<SelectProps<string>, "allowClear" | "defaultActiveFirstOption">
 >;
 
-type InputNumberOptionalProps = Partial<
-  Pick<InputNumberProps, "max" | "min" | "step">
->;
+type InputNumberOptionalProps = InputOptionalProps & {
+  max?: number;
+  min?: number;
+};
 
 type SwitchOptionalProps = Partial<
   Pick<SwitchProps, "checkedChildren" | "unCheckedChildren">
@@ -89,9 +78,11 @@ type InputDateOptionalProps = {
   format?: string;
 };
 
-type ValueBasedFieldProps<V extends FieldValue> = {
-  noDecimal?: V extends number ? number : never;
-  onValueChange?: (value: V) => void;
+type ValueBasedFieldProps<Type extends FieldType, Value extends FieldValue> = {
+  max?: Type extends "number" ? number : never;
+  min?: Type extends "number" ? number : never;
+  noDecimal?: Type extends "number" ? boolean : never;
+  onValueChange?: (value: Value) => void;
 };
 
 type FormFieldBaseProps = {
@@ -100,30 +91,34 @@ type FormFieldBaseProps = {
   rules: Exclude<UseControllerProps["rules"], undefined> | null;
 } & (
   | (AutoCompleteOptionalProps &
-      ValueBasedFieldProps<string> & {
+      ValueBasedFieldProps<"autoComplete", string> & {
         options: { label: React.ReactNode; value: string }[];
         type: "autoComplete";
       })
-  | (InputDateOptionalProps & ValueBasedFieldProps<Dayjs> & { type: "date" })
+  | (InputDateOptionalProps &
+      ValueBasedFieldProps<"date", string> & { type: "date" })
   | (InputNumberOptionalProps &
-      ValueBasedFieldProps<number> & { type: "number" })
+      ValueBasedFieldProps<"number", string> & { type: "number" })
   | (InputOptionalProps &
-      ValueBasedFieldProps<string> & {
+      ValueBasedFieldProps<"input", string> & { type: "input" })
+  | (InputOptionalProps &
+      ValueBasedFieldProps<"mask", string> & {
         mask: (RegExp | string)[];
         maskPlaceholder?: string | null;
         type: "mask";
       })
-  | (InputOptionalProps & ValueBasedFieldProps<string> & { type: "input" })
-  | (InputOptionalProps & ValueBasedFieldProps<string> & { type: "password" })
+  | (InputOptionalProps &
+      ValueBasedFieldProps<"password", string> & { type: "password" })
   | (InputTextAreaOptionalProps &
-      ValueBasedFieldProps<string> & { type: "textArea" })
+      ValueBasedFieldProps<"textArea", string> & { type: "textArea" })
   | (SelectOptionalProps &
-      ValueBasedFieldProps<string> & {
+      ValueBasedFieldProps<"select", string> & {
         options: { label: React.ReactNode; value: string }[];
         type: "select";
       })
-  | (SwitchOptionalProps & ValueBasedFieldProps<boolean> & { type: "switch" })
-  | (ValueBasedFieldProps<string> & {
+  | (SwitchOptionalProps &
+      ValueBasedFieldProps<"switch", boolean> & { type: "switch" })
+  | (ValueBasedFieldProps<"radio", string> & {
       options: { label: React.ReactNode; value: string }[];
       type: "radio";
     })
@@ -132,9 +127,9 @@ type FormFieldBaseProps = {
 type FormFieldOptionalProps = {
   autoFocus?: boolean;
   autoUpperCase?: boolean;
-  defaultHelpText?: string;
+  defaultHelp?: React.ReactNode;
   disabled?: boolean;
-  helpTextWhenLoading?: string;
+  helpWhenLoading?: React.ReactNode;
   hidden?: boolean;
   hideHelpWhenValid?: boolean;
   isLoading?: boolean;
@@ -151,9 +146,9 @@ export type FormFieldProps = FormFieldBaseProps & FormFieldOptionalProps;
 const defaultProps: FormFieldOptionalProps = {
   autoFocus: false,
   autoUpperCase: false,
-  defaultHelpText: undefined,
+  defaultHelp: undefined,
   disabled: false,
-  helpTextWhenLoading: undefined,
+  helpWhenLoading: undefined,
   hidden: false,
   hideHelpWhenValid: false,
   isLoading: false,
@@ -175,19 +170,21 @@ export function FormField(props: FormFieldProps): JSX.Element {
     /* Common optional props */
     autoFocus,
     autoUpperCase,
-    defaultHelpText,
+    defaultHelp,
     disabled: disabledProp,
     hidden,
     hideHelpWhenValid,
     isLoading,
     labelCol,
     labelSpan,
-    helpTextWhenLoading,
+    helpWhenLoading,
     required,
     placeholder: placeholderProp,
     tooltip,
     wrapperCol,
     /* Value-based props */
+    max,
+    min,
     noDecimal,
     onValueChange,
   } = props;
@@ -206,9 +203,6 @@ export function FormField(props: FormFieldProps): JSX.Element {
       : undefined,
     shouldUnregister: true,
   });
-
-  const inputRef = useRef<Input>(null);
-  const inputNumberRef = useRef<HTMLInputElement>(null);
 
   const value = useMemo(
     (): FieldValue => field.value as FieldValue,
@@ -259,11 +253,27 @@ export function FormField(props: FormFieldProps): JSX.Element {
         ) {
           return;
         }
+
+        if (
+          isInputChangeEvent(eventOrValue) &&
+          ((min &&
+            Number.parseFloat(extractedValue.replace(",", ".")) <= min) ||
+            (max && Number.parseFloat(extractedValue.replace(",", ".")) > max))
+        ) {
+          if (/,.?$/.test(extractedValue)) {
+            eventOrValue.target.value = extractedValue.slice(
+              0,
+              extractedValue.indexOf(",")
+            );
+          } else {
+            return;
+          }
+        }
       }
 
       onChange(eventOrValue);
     },
-    [onChange, type, autoUpperCase, noDecimal]
+    [onChange, type, autoUpperCase, noDecimal, min, max]
   );
 
   const handleBlur = useCallback(() => {
@@ -291,7 +301,10 @@ export function FormField(props: FormFieldProps): JSX.Element {
   useEffect(() => {
     if (
       (isTouched || !!value) &&
-      (type === "autoComplete" || type === "select" || type === "radio")
+      (type === "autoComplete" ||
+        type === "select" ||
+        type === "radio" ||
+        type === "date")
     ) {
       onBlur();
     }
@@ -334,27 +347,28 @@ export function FormField(props: FormFieldProps): JSX.Element {
   const helpComponent = useMemo(
     (): JSX.Element => (
       <FieldHelp
-        defaultText={defaultHelpText}
+        contentWhenLoading={helpWhenLoading}
+        defaultContent={defaultHelp}
         error={error?.message}
         fieldStatus={status}
         isFormSubmitting={isSubmitting}
         isHidden={status === "valid" ? !!hideHelpWhenValid : false}
-        textWhenLoading={helpTextWhenLoading}
       />
     ),
     [
-      defaultHelpText,
+      defaultHelp,
       error?.message,
       status,
       isSubmitting,
       hideHelpWhenValid,
-      helpTextWhenLoading,
+      helpWhenLoading,
     ]
   );
 
   const fieldComponent = useMemo((): JSX.Element => {
     switch (type) {
       case "input":
+      case "number":
         if (typeof value !== "string")
           throw `[FormField] Expected value to be a string for type="${type}", got "${value.toString()}" instead.`;
         return (
@@ -369,9 +383,8 @@ export function FormField(props: FormFieldProps): JSX.Element {
             onBlur={handleBlur}
             onChange={handleChange}
             placeholder={placeholder}
-            prefix={props.prefix}
-            ref={inputRef}
-            suffix={props.suffix}
+            prefix={<FieldPreSuffix>{props.prefix}</FieldPreSuffix>}
+            suffix={<FieldPreSuffix>{props.suffix}</FieldPreSuffix>}
             value={value}
           />
         );
@@ -390,9 +403,8 @@ export function FormField(props: FormFieldProps): JSX.Element {
             onBlur={handleBlur}
             onChange={handleChange}
             placeholder={placeholder}
-            prefix={props.prefix}
-            ref={inputRef}
-            suffix={props.suffix}
+            prefix={<FieldPreSuffix>{props.prefix}</FieldPreSuffix>}
+            suffix={<FieldPreSuffix>{props.suffix}</FieldPreSuffix>}
             value={value}
           />
         );
@@ -413,7 +425,6 @@ export function FormField(props: FormFieldProps): JSX.Element {
             onBlur={handleBlur}
             onChange={handleChange}
             placeholder={placeholder}
-            ref={inputRef}
             value={value}
           />
         );
@@ -432,9 +443,8 @@ export function FormField(props: FormFieldProps): JSX.Element {
             maskPlaceholder={props.maskPlaceholder || "_"}
             onBlur={handleBlur}
             onChange={handleChange}
-            prefix={props.prefix || null}
-            ref={inputRef}
-            suffix={props.suffix || null}
+            prefix={<FieldPreSuffix>{props.prefix}</FieldPreSuffix>}
+            suffix={<FieldPreSuffix>{props.suffix}</FieldPreSuffix>}
             value={value}
           />
         );
@@ -453,7 +463,6 @@ export function FormField(props: FormFieldProps): JSX.Element {
             onChange={handleChange}
             options={props.options}
             placeholder={placeholder}
-            ref={inputRef}
             value={value}
           />
         );
@@ -469,7 +478,6 @@ export function FormField(props: FormFieldProps): JSX.Element {
             onBlur={handleBlur}
             onChange={handleChange}
             placeholder={placeholder}
-            ref={inputRef}
             value={value || undefined}
           >
             {props.options.map(({ value, label }) => (
@@ -500,25 +508,6 @@ export function FormField(props: FormFieldProps): JSX.Element {
             ))}
           </Radio.Group>
         );
-      case "number":
-        if (typeof value !== "number")
-          throw `[FormField] Expected value to be a number for type="${type}", got "${value.toString()}" instead.`;
-        return (
-          <InputNumber
-            autoFocus={autoFocus}
-            className={classes.InputNumber}
-            disabled={disabled}
-            id={name}
-            max={props.max}
-            min={props.min}
-            onBlur={handleBlur}
-            onChange={handleChange}
-            placeholder={placeholder}
-            ref={inputNumberRef}
-            step={props.step}
-            value={value}
-          />
-        );
       case "switch":
         return (
           <div className={classes.SwitchContainer}>
@@ -532,8 +521,8 @@ export function FormField(props: FormFieldProps): JSX.Element {
           </div>
         );
       case "date":
-        if (!dayjs.isDayjs(value))
-          throw `[FormField] Expected value to be a valid Dayjs input for type="${type}", got "${value.toString()}" instead.`;
+        if (typeof value !== "string")
+          throw `[FormField] Expected value to be a string for type="${type}", got "${value.toString()}" instead.`;
         return (
           <InputDate
             allowClear={props.allowClear || false}
