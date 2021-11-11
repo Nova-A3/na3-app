@@ -12,7 +12,7 @@ import React, { useCallback, useEffect, useMemo } from "react";
 import type { UseControllerProps } from "react-hook-form";
 import { useController } from "react-hook-form";
 
-import { isTouchDevice } from "../../../../utils";
+import { isTouchDevice } from "../../../utils";
 import { FieldHelp } from "../components/FieldHelp/FieldHelp";
 import { FieldLabel } from "../components/FieldLabel/FieldLabel";
 import { FieldPreSuffix } from "../components/FieldPreSuffix/FieldPreSuffix";

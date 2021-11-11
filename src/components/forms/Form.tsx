@@ -1,116 +1,95 @@
-import { Form as AntdForm } from "antd";
-import type { FormikHelpers, FormikProps, FormikTouched } from "formik";
-import { Formik } from "formik";
+import { Form as AntdForm, message } from "antd";
 import React, { useCallback } from "react";
+import type {
+  FieldValues,
+  SubmitErrorHandler,
+  SubmitHandler,
+  UseFormReturn,
+} from "react-hook-form";
+import { FormProvider } from "react-hook-form";
 
 import { Spinner } from "../ui/Spinner/Spinner";
 import classes from "./Form.module.css";
 
-type FormStatus = "loading" | "ready";
+export type HandleSubmit<Fields extends FieldValues = FieldValues> =
+  SubmitHandler<Fields>;
 
-type FormikTyped<Original, Values> = Omit<
-  Original,
-  "setFieldError" | "setFieldTouched" | "setFieldValue" | "setStatus" | "status"
-> & {
-  setFieldError: (
-    field: Extract<keyof Values, string>,
-    message: string | undefined
-  ) => void;
-  setFieldTouched: (
-    field: Extract<keyof Values, string>,
-    isTouched?: boolean,
-    shouldValidate?: boolean
-  ) => void;
+export type HandleSubmitFailed<Fields extends FieldValues = FieldValues> =
+  SubmitErrorHandler<Fields>;
 
-  setFieldValue: <FieldName extends Extract<keyof Values, string>>(
-    field: FieldName,
-    value: Values[FieldName],
-    shouldValidate?: boolean
-  ) => void;
-  setStatus: (status: FormStatus | undefined) => void;
-  status?: FormStatus;
-};
-
-export type HandleSubmit<Values> = (
-  values: Values,
-  helpers: FormikTyped<FormikHelpers<Values>, Values>
-) => Promise<void> | void;
-
-export type HandleValidate<Values> = (
-  values: Values
-) => Partial<Record<keyof Values, string>>;
-
-export type FormChildrenProps<Values> = FormikTyped<
-  FormikProps<Values>,
-  Values
->;
-
-type FormProps<Values> = {
-  children: (props: FormChildrenProps<Values>) => React.ReactNode;
-  initialTouched?: FormikTouched<Values>;
-  initialValues: Values;
-  isHorizontal?: boolean;
-  isOnModal?: boolean;
-  onSubmit: HandleSubmit<Values>;
-  onValidate?: HandleValidate<Values>;
-};
-
-const defaultProps: Omit<
-  FormProps<Record<string, never>>,
-  "children" | "initialValues" | "onSubmit"
+type FormProps<
+  Fields extends FieldValues = FieldValues,
+  Context extends Record<string, unknown> = Record<string, unknown>
 > = {
-  initialTouched: undefined,
-  isHorizontal: false,
-  isOnModal: false,
-  onValidate: undefined,
+  children: React.ReactNode;
+  form: UseFormReturn<Fields, Context>;
+  onSubmit: HandleSubmit<Fields>;
+  onSubmitFailed?: HandleSubmitFailed<Fields>;
 };
 
-export function Form<Values extends Record<string, boolean | number | string>>({
-  initialValues,
-  initialTouched,
-  isOnModal,
-  onSubmit,
-  onValidate,
-  isHorizontal,
+const defaultProps: Omit<FormProps, "children" | "form" | "onSubmit"> = {
+  onSubmitFailed: undefined,
+};
+
+export function Form<
+  Fields extends FieldValues = FieldValues,
+  Context extends Record<string, unknown> = Record<string, unknown>
+>({
+  form: {
+    clearErrors,
+    control,
+    formState,
+    getValues,
+    handleSubmit,
+    register,
+    reset,
+    resetField,
+    setError,
+    setFocus,
+    setValue,
+    trigger,
+    unregister,
+    watch,
+  },
   children,
-}: FormProps<Values>): JSX.Element {
-  const handleSubmit = useCallback(
-    async (
-      values: Values,
-      helpers: FormikTyped<FormikHelpers<Values>, Values>
-    ) => {
-      await onSubmit(values, helpers);
+  onSubmit,
+  onSubmitFailed,
+}: FormProps<Fields, Context>): JSX.Element {
+  const handleSubmitFailed: SubmitErrorHandler<Fields> = useCallback(
+    (errors, event) => {
+      void message.error("Corrija os erros");
+      onSubmitFailed?.(errors, event);
     },
-    [onSubmit]
+    [onSubmitFailed]
   );
 
   return (
-    <Formik<Values>
-      enableReinitialize={true}
-      initialTouched={initialTouched}
-      initialValues={initialValues}
-      onSubmit={handleSubmit}
-      validate={onValidate}
+    <FormProvider
+      clearErrors={clearErrors}
+      control={control}
+      formState={formState}
+      getValues={getValues}
+      handleSubmit={handleSubmit}
+      register={register}
+      reset={reset}
+      resetField={resetField}
+      setError={setError}
+      setFocus={setFocus}
+      setValue={setValue}
+      trigger={trigger}
+      unregister={unregister}
+      watch={watch}
     >
-      {(formikProps): JSX.Element => (
-        <Spinner
-          spinning={formikProps.status === "loading"}
-          wrapperClassName={`${classes.FormContainer} ${
-            isOnModal ? "" : classes.MobileAccessibleForm
-          }`}
-        >
-          <AntdForm
-            colon={false}
-            labelAlign="left"
-            labelCol={{ span: isHorizontal ? 6 : 24 }}
-            onFinish={formikProps.handleSubmit}
-            wrapperCol={{ span: isHorizontal ? 18 : 24 }}
-          >
-            {children(formikProps)}
-          </AntdForm>
-        </Spinner>
-      )}
-    </Formik>
+      <Spinner
+        spinning={formState.isSubmitting}
+        text={null}
+        wrapperClassName={classes.FormContainer}
+      >
+        <AntdForm onFinish={handleSubmit(onSubmit, handleSubmitFailed)}>
+          {children}
+        </AntdForm>
+      </Spinner>
+    </FormProvider>
   );
 }
 

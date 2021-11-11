@@ -15,10 +15,10 @@ import type {
   Na3TransfLabelTemplate,
 } from "../../../modules/na3-types";
 import { formatProductUnit } from "../../../utils";
-import { FormCollapse } from "../../forms/v2/components/FormCollapse/FormCollapse";
-import { Form } from "../../forms/v2/Form";
-import { FormField } from "../../forms/v2/FormField/FormField";
-import { SubmitButton } from "../../forms/v2/SubmitButton";
+import { FormCollapse } from "../../forms/components/FormCollapse/FormCollapse";
+import { Form } from "../../forms/Form";
+import { FormField } from "../../forms/FormField/FormField";
+import { SubmitButton } from "../../forms/SubmitButton";
 
 type LabelTemplateFormProps = {
   editingTemplate?: Na3TransfLabelTemplate;

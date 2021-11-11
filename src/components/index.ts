@@ -1,19 +1,8 @@
-export { FormCollapse } from "./forms/components/FormCollapse";
-export type {
-  FormChildrenProps,
-  HandleSubmit,
-  HandleValidate,
-} from "./forms/Form";
+export { FormCollapse } from "./forms/components/FormCollapse/FormCollapse";
+export type { HandleSubmit, HandleSubmitFailed } from "./forms/Form";
 export { Form } from "./forms/Form";
-export { FormItem } from "./forms/FormItem";
+export { FormField } from "./forms/FormField/FormField";
 export { SubmitButton } from "./forms/SubmitButton";
-export type {
-  HandleSubmitFailed,
-  HandleSubmit as HandleSubmitV2,
-} from "./forms/v2/Form";
-export { Form as FormV2 } from "./forms/v2/Form";
-export { FormField } from "./forms/v2/FormField/FormField";
-export { SubmitButton as SubmitButtonV2 } from "./forms/v2/SubmitButton";
 export { Helmet } from "./helmet/Helmet";
 export { Content } from "./layout/content/Content";
 export { Footer } from "./layout/footer/Footer";

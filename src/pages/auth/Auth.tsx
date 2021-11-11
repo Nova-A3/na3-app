@@ -3,11 +3,11 @@ import { message } from "antd";
 import React, { useCallback } from "react";
 
 import {
+  Form,
   FormField,
-  FormV2,
   PageDescription,
   PageTitle,
-  SubmitButtonV2,
+  SubmitButton,
 } from "../../components";
 import { useForm } from "../../hooks";
 import { useNa3Auth, useNa3Departments } from "../../modules/na3-react";
@@ -68,7 +68,7 @@ export function AuthPage({ authorizedDpts }: AuthProps): JSX.Element {
         Por favor, autentique-se para continuar.
       </PageDescription>
 
-      <FormV2 form={form} onSubmit={handleSubmit}>
+      <Form form={form} onSubmit={handleSubmit}>
         <FormField
           disabled={authorizedDpts.length === 1}
           label="Setor"
@@ -108,13 +108,13 @@ export function AuthPage({ authorizedDpts }: AuthProps): JSX.Element {
           type="password"
         />
 
-        <SubmitButtonV2
+        <SubmitButton
           icon={<LoginOutlined />}
           label="Entrar"
           labelWhenLoading="Entrando..."
           wrapperCol={{ sm: { offset: 6, span: 18 }, xs: { span: 24 } }}
         />
-      </FormV2>
+      </Form>
     </>
   );
 }

@@ -3,9 +3,9 @@ import React, { useCallback } from "react";
 
 import { useForm } from "../../../../../hooks/useForm";
 import type { Na3ServiceOrder } from "../../../../../modules/na3-types";
-import { Form as FormV2 } from "../../../../forms/v2/Form";
-import { FormField } from "../../../../forms/v2/FormField/FormField";
-import { SubmitButton } from "../../../../forms/v2/SubmitButton";
+import { Form } from "../../../../forms/Form";
+import { FormField } from "../../../../forms/FormField/FormField";
+import { SubmitButton } from "../../../../forms/SubmitButton";
 
 type RejectSolutionModalProps = {
   isVisible: boolean;
@@ -39,7 +39,7 @@ export function RejectSolutionModal({
       title="Recusar solução"
       visible={isVisible}
     >
-      <FormV2 form={form} onSubmit={handleSubmit}>
+      <Form form={form} onSubmit={handleSubmit}>
         <FormField
           label="Motivo"
           name="reason"
@@ -51,7 +51,7 @@ export function RejectSolutionModal({
           label="Recusar solução"
           labelWhenLoading="Aguardando confirmação..."
         />
-      </FormV2>
+      </Form>
     </Modal>
   );
 }

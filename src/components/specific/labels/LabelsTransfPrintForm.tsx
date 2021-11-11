@@ -8,10 +8,10 @@ import { useNa3Departments } from "../../../modules/na3-react";
 import type { Na3TransfLabelTemplate } from "../../../modules/na3-types";
 import type { LabelsTransfPrintFormOnSubmitValues } from "../../../types";
 import { formatProductUnit } from "../../../utils";
-import { FormCollapse } from "../../forms/v2/components/FormCollapse/FormCollapse";
-import { Form as FormV2 } from "../../forms/v2/Form";
-import { FormField } from "../../forms/v2/FormField/FormField";
-import { SubmitButton } from "../../forms/v2/SubmitButton";
+import { FormCollapse } from "../../forms/components/FormCollapse/FormCollapse";
+import { Form } from "../../forms/Form";
+import { FormField } from "../../forms/FormField/FormField";
+import { SubmitButton } from "../../forms/SubmitButton";
 
 type LabelsTransfPrintFormProps = {
   onSubmit: (labelConfig: LabelsTransfPrintFormOnSubmitValues) => void;
@@ -133,7 +133,7 @@ export function LabelsTransfPrintForm({
   );
 
   return (
-    <FormV2 form={form} onSubmit={handleSubmit}>
+    <Form form={form} onSubmit={handleSubmit}>
       <Row gutter={16}>
         <Col md={18} sm={16} xs={24}>
           <FormField
@@ -340,6 +340,6 @@ export function LabelsTransfPrintForm({
       </FormCollapse>
 
       <SubmitButton label="Pré-visualizar" labelWhenLoading="Aguardando..." />
-    </FormV2>
+    </Form>
   );
 }

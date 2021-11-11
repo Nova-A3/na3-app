@@ -6,9 +6,9 @@ import { Redirect } from "react-router";
 import { useForm } from "../../../../hooks";
 import { useNa3Auth, useNa3ServiceOrders } from "../../../../modules/na3-react";
 import type { MaintCreateServiceOrderFormValues } from "../../../../types";
-import { Form as FormV2 } from "../../../forms/v2/Form";
-import { FormField } from "../../../forms/v2/FormField/FormField";
-import { SubmitButton as SubmitButtonV2 } from "../../../forms/v2/SubmitButton";
+import { Form } from "../../../forms/Form";
+import { FormField } from "../../../forms/FormField/FormField";
+import { SubmitButton } from "../../../forms/SubmitButton";
 import classes from "./MaintCreateServiceOrderForm.module.css";
 
 type MaintCreateServiceOrderFormProps = {
@@ -133,7 +133,7 @@ export function MaintCreateServiceOrderForm({
   }
 
   return (
-    <FormV2 form={form} onSubmit={handleSubmit}>
+    <Form form={form} onSubmit={handleSubmit}>
       <FormField
         disabled={true}
         hidden={true}
@@ -276,8 +276,8 @@ export function MaintCreateServiceOrderForm({
         type="textArea"
       />
 
-      <SubmitButtonV2 label="Abrir OS" labelWhenLoading="Enviando OS..." />
-    </FormV2>
+      <SubmitButton label="Abrir OS" labelWhenLoading="Enviando OS..." />
+    </Form>
   );
 }
 
