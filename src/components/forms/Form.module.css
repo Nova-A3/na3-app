@@ -7,10 +7,3 @@
   margin: 0 -28px 0px;
   padding: 0 28px 28px;
 }
-
-/* up to md */
-@media screen and (max-width: 768px) {
-  .MobileAccessibleForm {
-    padding-bottom: 110px;
-  }
-}

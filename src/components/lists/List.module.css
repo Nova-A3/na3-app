@@ -22,6 +22,7 @@
 /* up to md */
 @media screen and (max-width: 768px) {
   .List {
-    padding-bottom: 130px;
+    /* padding-bottom: 130px; */
+    padding-bottom: 28px;
   }
 }
