@@ -118,22 +118,26 @@ export class Na3BatchId implements BatchId {
           this.originalValue.substring(12)
         );
       case "mexico":
-        return (
-          "KA-" +
-          this.originalValue[1] +
-          (this.originalValue[1] === "N" ? "T" : "I") +
-          "-" +
-          this.originalValue.substring(2)
+        return this.originalValue.replace(
+          /*
+           * $1: Department's two-letter ID (KA only)
+           * $2: Product's two-letter ID (NT or CI)
+           * $3: Batch's sequential number
+           * $4: Shift (A-G)
+           */
+          /^(ka)(nt|ci)(\d{4})([a-g])$/i,
+          "$1-$2-$3 $4"
         );
       case "commercial":
-        return (
-          this.originalValue.substring(0, 2) +
-          "-" +
-          this.originalValue.substring(2, 5) +
-          "-" +
-          this.originalValue.substring(5, 7) +
-          " " +
-          this.originalValue.substring(7)
+        return this.originalValue.replace(
+          /*
+           * $1: Department's two-letter ID
+           * $2: Production Order's number
+           * $3: Year (first two digits)
+           * $4: Shift (A-G)
+           */
+          /^([c-fikr][a-dfgk-mx])(\d{3})([2-4]\d)([a-g])$/i,
+          "$1-$2-$3 $4"
         );
       default:
         return this.originalValue;
@@ -147,7 +151,7 @@ export class Na3BatchId implements BatchId {
   }
 
   private validateMexican(): boolean {
-    return /^(ka-((nt)|(ci))-\d+)$/i.test(this.value);
+    return /^(ka-((nt)|(ci))-\d{4} [a-g])$/i.test(this.value);
   }
 
   private validateCommercial(): boolean {

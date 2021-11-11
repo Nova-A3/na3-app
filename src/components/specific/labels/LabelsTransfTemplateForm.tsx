@@ -1,4 +1,5 @@
 import { notification } from "antd";
+import dayjs from "dayjs";
 import React, { useCallback, useEffect, useState } from "react";
 
 import { useForm } from "../../../hooks";
@@ -45,16 +46,24 @@ export function LabelsTransfTemplateForm({
   editingTemplate,
   onSubmit,
 }: LabelTemplateFormProps): JSX.Element {
+  // Controls productCode input's mask: S-\d{7} if Dart product, \d{9} otherwise
   const [productCodeMaskType, setProductCodeMaskType] = useState<
     "dart" | "default"
-  >("default");
+  >(() => (editingTemplate?.productCode.startsWith("S-") ? "dart" : "default"));
 
+  // API product info for given productCode
   const [productLoading, setProductLoading] = useState(false);
   const [productData, setProductData] = useState<ApiProduct>();
 
+  // API customers info for given API product
   const [customersLoading, setCustomersLoading] = useState(false);
   const [customersData, setCustomersData] = useState<ApiPerson[]>();
 
+  /*
+   * When editing a template, the form has to be initialized upon mounting.
+   * The initialization process guarantees that both the template's API product
+   * and its customers are fetched prior to any change.
+   */
   const [hasInitializedEdit, setHasInitializedEdit] = useState(false);
 
   const { helpers } = useNa3TransfLabelTemplates();
@@ -222,16 +231,18 @@ export function LabelsTransfTemplateForm({
     }
   }, [productData, form, editingTemplate, hasInitializedEdit]);
 
+  // Initializes the form when editing a template
   useEffect(() => {
     if (editingTemplate && !(productData && customersData)) {
       form.setValue("templateName", editingTemplate.name, {
         shouldTouch: true,
         shouldValidate: true,
       });
-      form.setValue("productCode", editingTemplate.productCode, {
-        shouldTouch: true,
-        shouldValidate: true,
-      });
+      form.setValue(
+        "productCode",
+        editingTemplate.productCode.replace("-", ""),
+        { shouldTouch: true, shouldValidate: true }
+      );
     }
   }, [editingTemplate, productData, customersData, form]);
 
@@ -350,9 +361,12 @@ const batchIdFormats: Record<
   Na3TransfLabelTemplate["batchIdFormat"],
   { example: string; name: string }
 > = {
-  brazil: { example: "KA01-123-21200 A", name: "Brasil" },
-  commercial: { example: "KA-123-21 A", name: "Comercial" },
-  mexico: { example: "KA-21-123...", name: "México" },
+  brazil: { example: `KA01-123-${dayjs().format("YY")}001 A`, name: "Brasil" },
+  commercial: {
+    example: `KA-123-${dayjs().format("YY")} A`,
+    name: "Comercial",
+  },
+  mexico: { example: "KA-CI-123... A", name: "México" },
 };
 
 LabelsTransfTemplateForm.defaultProps = defaultProps;

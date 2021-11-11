@@ -14,5 +14,6 @@ export function FieldPreSuffix({ children }: FieldPreSuffixProps): JSX.Element {
     );
   }
 
+  // eslint-disable-next-line react/jsx-no-useless-fragment
   return <>{children}</>;
 }

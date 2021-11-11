@@ -1,6 +1,6 @@
 import { Col, Divider, Row } from "antd";
 import dayjs from "dayjs";
-import React, { useCallback, useMemo } from "react";
+import React, { useCallback, useMemo, useState } from "react";
 
 import { useForm } from "../../../hooks";
 import { na3 } from "../../../modules/na3";
@@ -34,6 +34,8 @@ export function LabelsTransfPrintForm({
   template,
   onSubmit,
 }: LabelsTransfPrintFormProps): JSX.Element {
+  const [selectedDate, setSelectedDate] = useState(dayjs());
+
   const departments = useNa3Departments();
 
   const form = useForm<FormValues>({
@@ -58,6 +60,16 @@ export function LabelsTransfPrintForm({
       return "Número de lote inválido";
     }
   }, []);
+
+  const handleDateChange = useCallback(
+    (dateValue: string) => {
+      const date = dayjs(dateValue);
+      if (!date.isSame(selectedDate)) {
+        setSelectedDate(date);
+      }
+    },
+    [selectedDate]
+  );
 
   const handleSubmit = useCallback(
     ({
@@ -86,8 +98,6 @@ export function LabelsTransfPrintForm({
     [onSubmit, template]
   );
 
-  const now = useMemo(() => dayjs(), []);
-
   const dptTwoLetterId = useMemo(() => {
     return (
       (template.departmentId &&
@@ -95,6 +105,16 @@ export function LabelsTransfPrintForm({
       null
     );
   }, [template.departmentId, departments.helpers]);
+
+  const batchIdDateChunks = useMemo(
+    () => [
+      ...selectedDate.format("YY").split(""),
+      ...selectedDate.clone().dayOfYear().toString().padStart(3, "0").split(""),
+    ],
+    [selectedDate]
+  );
+
+  console.log(batchIdDateChunks);
 
   const batchIdTooltip = useMemo(
     () => (
@@ -128,6 +148,7 @@ export function LabelsTransfPrintForm({
           <FormField
             label="Data"
             name="date"
+            onValueChange={handleDateChange}
             rules={{ required: "Defina a data" }}
             type="date"
           />
@@ -175,7 +196,7 @@ export function LabelsTransfPrintForm({
               template.batchIdFormat === "mexico"
                 ? [
                     /k/i,
-                    "a",
+                    /a/i,
                     "-",
                     /[cn]/i,
                     /[it]/i,
@@ -184,11 +205,17 @@ export function LabelsTransfPrintForm({
                     /\d/,
                     /\d/,
                     /\d/,
+                    " ",
+                    /[a-g]/i,
                   ]
                 : template.batchIdFormat === "brazil"
                 ? [
-                    /[c-fikr]/i,
-                    /[a-dfgk-mx]/i,
+                    dptTwoLetterId
+                      ? new RegExp(String.raw`${dptTwoLetterId[0]}`, "i")
+                      : /[c-fikr]/i,
+                    dptTwoLetterId
+                      ? new RegExp(String.raw`${dptTwoLetterId[1]}`, "i")
+                      : /[a-dfgk-mx]/i,
                     /[0-3]/,
                     /\d/,
                     "-",
@@ -196,36 +223,40 @@ export function LabelsTransfPrintForm({
                     /\d/,
                     /\d/,
                     "-",
-                    /[2-4]/,
-                    /\d/,
-                    /[0-3]/,
-                    /\d/,
-                    /\d/,
+                    ...batchIdDateChunks.map(
+                      (chunk) => new RegExp(String.raw`${chunk}`)
+                    ),
                     " ",
                     /[a-g]/i,
                   ]
                 : [
-                    /[c-fikr]/i,
-                    /[a-dfgk-mx]/i,
+                    dptTwoLetterId
+                      ? new RegExp(String.raw`${dptTwoLetterId[0]}`, "i")
+                      : /[c-fikr]/i,
+                    dptTwoLetterId
+                      ? new RegExp(String.raw`${dptTwoLetterId[1]}`, "i")
+                      : /[a-dfgk-mx]/i,
                     "-",
                     /\d/,
                     /\d/,
                     /\d/,
                     "-",
-                    /[2-4]/,
-                    /\d/,
+                    new RegExp(String.raw`${batchIdDateChunks[0]}`),
+                    new RegExp(String.raw`${batchIdDateChunks[1]}`),
                     " ",
                     /[a-g]/i,
                   ]
             }
             maskPlaceholder={
               template.batchIdFormat === "mexico"
-                ? "KA-__-____"
-                : dptTwoLetterId
-                ? template.batchIdFormat === "brazil"
-                  ? `${dptTwoLetterId}__-___-_____ _`
-                  : `${dptTwoLetterId}-___-__ _`
-                : undefined
+                ? "KA-__-____ _"
+                : template.batchIdFormat === "brazil"
+                ? `${dptTwoLetterId || "__"}__-___-${batchIdDateChunks.join(
+                    ""
+                  )} _`
+                : `${dptTwoLetterId || "__"}-___-${batchIdDateChunks
+                    .slice(0, 2)
+                    .join("")} _`
             }
             name="batchId"
             rules={{

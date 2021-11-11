@@ -4,6 +4,7 @@ import "./index.css";
 import { ConfigProvider as AntdConfigProvider } from "antd";
 import ptBR from "antd/lib/locale/pt_BR";
 import dayjs from "dayjs";
+import dayOfYear from "dayjs/plugin/dayOfYear";
 import timezone from "dayjs/plugin/timezone";
 import utc from "dayjs/plugin/utc";
 import firebase from "firebase";
@@ -18,6 +19,7 @@ import { Na3Provider } from "./modules/na3-react";
 import reportWebVitals from "./reportWebVitals";
 import * as serviceWorkerRegistration from "./serviceWorkerRegistration";
 
+dayjs.extend(dayOfYear);
 dayjs.extend(utc);
 dayjs.extend(timezone);
 
