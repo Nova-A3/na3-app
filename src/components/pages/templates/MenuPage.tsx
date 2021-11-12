@@ -1,9 +1,9 @@
 import React from "react";
 
-import type { StaticListItemProps } from "../lists/components/StaticListItem";
-import { StaticList } from "../lists/StaticList";
-import { PageDescription } from "./components/PageDescription";
-import { PageTitle } from "./components/PageTitle";
+import type { StaticListItemProps } from "../../lists/components/StaticListItem";
+import { StaticList } from "../../lists/StaticList";
+import { PageDescription } from "../components/PageDescription";
+import { PageTitle } from "../components/PageTitle";
 
 type MenuPageProps = {
   description?: string;

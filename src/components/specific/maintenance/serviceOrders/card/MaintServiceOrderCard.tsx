@@ -1,5 +1,5 @@
-import { Card, Divider, Grid, Row, Typography } from "antd";
-import React, { useCallback, useMemo } from "react";
+import { Row } from "antd";
+import React from "react";
 import {
   IoCheckmarkDoneOutline,
   IoCreateOutline,
@@ -8,9 +8,8 @@ import {
 } from "react-icons/io5";
 
 import type { Na3ServiceOrder } from "../../../../../modules/na3-types";
-import classes from "./MaintServiceOrderCard.module.css";
-import { ServiceOrderPriorityTag } from "./ServiceOrderPriorityTag";
-import { ServiceOrderStatusBadge } from "./ServiceOrderStatusBadge";
+import { DataCard } from "../../../../ui/DataCard/DataCard";
+import { ServiceOrderCardHeader } from "./ServiceOrderCardHeader";
 import { ServiceOrderStep } from "./ServiceOrderStep";
 
 type MaintServiceOrderCardProps = {
@@ -22,48 +21,16 @@ export function MaintServiceOrderCard({
   data,
   onSelect,
 }: MaintServiceOrderCardProps): JSX.Element {
-  const breakpoint = Grid.useBreakpoint();
-
-  const handleClick = useCallback(() => {
-    if (onSelect) onSelect(data);
-  }, [onSelect, data]);
-
-  const cardBodyStyle = useMemo(
-    () => ({
-      padding: 12,
-      paddingLeft: breakpoint.md ? 20 : 12,
-      paddingRight: breakpoint.md ? 20 : 12,
-    }),
-    [breakpoint.md]
-  );
-
   return (
-    <Card
-      bodyStyle={cardBodyStyle}
-      className={classes.Card}
-      hoverable={!!onSelect}
-      onClick={handleClick}
+    <DataCard
+      data={data}
+      header={
+        <ServiceOrderCardHeader priority={data.priority} status={data.status} />
+      }
+      onClick={onSelect}
+      preTitle={`#${data.id}`}
+      title={data.description}
     >
-      <div className={classes.Header}>
-        <ServiceOrderStatusBadge status={data.status} />
-
-        {data.priority && data.status === "solving" && (
-          <ServiceOrderPriorityTag priority={data.priority} />
-        )}
-      </div>
-
-      <small className={classes.IdText}>
-        <Typography.Text italic={true} type="secondary">
-          #{data.id}
-        </Typography.Text>
-      </small>
-
-      <Typography.Title className={classes.Title} level={5}>
-        {data.description}
-      </Typography.Title>
-
-      <Divider className={classes.Divider} />
-
       <Row>
         <ServiceOrderStep
           icon={<IoCreateOutline />}
@@ -82,6 +49,6 @@ export function MaintServiceOrderCard({
           timestamp={data.closedAt}
         />
       </Row>
-    </Card>
+    </DataCard>
   );
 }

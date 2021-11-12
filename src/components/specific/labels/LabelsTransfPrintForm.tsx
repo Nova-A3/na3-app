@@ -144,6 +144,7 @@ export function LabelsTransfPrintForm({
         </Col>
         <Col md={6} sm={8} xs={24}>
           <FormField
+            allowFutureDates={true}
             label="Data"
             name="date"
             onValueChange={handleDateChange}

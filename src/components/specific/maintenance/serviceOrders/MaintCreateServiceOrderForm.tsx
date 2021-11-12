@@ -58,7 +58,7 @@ export function MaintCreateServiceOrderForm({
 
       if (!orderId) {
         notifyError(
-          "Não foi possível vincular um número para a OS. Recarregue a página ou tente novamente novamente mais tarde."
+          "Não foi possível vincular um número à OS. Por favor, recarregue a página ou tente novamente mais tarde."
         );
         return;
       }

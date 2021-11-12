@@ -3,13 +3,10 @@
 }
 
 .Header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
   margin-bottom: 6;
 }
 
-.IdText {
+.PreTitle {
   margin-right: 8px;
 }
 

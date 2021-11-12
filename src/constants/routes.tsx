@@ -16,6 +16,7 @@ import {
   LabelsTransfManagePage,
   LabelsTransfPrintPage,
   MaintenanceHomePage,
+  MaintProjectsHomePage,
   MaintServiceOrdersCreatePage,
   MaintServiceOrdersHomePage,
 } from "../pages";

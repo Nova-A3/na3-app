@@ -11,11 +11,6 @@ type MaintServiceOrdersListProps = {
   onSelectOrder: (serviceOrder: Na3ServiceOrder) => void;
 };
 
-const defaultProps: Omit<
-  MaintServiceOrdersListProps,
-  "data" | "onSelectOrder"
-> = {};
-
 export function MaintServiceOrdersList({
   data,
   onSelectOrder,
@@ -61,5 +56,3 @@ export function MaintServiceOrdersList({
     />
   );
 }
-
-MaintServiceOrdersList.defaultProps = defaultProps;
