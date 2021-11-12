@@ -8,6 +8,7 @@ export type {
   Na3DepartmentType,
 } from "./Na3Department";
 export type { Na3Machine } from "./Na3Machine";
+export type { Na3MaintenanceProject } from "./Na3MaintenanceProject";
 export type { Na3ServiceOrder } from "./Na3ServiceOrder";
 export type { Na3TransfLabelTemplate } from "./Na3TransfLabelTemplate";
 export type { Na3User } from "./Na3User";
