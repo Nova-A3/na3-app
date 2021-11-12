@@ -4,9 +4,6 @@ export type FirebaseNullOperationResult =
   | { error: firebase.FirebaseError }
   | { error: null };
 
-export type FirebaseOperationResult =
-  | {
-      data: firebase.firestore.DocumentReference<firebase.firestore.DocumentData>;
-      error: null;
-    }
+export type FirebaseOperationResult<T> =
+  | { data: firebase.firestore.DocumentReference<T>; error: null }
   | { data: null; error: firebase.FirebaseError };

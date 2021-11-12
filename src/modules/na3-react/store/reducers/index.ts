@@ -5,6 +5,7 @@ import { configReducer } from "./config";
 import { departmentsReducer } from "./departments";
 import { globalReducer } from "./global";
 import { labelTemplatesReducer } from "./labelTemplates";
+import { maintProjectsReducer } from "./maintProjects";
 import { serviceOrdersReducer } from "./serviceOrders";
 
 export const rootReducer = combineReducers({
@@ -13,5 +14,6 @@ export const rootReducer = combineReducers({
   departments: departmentsReducer,
   global: globalReducer,
   labelTemplates: labelTemplatesReducer,
+  maintProjects: maintProjectsReducer,
   serviceOrders: serviceOrdersReducer,
 });

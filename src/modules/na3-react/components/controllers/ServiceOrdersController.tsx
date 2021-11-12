@@ -1,5 +1,5 @@
 import firebase from "firebase";
-import { useCallback, useEffect } from "react";
+import { useCallback, useEffect, useMemo } from "react";
 import { useCollectionData } from "react-firebase-hooks/firestore";
 import { useDispatch } from "react-redux";
 
@@ -18,13 +18,18 @@ export function Na3ServiceOrdersController(): null {
 
   const dispatch = useDispatch();
 
-  const [fbServiceOrders, fbServiceOrdersLoading, fbServiceOrdersError] =
-    useCollectionData<Na3ServiceOrder, "id">(
+  const fbCollectionRef = useMemo(
+    () =>
       firebase
         .firestore()
         .collection(resolveCollectionId("tickets", environment)),
-      { idField: "id" }
-    );
+    [environment]
+  );
+
+  const [fbServiceOrders, fbServiceOrdersLoading, fbServiceOrdersError] =
+    useCollectionData<Na3ServiceOrder, "id">(fbCollectionRef, {
+      idField: "id",
+    });
 
   /* ServiceOrders state management hooks */
 
@@ -48,10 +53,7 @@ export function Na3ServiceOrdersController(): null {
     dispatch(setServiceOrdersData(null));
 
     if (department) {
-      const serviceOrdersSnapshot = await firebase
-        .firestore()
-        .collection(resolveCollectionId("tickets", environment))
-        .get();
+      const serviceOrdersSnapshot = await fbCollectionRef.get();
 
       dispatch(
         setServiceOrdersData(
@@ -64,7 +66,7 @@ export function Na3ServiceOrdersController(): null {
     }
 
     dispatch(setServiceOrdersLoading(false));
-  }, [dispatch, department, environment]);
+  }, [dispatch, department, fbCollectionRef]);
 
   useEffect(() => {
     void forceRefreshServiceOrders();

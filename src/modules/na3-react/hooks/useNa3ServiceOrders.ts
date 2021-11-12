@@ -16,11 +16,13 @@ export type UseNa3ServiceOrdersResult = {
   data: Na3ServiceOrder[] | null;
   error: firebase.FirebaseError | null;
   helpers: {
-    acceptSolution: (id: string) => Promise<FirebaseOperationResult>;
+    acceptSolution: (
+      id: string
+    ) => Promise<FirebaseOperationResult<Na3ServiceOrder>>;
     add: (
       id: string,
       data: Parameters<typeof buildServiceOrder>[1]
-    ) => Promise<FirebaseOperationResult>;
+    ) => Promise<FirebaseOperationResult<Na3ServiceOrder>>;
     getByStatus: (
       status: Na3ServiceOrder["status"] | Na3ServiceOrder["status"][],
       data?: Na3ServiceOrder[]
@@ -37,7 +39,7 @@ export type UseNa3ServiceOrdersResult = {
     rejectSolution: (
       id: string,
       payload: { reason: string }
-    ) => Promise<FirebaseOperationResult>;
+    ) => Promise<FirebaseOperationResult<Na3ServiceOrder>>;
     sortByStatus: (
       sortingOrder: Na3ServiceOrder["status"][],
       data?: Na3ServiceOrder[]
@@ -153,11 +155,15 @@ export function useNa3ServiceOrders(): UseNa3ServiceOrdersResult {
           | "username"
         >
       >
-    ): Promise<FirebaseOperationResult> => {
+    ): Promise<FirebaseOperationResult<Na3ServiceOrder>> => {
       const serviceOrder = buildServiceOrder(id, data, device);
       try {
-        const docRef = fbCollectionRef.current.doc(id);
+        const docRef = fbCollectionRef.current.doc(
+          id
+        ) as firebase.firestore.DocumentReference<Na3ServiceOrder>;
+
         await docRef.set(serviceOrder);
+
         return { data: docRef, error: null };
       } catch (error) {
         return { data: null, error: error as firebase.FirebaseError };
@@ -167,9 +173,12 @@ export function useNa3ServiceOrders(): UseNa3ServiceOrdersResult {
   );
 
   const acceptSolution = useCallback(
-    async (id: string): Promise<FirebaseOperationResult> => {
+    async (id: string): Promise<FirebaseOperationResult<Na3ServiceOrder>> => {
       try {
-        const docRef = fbCollectionRef.current.doc(id);
+        const docRef = fbCollectionRef.current.doc(
+          id
+        ) as firebase.firestore.DocumentReference<Na3ServiceOrder>;
+
         await docRef.update({
           closedAt: dayjs().format(),
           events: firebase.firestore.FieldValue.arrayUnion(
@@ -187,6 +196,7 @@ export function useNa3ServiceOrders(): UseNa3ServiceOrdersResult {
           ),
           status: "closed",
         });
+
         return { data: docRef, error: null };
       } catch (error) {
         return { data: null, error: error as firebase.FirebaseError };
@@ -199,9 +209,12 @@ export function useNa3ServiceOrders(): UseNa3ServiceOrdersResult {
     async (
       id: string,
       payload: { reason: string }
-    ): Promise<FirebaseOperationResult> => {
+    ): Promise<FirebaseOperationResult<Na3ServiceOrder>> => {
       try {
-        const docRef = fbCollectionRef.current.doc(id);
+        const docRef = fbCollectionRef.current.doc(
+          id
+        ) as firebase.firestore.DocumentReference<Na3ServiceOrder>;
+
         await docRef.update({
           acceptedAt: null,
           events: firebase.firestore.FieldValue.arrayUnion(
@@ -227,6 +240,7 @@ export function useNa3ServiceOrders(): UseNa3ServiceOrdersResult {
           solvedAt: null,
           status: "pending",
         });
+
         return { data: docRef, error: null };
       } catch (error) {
         return { data: null, error: error as firebase.FirebaseError };

@@ -15,13 +15,13 @@ export type UseNa3TransfLabelTemplatesResult = {
   helpers: {
     add: (
       templateData: Omit<Na3TransfLabelTemplate, "id">
-    ) => Promise<FirebaseOperationResult>;
+    ) => Promise<FirebaseOperationResult<Na3TransfLabelTemplate>>;
     delete: (templateId: string) => Promise<FirebaseNullOperationResult>;
     getById: (id: string) => Na3TransfLabelTemplate | undefined;
     update: (
       templateId: string,
       templateData: Omit<Na3TransfLabelTemplate, "id">
-    ) => Promise<FirebaseOperationResult>;
+    ) => Promise<FirebaseOperationResult<Na3TransfLabelTemplate>>;
   };
   loading: boolean;
 };
@@ -45,7 +45,10 @@ export function useNa3TransfLabelTemplates(): UseNa3TransfLabelTemplatesResult {
   const add = useCallback(
     async (templateData: Omit<Na3TransfLabelTemplate, "id">) => {
       try {
-        const docRef = await fbCollectionRef.current.add(templateData);
+        const docRef = (await fbCollectionRef.current.add(
+          templateData
+        )) as firebase.firestore.DocumentReference<Na3TransfLabelTemplate>;
+
         return { data: docRef, error: null };
       } catch (error) {
         return { data: null, error: error as firebase.FirebaseError };
@@ -60,8 +63,12 @@ export function useNa3TransfLabelTemplates(): UseNa3TransfLabelTemplatesResult {
       templateData: Omit<Na3TransfLabelTemplate, "id">
     ) => {
       try {
-        const docRef = fbCollectionRef.current.doc(templateId);
+        const docRef = fbCollectionRef.current.doc(
+          templateId
+        ) as firebase.firestore.DocumentReference<Na3TransfLabelTemplate>;
+
         await docRef.update(templateData);
+
         return { data: docRef, error: null };
       } catch (error) {
         return { data: null, error: error as firebase.FirebaseError };
@@ -73,7 +80,9 @@ export function useNa3TransfLabelTemplates(): UseNa3TransfLabelTemplatesResult {
   const del = useCallback(async (templateId: string) => {
     try {
       const docRef = fbCollectionRef.current.doc(templateId);
+
       await docRef.delete();
+
       return { error: null };
     } catch (error) {
       return { error: error as firebase.FirebaseError };

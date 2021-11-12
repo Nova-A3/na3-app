@@ -1,5 +1,5 @@
 import firebase from "firebase";
-import { useCallback, useEffect } from "react";
+import { useCallback, useEffect, useMemo } from "react";
 import { useCollectionData } from "react-firebase-hooks/firestore";
 import { useDispatch } from "react-redux";
 
@@ -18,16 +18,21 @@ export function Na3TransfLabelTemplatesController(): null {
 
   const dispatch = useDispatch();
 
+  const fbCollectionRef = useMemo(
+    () =>
+      firebase
+        .firestore()
+        .collection(resolveCollectionId("transf-label-templates", environment)),
+    [environment]
+  );
+
   const [
     fbTransfLabelTemplates,
     fbTransfLabelTemplatesLoading,
     fbTransfLabelTemplatesError,
-  ] = useCollectionData<Na3TransfLabelTemplate, "id">(
-    firebase
-      .firestore()
-      .collection(resolveCollectionId("transf-label-templates", environment)),
-    { idField: "id" }
-  );
+  ] = useCollectionData<Na3TransfLabelTemplate, "id">(fbCollectionRef, {
+    idField: "id",
+  });
 
   /* TransfLabelTemplates state management hooks */
 
@@ -56,10 +61,7 @@ export function Na3TransfLabelTemplatesController(): null {
     dispatch(setTransfLabelTemplatesData(null));
 
     if (department) {
-      const templatesSnapshot = await firebase
-        .firestore()
-        .collection(resolveCollectionId("transf-label-templates", environment))
-        .get();
+      const templatesSnapshot = await fbCollectionRef.get();
 
       dispatch(
         setTransfLabelTemplatesData(
@@ -72,7 +74,7 @@ export function Na3TransfLabelTemplatesController(): null {
     }
 
     dispatch(setTransfLabelTemplatesLoading(false));
-  }, [dispatch, department, environment]);
+  }, [dispatch, department, fbCollectionRef]);
 
   useEffect(() => {
     void forceRefreshTemplates();

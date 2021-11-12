@@ -4,6 +4,7 @@ import { Provider as StoreProvider } from "react-redux";
 import { store } from "../store";
 import type { ConfigState } from "../types";
 import { Na3MainController } from "./controllers/MainController";
+import { Na3MaintenanceProjectsController } from "./controllers/MaintProjectsController";
 import { Na3ServiceOrdersController } from "./controllers/ServiceOrdersController";
 import { Na3TransfLabelTemplatesController } from "./controllers/TransfLabelTemplatesController";
 
@@ -28,6 +29,7 @@ export function Na3Provider({
       <Na3MainController appVersion={appVersion} env={env} />
       <Na3TransfLabelTemplatesController />
       <Na3ServiceOrdersController />
+      <Na3MaintenanceProjectsController />
 
       {children}
     </StoreProvider>
