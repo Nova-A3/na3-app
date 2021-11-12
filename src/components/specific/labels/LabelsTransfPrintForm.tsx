@@ -114,8 +114,6 @@ export function LabelsTransfPrintForm({
     [selectedDate]
   );
 
-  console.log(batchIdDateChunks);
-
   const batchIdTooltip = useMemo(
     () => (
       <>

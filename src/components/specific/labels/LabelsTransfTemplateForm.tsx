@@ -246,8 +246,6 @@ export function LabelsTransfTemplateForm({
     }
   }, [editingTemplate, productData, customersData, form]);
 
-  console.log(editingTemplate);
-
   return (
     <Form form={form} onSubmit={handleSubmit}>
       <FormField
