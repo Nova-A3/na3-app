@@ -3,22 +3,24 @@ import { nanoid } from "nanoid";
 
 import type { Na3AppDevice, Na3ServiceOrder } from "../../../na3-types";
 
+export type ServiceOrderBuilderData = Required<
+  Pick<
+    Na3ServiceOrder,
+    | "additionalInfo"
+    | "cause"
+    | "description"
+    | "dpt"
+    | "interruptions"
+    | "machine"
+    | "maintenanceType"
+    | "team"
+    | "username"
+  >
+>;
+
 export function buildServiceOrder(
   id: string,
-  data: Required<
-    Pick<
-      Na3ServiceOrder,
-      | "additionalInfo"
-      | "cause"
-      | "description"
-      | "dpt"
-      | "interruptions"
-      | "machine"
-      | "maintenanceType"
-      | "team"
-      | "username"
-    >
-  >,
+  data: ServiceOrderBuilderData,
   device: Na3AppDevice
 ): Na3ServiceOrder {
   const creationEvent = buildServiceOrderEvents(
@@ -52,13 +54,13 @@ type EventBuildConfig = {
 };
 
 export function buildServiceOrderEvents(
-  events: EventBuildConfig[],
-  originDevice: Na3AppDevice
-): Na3ServiceOrder["events"][0][];
-export function buildServiceOrderEvents(
   events: EventBuildConfig,
   originDevice: Na3AppDevice
 ): Na3ServiceOrder["events"][0];
+export function buildServiceOrderEvents(
+  events: EventBuildConfig[],
+  originDevice: Na3AppDevice
+): Na3ServiceOrder["events"][0][];
 export function buildServiceOrderEvents(
   events: EventBuildConfig | EventBuildConfig[],
   originDevice: Na3AppDevice

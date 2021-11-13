@@ -7,7 +7,8 @@ import type {
   Na3MaintenanceProjectStatus,
 } from "../../na3-types";
 import type { FirebaseOperationResult } from "../types";
-import { resolveCollectionId } from "../utils";
+import type { MaintProjectBuilderData } from "../utils";
+import { buildMaintProject, resolveCollectionId } from "../utils";
 import { useStateSlice } from "./useStateSlice";
 
 export type UseNa3MaintProjectsResult = {
@@ -15,12 +16,15 @@ export type UseNa3MaintProjectsResult = {
   error: firebase.FirebaseError | null;
   helpers: {
     add: (
-      projectData: Omit<Na3MaintenanceProject, "id">
+      internalId: number,
+      projectData: MaintProjectBuilderData
     ) => Promise<FirebaseOperationResult<Na3MaintenanceProject>>;
+    formatInternalId: (internalId: number) => string;
     getByStatus: (
       status: Na3MaintenanceProjectStatus | Na3MaintenanceProjectStatus[],
       data?: Na3MaintenanceProject[]
     ) => Na3MaintenanceProject[];
+    getNextInternalId: () => number | undefined;
     getProjectStatus: (
       project: Na3MaintenanceProject
     ) => Na3MaintenanceProjectStatus;
@@ -44,6 +48,18 @@ export function useNa3MaintProjects(): UseNa3MaintProjectsResult {
       .firestore()
       .collection(resolveCollectionId("manut-projects", environment))
   );
+
+  const getNextInternalId = useCallback((): number | undefined => {
+    const lastId = maintProjects.data
+      ?.map((project) => project.internalId)
+      .sort((a, b) => a - b)
+      .pop();
+    return lastId;
+  }, [maintProjects.data]);
+
+  const formatInternalId = useCallback((internalId: number): string => {
+    return `PR-${internalId.toString().padStart(4, "0")}`;
+  }, []);
 
   const getProjectStatus = useCallback(
     (project: Na3MaintenanceProject): Na3MaintenanceProjectStatus => {
@@ -99,10 +115,11 @@ export function useNa3MaintProjects(): UseNa3MaintProjectsResult {
   );
 
   const add = useCallback(
-    async (projectData: Omit<Na3MaintenanceProject, "id">) => {
+    async (internalId: number, projectData: MaintProjectBuilderData) => {
+      const project = buildMaintProject(internalId, projectData);
       try {
         const docRef = (await fbCollectionRef.current.add(
-          projectData
+          project
         )) as firebase.firestore.DocumentReference<Na3MaintenanceProject>;
 
         return { data: docRef, error: null };
@@ -115,6 +132,14 @@ export function useNa3MaintProjects(): UseNa3MaintProjectsResult {
 
   return {
     ...maintProjects,
-    helpers: { add, getByStatus, getProjectStatus, mapByStatus, sortByStatus },
+    helpers: {
+      add,
+      formatInternalId,
+      getByStatus,
+      getNextInternalId,
+      getProjectStatus,
+      mapByStatus,
+      sortByStatus,
+    },
   };
 }

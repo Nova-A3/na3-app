@@ -14,7 +14,7 @@ import type {
   Na3DepartmentId,
   Na3TransfLabelTemplate,
 } from "../../../modules/na3-types";
-import { formatProductUnit } from "../../../utils";
+import { createErrorNotifier, formatProductUnit } from "../../../utils";
 import { FormCollapse } from "../../forms/components/FormCollapse/FormCollapse";
 import { Form } from "../../forms/Form";
 import { FormField } from "../../forms/FormField/FormField";
@@ -151,12 +151,9 @@ export function LabelsTransfTemplateForm({
       batchIdFormat,
       departmentId,
     }: FormValues) => {
-      function notifyError(message: string): void {
-        notification.error({
-          description: message,
-          message: `Erro ao ${editingTemplate ? "editar" : "criar"} o modelo`,
-        });
-      }
+      const notifyError = createErrorNotifier(
+        `Erro ao ${editingTemplate ? "editar" : "criar"} o modelo`
+      );
 
       if (departmentId === "") {
         return notifyError("Você precisa atribuir um setor ao modelo.");

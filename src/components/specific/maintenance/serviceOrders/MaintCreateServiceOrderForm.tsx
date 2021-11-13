@@ -6,6 +6,7 @@ import { Redirect } from "react-router";
 import { useForm } from "../../../../hooks";
 import { useNa3Auth, useNa3ServiceOrders } from "../../../../modules/na3-react";
 import type { MaintCreateServiceOrderFormValues } from "../../../../types";
+import { createErrorNotifier } from "../../../../utils";
 import { Form } from "../../../forms/Form";
 import { FormField } from "../../../forms/FormField/FormField";
 import { SubmitButton } from "../../../forms/SubmitButton";
@@ -47,12 +48,7 @@ export function MaintCreateServiceOrderForm({
 
   const handleSubmit = useCallback(
     (values: MaintCreateServiceOrderFormValues) => {
-      function notifyError(message: string): void {
-        notification.error({
-          description: message,
-          message: "Erro ao abrir a OS",
-        });
-      }
+      const notifyError = createErrorNotifier("Erro ao abrir a OS");
 
       const orderId = helpers.getNextId();
 
@@ -110,7 +106,7 @@ export function MaintCreateServiceOrderForm({
 
             resolve();
           },
-          title: `Abrir OS?`,
+          title: "Abrir OS?",
         });
       });
     },

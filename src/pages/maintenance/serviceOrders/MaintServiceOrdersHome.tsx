@@ -18,10 +18,6 @@ export function MaintServiceOrdersHomePage(): JSX.Element {
 
   const [selectedOrder, setSelectedOrder] = useState<Na3ServiceOrder>();
 
-  const handleCreateServiceOrderClick = useCallback(() => {
-    history.push("/manutencao/os/abrir-os");
-  }, [history]);
-
   const userOrders = useMemo(
     () => serviceOrders.helpers.getDepartmentOrders(),
     [serviceOrders.helpers]
@@ -35,6 +31,10 @@ export function MaintServiceOrdersHomePage(): JSX.Element {
       ),
     [serviceOrders.helpers, userOrders]
   );
+
+  const handleCreateServiceOrderClick = useCallback(() => {
+    history.push("/manutencao/os/abrir-os");
+  }, [history]);
 
   const handleCloseOrderDetailsModal = useCallback(() => {
     setSelectedOrder(undefined);

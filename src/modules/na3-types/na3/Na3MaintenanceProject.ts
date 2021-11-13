@@ -7,6 +7,8 @@ export type Na3MaintenanceProject = LegacyInternalProject & {
 
 export type Na3MaintenanceProjectStatus = "finished" | "late" | "running";
 
+export type Na3MaintenanceProjectEvent = LegacyInternalProjectEvent;
+
 /* LegacyInternalProject */
 
 type LegacyInternalProjectChanges = Partial<{

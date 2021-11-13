@@ -3,9 +3,14 @@ import { Tag } from "antd";
 import { Select as AntdSelect } from "antd";
 import React, { useCallback } from "react";
 
+import { isArray } from "../../../../utils";
+import classes from "./Select.module.css";
+
 type SelectValue = string[] | string;
 
-type SelectTagProps = Pick<TagProps, "color" | "style">;
+type SelectTagProps = Pick<TagProps, "color" | "style"> & {
+  containerStyle?: React.CSSProperties;
+};
 
 type RenderTagHandler = Exclude<
   AntdSelectProps<SelectValue>["tagRender"],
@@ -13,13 +18,24 @@ type RenderTagHandler = Exclude<
 >;
 
 export type SelectAsFieldProps = Partial<
-  Pick<AntdSelectProps<SelectValue>, "allowClear" | "autoFocus" | "disabled">
+  Pick<
+    AntdSelectProps<SelectValue>,
+    | "allowClear"
+    | "autoFocus"
+    | "defaultActiveFirstOption"
+    | "disabled"
+    | "showSearch"
+  >
 > & {
   multiple?: boolean;
   onTagProps?:
     | ((value: Parameters<RenderTagHandler>[0]["value"]) => SelectTagProps)
     | null;
-  options: { label: React.ReactNode; value: string }[];
+  options: {
+    label: React.ReactNode;
+    labelWhenSelected?: React.ReactNode;
+    value: string;
+  }[];
 };
 
 type SelectProps = Required<SelectAsFieldProps> & {
@@ -46,39 +62,67 @@ export function Select({
   placeholder,
   options,
   onFilterOptions,
-  value,
+  defaultActiveFirstOption,
+  showSearch,
+  value: valueOrValues,
 }: SelectProps): JSX.Element {
   const handleRenderTag: RenderTagHandler = useCallback(
-    ({ value, label, closable, onClose }) => {
+    ({ value: optionValue, label, closable, onClose }) => {
       return (
-        <Tag
-          closable={closable}
-          color={onTagProps?.(value).color}
-          onClose={onClose}
-          style={onTagProps?.(value).style || { marginRight: 3 }}
+        <div
+          className={`${classes.LabelWhenSelected} ${classes.CustomTagContainer}`}
+          style={onTagProps?.(optionValue).containerStyle}
         >
-          {label}
-        </Tag>
+          <Tag
+            closable={closable}
+            color={onTagProps?.(optionValue).color}
+            onClose={onClose}
+            style={{
+              marginLeft:
+                isArray(valueOrValues) && optionValue === valueOrValues[0]
+                  ? 7
+                  : undefined,
+              marginRight: 3,
+              ...onTagProps?.(optionValue).style,
+            }}
+          >
+            {label}
+          </Tag>
+        </div>
       );
     },
-    [onTagProps]
+    [onTagProps, valueOrValues]
   );
 
   return (
     <AntdSelect
       allowClear={allowClear}
       autoFocus={autoFocus}
+      defaultActiveFirstOption={defaultActiveFirstOption}
       disabled={disabled}
       filterOption={onFilterOptions}
       id={id}
       mode={multiple ? "multiple" : onTagProps ? "tags" : undefined}
       onBlur={onBlur}
       onChange={onChange}
-      options={options}
+      optionLabelProp="labelWhenSelected"
+      options={options.map((opt) => ({
+        label: opt.label,
+        labelWhenSelected:
+          multiple || onTagProps || !opt.labelWhenSelected ? (
+            opt.label
+          ) : (
+            <div className={classes.LabelWhenSelected}>
+              {opt.labelWhenSelected}
+            </div>
+          ),
+        value: opt.value,
+      }))}
       placeholder={placeholder}
+      showSearch={showSearch}
       tagRender={handleRenderTag}
       tokenSeparators={[",", ";", "  "]}
-      value={value}
+      value={valueOrValues}
     />
   );
 }

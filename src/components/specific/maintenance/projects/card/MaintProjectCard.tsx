@@ -15,11 +15,13 @@ export function MaintProjectCard({
   data,
   onSelect,
 }: MaintProjectCardProps): JSX.Element {
-  const { helpers } = useNa3MaintProjects();
+  const {
+    helpers: { getProjectStatus, formatInternalId },
+  } = useNa3MaintProjects();
 
   const projectStatus = useMemo(
-    () => helpers.getProjectStatus(data),
-    [data, helpers]
+    () => getProjectStatus(data),
+    [getProjectStatus, data]
   );
 
   return (
@@ -27,7 +29,7 @@ export function MaintProjectCard({
       data={data}
       header={<MaintProjectStatusBadge status={projectStatus} />}
       onClick={onSelect}
-      preTitle={`PR-${data.internalId.toString().padStart(4, "0")}`}
+      preTitle={formatInternalId(data.internalId)}
       title={data.title}
     >
       <Typography.Text italic={true}>{data.description}</Typography.Text>

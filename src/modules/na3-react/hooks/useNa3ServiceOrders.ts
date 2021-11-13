@@ -4,6 +4,7 @@ import { useCallback, useRef } from "react";
 
 import type { Na3ServiceOrder } from "../../na3-types";
 import type { FirebaseOperationResult } from "../types";
+import type { ServiceOrderBuilderData } from "../utils";
 import {
   buildServiceOrder,
   buildServiceOrderEvents,
@@ -21,7 +22,7 @@ export type UseNa3ServiceOrdersResult = {
     ) => Promise<FirebaseOperationResult<Na3ServiceOrder>>;
     add: (
       id: string,
-      data: Parameters<typeof buildServiceOrder>[1]
+      data: ServiceOrderBuilderData
     ) => Promise<FirebaseOperationResult<Na3ServiceOrder>>;
     getByStatus: (
       status: Na3ServiceOrder["status"] | Na3ServiceOrder["status"][],
@@ -141,20 +142,7 @@ export function useNa3ServiceOrders(): UseNa3ServiceOrdersResult {
   const add = useCallback(
     async (
       id: string,
-      data: Required<
-        Pick<
-          Na3ServiceOrder,
-          | "additionalInfo"
-          | "cause"
-          | "description"
-          | "dpt"
-          | "interruptions"
-          | "machine"
-          | "maintenanceType"
-          | "team"
-          | "username"
-        >
-      >
+      data: ServiceOrderBuilderData
     ): Promise<FirebaseOperationResult<Na3ServiceOrder>> => {
       const serviceOrder = buildServiceOrder(id, data, device);
       try {

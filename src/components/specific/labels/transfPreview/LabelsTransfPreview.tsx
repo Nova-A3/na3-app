@@ -84,9 +84,8 @@ export function LabelsTransfPreview({
     onSave(label, { barcodeDataUrl, copies, qrDataUrl });
   }, [onSave, label, copies, qrDataUrl, barcodeDataUrl]);
 
-  if (!label) {
-    return null;
-  }
+  if (!label) return null;
+
   return (
     <Modal
       centered={true}
@@ -100,7 +99,7 @@ export function LabelsTransfPreview({
       onCancel={onCancel}
       title="Pré-visualização"
       visible={!!label}
-      width={breakpoint.md ? "70%" : "90%"}
+      width={breakpoint.lg ? "65%" : breakpoint.md ? "80%" : undefined}
     >
       <div className={classes.LabelPreview}>
         <img alt="Layout impresso da etiqueta" src={labelLayout} />

@@ -10,6 +10,7 @@ export type {
 export type { Na3Machine } from "./Na3Machine";
 export type {
   Na3MaintenanceProject,
+  Na3MaintenanceProjectEvent,
   Na3MaintenanceProjectStatus,
 } from "./Na3MaintenanceProject";
 export type { Na3ServiceOrder } from "./Na3ServiceOrder";

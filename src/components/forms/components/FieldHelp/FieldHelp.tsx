@@ -7,6 +7,7 @@ import classes from "./FieldHelp.module.css";
 
 type FieldHelpProps = {
   contentWhenLoading: React.ReactNode | undefined;
+  contentWhenValid: React.ReactNode | undefined;
   defaultContent: React.ReactNode | undefined;
   error: string | undefined;
   fieldStatus: FieldStatus;
@@ -16,6 +17,7 @@ type FieldHelpProps = {
 
 export function FieldHelp({
   contentWhenLoading: contentWhenLoadingProp,
+  contentWhenValid,
   defaultContent,
   error,
   fieldStatus,
@@ -45,7 +47,7 @@ export function FieldHelp({
     case "valid":
       return (
         <Typography.Text type="success">
-          {defaultContent || "Parece bom!"}
+          {contentWhenValid || defaultContent || "Parece bom!"}
         </Typography.Text>
       );
     case "untouched":

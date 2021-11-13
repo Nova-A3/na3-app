@@ -1,5 +1,5 @@
 import { PlusCircleOutlined } from "@ant-design/icons";
-import { Button, Modal } from "antd";
+import { Button, Grid, Modal } from "antd";
 import React, { useCallback, useState } from "react";
 import { useHistory } from "react-router-dom";
 
@@ -17,6 +17,7 @@ export function LabelsTransfManagePage(): JSX.Element {
     useState<Na3TransfLabelTemplate>();
 
   const history = useHistory();
+  const breakpoint = Grid.useBreakpoint();
 
   // const transfLabelTemplates = useNa3TransfLabelTemplates();
 
@@ -91,7 +92,7 @@ export function LabelsTransfManagePage(): JSX.Element {
           onCancel={handleCloseModal}
           title={selectedTemplate.name.trim().toUpperCase()}
           visible={true}
-          width="80vw"
+          width={breakpoint.lg ? "65%" : breakpoint.md ? "80%" : undefined}
         >
           <LabelsTransfTemplateForm
             editingTemplate={selectedTemplate}

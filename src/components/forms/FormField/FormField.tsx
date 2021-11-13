@@ -76,6 +76,7 @@ type FormFieldBaseProps<Type extends FieldType, Value extends FieldValue> = {
   defaultHelp?: React.ReactNode;
   disabled?: boolean;
   helpWhenLoading?: React.ReactNode;
+  helpWhenValid?: React.ReactNode | ((value: Value) => React.ReactNode);
   hidden?: boolean;
   hideHelpWhenValid?: boolean;
   isLoading?: boolean;
@@ -125,6 +126,7 @@ const defaultProps: Omit<FormFieldBaseProps<FieldType, FieldValue>, "type"> = {
   defaultHelp: undefined,
   disabled: false,
   helpWhenLoading: undefined,
+  helpWhenValid: undefined,
   hidden: false,
   hideHelpWhenValid: false,
   isLoading: false,
@@ -154,6 +156,7 @@ export function FormField(props: FormFieldProps): JSX.Element {
     labelCol,
     labelSpan,
     helpWhenLoading,
+    helpWhenValid,
     required,
     placeholder: placeholderProp,
     tooltip,
@@ -332,6 +335,11 @@ export function FormField(props: FormFieldProps): JSX.Element {
     (): JSX.Element => (
       <FieldHelp
         contentWhenLoading={helpWhenLoading}
+        contentWhenValid={
+          typeof helpWhenValid === "function"
+            ? (helpWhenValid(value as never) as React.ReactNode)
+            : helpWhenValid
+        }
         defaultContent={defaultHelp}
         error={error?.message}
         fieldStatus={status}
@@ -346,6 +354,8 @@ export function FormField(props: FormFieldProps): JSX.Element {
       isSubmitting,
       hideHelpWhenValid,
       helpWhenLoading,
+      helpWhenValid,
+      value,
     ]
   );
 
@@ -444,8 +454,15 @@ export function FormField(props: FormFieldProps): JSX.Element {
       case "select":
         return (
           <Select
-            allowClear={props.allowClear || true}
+            allowClear={
+              props.allowClear !== undefined ? props.allowClear : true
+            }
             autoFocus={autoFocus || false}
+            defaultActiveFirstOption={
+              props.defaultActiveFirstOption !== undefined
+                ? props.defaultActiveFirstOption
+                : true
+            }
             disabled={disabled}
             id={name}
             multiple={props.multiple || false}
@@ -455,6 +472,9 @@ export function FormField(props: FormFieldProps): JSX.Element {
             onTagProps={props.onTagProps || null}
             options={props.options}
             placeholder={placeholder}
+            showSearch={
+              props.showSearch !== undefined ? props.showSearch : true
+            }
             value={(value !== true && value) || undefined}
           />
         );

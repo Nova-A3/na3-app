@@ -16,6 +16,7 @@ import {
   LabelsTransfManagePage,
   LabelsTransfPrintPage,
   MaintenanceHomePage,
+  MaintProjectsCreatePage,
   MaintProjectsHomePage,
   MaintServiceOrdersCreatePage,
   MaintServiceOrdersHomePage,
@@ -60,6 +61,7 @@ export const ROUTES: AppRouteMap<
   | "/manutencao/os"
   | "/manutencao/os/abrir-os"
   | "/manutencao/projetos"
+  | "/manutencao/projetos/novo-projeto"
 > = {
   "/": {
     component: <HomePage />,
@@ -156,5 +158,10 @@ export const ROUTES: AppRouteMap<
     authorized: ["manutencao"],
     component: <MaintProjectsHomePage />,
     title: "Projetos",
+  },
+  "/manutencao/projetos/novo-projeto": {
+    authorized: ["manutencao"],
+    component: <MaintProjectsCreatePage />,
+    title: "Novo Projeto",
   },
 };

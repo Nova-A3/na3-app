@@ -1,4 +1,5 @@
-import React, { useMemo, useState } from "react";
+import React, { useCallback, useMemo, useState } from "react";
+import { useHistory } from "react-router";
 
 import {
   ListFormPage,
@@ -9,6 +10,8 @@ import { useNa3MaintProjects } from "../../../modules/na3-react/hooks";
 import type { Na3MaintenanceProject } from "../../../modules/na3-types";
 
 export function MaintProjectsHomePage(): JSX.Element {
+  const history = useHistory();
+
   const maintProjects = useNa3MaintProjects();
 
   const [selectedProject, setSelectedProject] =
@@ -22,11 +25,13 @@ export function MaintProjectsHomePage(): JSX.Element {
     [maintProjects.helpers]
   );
 
+  const handleCreateProjectClick = useCallback(() => {
+    history.push("/manutencao/projetos/novo-projeto");
+  }, [history]);
+
   return (
     <ListFormPage
-      actions={[
-        { label: "Novo projeto", onClick: (): void => console.log("click") },
-      ]}
+      actions={[{ label: "Novo projeto", onClick: handleCreateProjectClick }]}
       form={<MaintCreateProjectForm />}
       formTitle="Novo Projeto"
       list={

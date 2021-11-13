@@ -1,8 +1,11 @@
-import { Divider, Grid } from "antd";
+import { Divider, Grid, Modal, notification, Tag } from "antd";
+import dayjs from "dayjs";
 import React, { useCallback, useMemo } from "react";
 
 import { EMPLOYEES } from "../../../../constants";
 import { useForm } from "../../../../hooks";
+import { useNa3MaintProjects } from "../../../../modules/na3-react";
+import { createErrorNotifier } from "../../../../utils";
 import { Form } from "../../../forms/Form";
 import { FormField } from "../../../forms/FormField/FormField";
 import { SubmitButton } from "../../../forms/SubmitButton";
@@ -30,6 +33,8 @@ export function MaintCreateProjectForm({
 }: MaintCreateProjectFormProps): JSX.Element {
   const breakpoint = Grid.useBreakpoint();
 
+  const { helpers } = useNa3MaintProjects();
+
   const form = useForm<FormValues>({
     defaultValues: {
       author: "",
@@ -42,16 +47,88 @@ export function MaintCreateProjectForm({
     },
   });
 
-  const handleSubmit = useCallback(() => {
-    form.resetForm();
-    onSubmit?.();
-  }, [form, onSubmit]);
+  const handleSubmit = useCallback(
+    (values: FormValues) => {
+      const notifyError = createErrorNotifier("Erro ao criar o projeto");
+
+      const internalId = helpers.getNextInternalId();
+
+      if (!internalId) {
+        notifyError(
+          "Não foi possível vincular um identificador ao projeto. Por favor, recarregue a página ou tente novamente mais tarde."
+        );
+        return;
+      }
+
+      return new Promise<void>((resolve) => {
+        const confirmModal = Modal.confirm({
+          content: (
+            <>
+              Confirma a abertura do projeto{" "}
+              {helpers.formatInternalId(internalId)} —{" "}
+              <em>{values.title.trim()}</em>?
+            </>
+          ),
+          okText: "Abrir projeto",
+          onCancel: () => resolve(),
+          onOk: async () => {
+            confirmModal.update({ okText: "Enviando..." });
+
+            const operationRes = await helpers.add(internalId, {
+              author: values.author,
+              description: values.description,
+              eta: dayjs(values.eta),
+              priority: values.priority === "" ? "low" : values.priority,
+              team: {
+                manager: values.teamManager,
+                members: values.teamMembers,
+              },
+              title: values.title,
+            });
+
+            if (operationRes.error) {
+              notifyError(operationRes.error.message);
+            } else {
+              notification.success({
+                description: (
+                  <>
+                    Projeto {helpers.formatInternalId(internalId)}{" "}
+                    <em>({values.title.trim()})</em> aberto com sucesso!
+                  </>
+                ),
+                message: "Projeto aberto",
+              });
+              form.resetForm();
+              onSubmit?.();
+            }
+
+            resolve();
+          },
+          title: "Abrir projeto?",
+        });
+      });
+    },
+    [form, onSubmit, helpers]
+  );
+
+  const handleDateHelpWhenValid = useCallback((dateString: string): string => {
+    const daysFromToday = dayjs(dateString)
+      .startOf("day")
+      .diff(dayjs().startOf("day"), "days");
+
+    return daysFromToday === 0
+      ? "Hoje"
+      : `Em ${daysFromToday} dia${daysFromToday === 1 ? "" : "s"}`;
+  }, []);
 
   const employeeOptions = useMemo(
     () =>
       EMPLOYEES.MAINTENANCE.sort((a, b) => a.name.localeCompare(b.name)).map(
         (maintainer) => ({
           label: maintainer.name,
+          labelWhenSelected: (
+            <Tag color={maintainer.color}>{maintainer.name}</Tag>
+          ),
           value: maintainer.name,
         })
       ),
@@ -121,6 +198,7 @@ export function MaintCreateProjectForm({
 
       <FormField
         disallowPastDates={true}
+        helpWhenValid={handleDateHelpWhenValid}
         label="Previsão de entrega"
         name="eta"
         rules={{ required: "Defina a data prevista para a conclusão" }}
