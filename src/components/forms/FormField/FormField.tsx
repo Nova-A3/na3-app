@@ -454,15 +454,9 @@ export function FormField(props: FormFieldProps): JSX.Element {
       case "select":
         return (
           <Select
-            allowClear={
-              props.allowClear !== undefined ? props.allowClear : true
-            }
+            allowClear={props.allowClear ?? true}
             autoFocus={autoFocus || false}
-            defaultActiveFirstOption={
-              props.defaultActiveFirstOption !== undefined
-                ? props.defaultActiveFirstOption
-                : true
-            }
+            defaultActiveFirstOption={props.defaultActiveFirstOption ?? true}
             disabled={disabled}
             id={name}
             multiple={props.multiple || false}
@@ -472,9 +466,7 @@ export function FormField(props: FormFieldProps): JSX.Element {
             onTagProps={props.onTagProps || null}
             options={props.options}
             placeholder={placeholder}
-            showSearch={
-              props.showSearch !== undefined ? props.showSearch : true
-            }
+            showSearch={props.showSearch ?? true}
             value={(value !== true && value) || undefined}
           />
         );
