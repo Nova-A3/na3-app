@@ -3,21 +3,23 @@ import type {
   FormItemProps,
   InputProps,
   RadioChangeEvent,
-  SelectProps,
   SwitchProps,
 } from "antd";
-import { AutoComplete, Form, Input, Radio, Select, Switch } from "antd";
+import { AutoComplete, Form, Input, Radio, Switch } from "antd";
 import { nanoid } from "nanoid";
 import React, { useCallback, useEffect, useMemo } from "react";
 import type { UseControllerProps } from "react-hook-form";
 import { useController } from "react-hook-form";
 
-import { isTouchDevice } from "../../../utils";
+import { isArray, isTouchDevice } from "../../../utils";
 import { FieldHelp } from "../components/FieldHelp/FieldHelp";
 import { FieldLabel } from "../components/FieldLabel/FieldLabel";
 import { FieldPreSuffix } from "../components/FieldPreSuffix/FieldPreSuffix";
+import type { InputDateAsFieldProps } from "../fields/InputDate/InputDate";
 import { InputDate } from "../fields/InputDate/InputDate";
 import { InputMask } from "../fields/InputMask/InputMask";
+import type { SelectAsFieldProps } from "../fields/Select/Select";
+import { Select } from "../fields/Select/Select";
 import classes from "./FormField.module.css";
 
 type FieldType =
@@ -32,11 +34,11 @@ type FieldType =
   | "switch"
   | "textArea";
 
-type FieldValue = boolean | string;
+type FieldValue = string[] | boolean | string;
 
 export type FieldStatus = "invalid" | "loading" | "untouched" | "valid";
 
-type InputOptionalProps = Partial<
+type InputBaseOptionalProps = Partial<
   Pick<
     InputProps,
     | "addonAfter"
@@ -49,7 +51,7 @@ type InputOptionalProps = Partial<
 >;
 
 type InputTextAreaOptionalProps = Omit<
-  InputOptionalProps,
+  InputBaseOptionalProps,
   "addonAfter" | "addonBefore" | "prefix" | "suffix"
 > & {
   rows?: { max?: number; min?: number };
@@ -59,11 +61,7 @@ type AutoCompleteOptionalProps = Partial<
   Pick<AutoCompleteProps, "allowClear" | "defaultActiveFirstOption">
 >;
 
-type SelectOptionalProps = Partial<
-  Pick<SelectProps<string>, "allowClear" | "defaultActiveFirstOption">
->;
-
-type InputNumberOptionalProps = InputOptionalProps & {
+type InputNumberOptionalProps = InputBaseOptionalProps & {
   max?: number;
   min?: number;
 };
@@ -72,59 +70,7 @@ type SwitchOptionalProps = Partial<
   Pick<SwitchProps, "checkedChildren" | "unCheckedChildren">
 >;
 
-type InputDateOptionalProps = {
-  allowClear?: boolean;
-  allowFutureDates?: boolean;
-  format?: string;
-};
-
-type ValueBasedFieldProps<Type extends FieldType, Value extends FieldValue> = {
-  max?: Type extends "number" ? number : never;
-  min?: Type extends "number" ? number : never;
-  noDecimal?: Type extends "number" ? boolean : never;
-  onValueChange?: (value: Value) => void;
-};
-
-type FormFieldBaseProps = {
-  label: string;
-  name: string;
-  rules: Exclude<UseControllerProps["rules"], undefined> | null;
-} & (
-  | (AutoCompleteOptionalProps &
-      ValueBasedFieldProps<"autoComplete", string> & {
-        options: { label: React.ReactNode; value: string }[];
-        type: "autoComplete";
-      })
-  | (InputDateOptionalProps &
-      ValueBasedFieldProps<"date", string> & { type: "date" })
-  | (InputNumberOptionalProps &
-      ValueBasedFieldProps<"number", string> & { type: "number" })
-  | (InputOptionalProps &
-      ValueBasedFieldProps<"input", string> & { type: "input" })
-  | (InputOptionalProps &
-      ValueBasedFieldProps<"mask", string> & {
-        mask: (RegExp | string)[];
-        maskPlaceholder?: string | null;
-        type: "mask";
-      })
-  | (InputOptionalProps &
-      ValueBasedFieldProps<"password", string> & { type: "password" })
-  | (InputTextAreaOptionalProps &
-      ValueBasedFieldProps<"textArea", string> & { type: "textArea" })
-  | (SelectOptionalProps &
-      ValueBasedFieldProps<"select", string> & {
-        options: { label: React.ReactNode; value: string }[];
-        type: "select";
-      })
-  | (SwitchOptionalProps &
-      ValueBasedFieldProps<"switch", boolean> & { type: "switch" })
-  | (ValueBasedFieldProps<"radio", string> & {
-      options: { label: React.ReactNode; value: string }[];
-      type: "radio";
-    })
-);
-
-type FormFieldOptionalProps = {
+type FormFieldBaseProps<Type extends FieldType, Value extends FieldValue> = {
   autoFocus?: boolean;
   autoUpperCase?: boolean;
   defaultHelp?: React.ReactNode;
@@ -135,15 +81,45 @@ type FormFieldOptionalProps = {
   isLoading?: boolean;
   labelCol?: FormItemProps["labelCol"];
   labelSpan?: number;
+  max?: Type extends "number" ? number : never;
+  min?: Type extends "number" ? number : never;
+  noDecimal?: Type extends "number" ? boolean : never;
+  onValueChange?: (value: Value) => void;
   placeholder?: string;
   required?: boolean;
+  sortValues?: Type extends "select" ? (a: string, b: string) => number : never;
   tooltip?: FormItemProps["tooltip"];
+  type: Type;
   wrapperCol?: FormItemProps["wrapperCol"];
 };
 
-export type FormFieldProps = FormFieldBaseProps & FormFieldOptionalProps;
+export type FormFieldProps = {
+  label: string;
+  name: string;
+  rules: Exclude<UseControllerProps["rules"], undefined> | null;
+} & (
+  | (AutoCompleteOptionalProps &
+      FormFieldBaseProps<"autoComplete", string> & {
+        options: { label: React.ReactNode; value: string }[];
+      })
+  | (FormFieldBaseProps<"date", string> & InputDateAsFieldProps)
+  | (FormFieldBaseProps<"input", string> & InputBaseOptionalProps)
+  | (FormFieldBaseProps<"mask", string> &
+      InputBaseOptionalProps & {
+        mask: (RegExp | string)[];
+        maskPlaceholder?: string | null;
+      })
+  | (FormFieldBaseProps<"number", string> & InputNumberOptionalProps)
+  | (FormFieldBaseProps<"password", string> & InputBaseOptionalProps)
+  | (FormFieldBaseProps<"radio", string> & {
+      options: { label: React.ReactNode; value: string }[];
+    })
+  | (FormFieldBaseProps<"select", string[] | string> & SelectAsFieldProps)
+  | (FormFieldBaseProps<"switch", boolean> & SwitchOptionalProps)
+  | (FormFieldBaseProps<"textArea", string> & InputTextAreaOptionalProps)
+);
 
-const defaultProps: FormFieldOptionalProps = {
+const defaultProps: Omit<FormFieldBaseProps<FieldType, FieldValue>, "type"> = {
   autoFocus: false,
   autoUpperCase: false,
   defaultHelp: undefined,
@@ -182,10 +158,14 @@ export function FormField(props: FormFieldProps): JSX.Element {
     placeholder: placeholderProp,
     tooltip,
     wrapperCol,
-    /* Value-based props */
+    /* Type-based props */
+    // number
     max,
     min,
     noDecimal,
+    // select
+    sortValues,
+    /* Value-based props */
     onValueChange,
   } = props;
 
@@ -209,12 +189,17 @@ export function FormField(props: FormFieldProps): JSX.Element {
     [field.value]
   );
 
+  const hasValue = useMemo(
+    () => (isArray(value) ? !!value[0] : !!value),
+    [value]
+  );
+
   const status = useMemo((): FieldStatus => {
     if (isLoading) return "loading";
     if (error?.message || invalid) return "invalid";
-    if (isTouched && !!value) return "valid";
+    if (isTouched && hasValue) return "valid";
     return "untouched";
-  }, [isLoading, error?.message, invalid, isTouched, value]);
+  }, [isLoading, error?.message, invalid, isTouched, hasValue]);
 
   const handleChange = useCallback(
     (
@@ -231,18 +216,15 @@ export function FormField(props: FormFieldProps): JSX.Element {
         return typeof param === "object" && param !== null && "target" in param;
       }
 
-      const extractedValue = isInputChangeEvent(eventOrValue)
+      let extractedValue = isInputChangeEvent(eventOrValue)
         ? eventOrValue.target.value
         : eventOrValue;
 
       if (autoUpperCase) {
-        if (
-          isInputChangeEvent(eventOrValue) &&
-          typeof eventOrValue.target.value === "string"
-        ) {
-          eventOrValue.target.value = eventOrValue.target.value.toUpperCase();
-        } else if (typeof eventOrValue === "string") {
-          eventOrValue = eventOrValue.toUpperCase();
+        if (typeof extractedValue === "string") {
+          extractedValue = extractedValue.toUpperCase();
+        } else if (isArray(extractedValue)) {
+          extractedValue = extractedValue.map((v) => v.toUpperCase());
         }
       }
 
@@ -255,13 +237,11 @@ export function FormField(props: FormFieldProps): JSX.Element {
         }
 
         if (
-          isInputChangeEvent(eventOrValue) &&
-          ((min &&
-            Number.parseFloat(extractedValue.replace(",", ".")) <= min) ||
-            (max && Number.parseFloat(extractedValue.replace(",", ".")) > max))
+          (min && Number.parseFloat(extractedValue.replace(",", ".")) <= min) ||
+          (max && Number.parseFloat(extractedValue.replace(",", ".")) > max)
         ) {
           if (/,.?$/.test(extractedValue)) {
-            eventOrValue.target.value = extractedValue.slice(
+            extractedValue = extractedValue.slice(
               0,
               extractedValue.indexOf(",")
             );
@@ -271,16 +251,20 @@ export function FormField(props: FormFieldProps): JSX.Element {
         }
       }
 
-      onChange(eventOrValue);
+      if (isArray(extractedValue) && sortValues) {
+        extractedValue = [...extractedValue].sort((a, b) => sortValues(a, b));
+      }
+
+      onChange(extractedValue);
     },
-    [onChange, type, autoUpperCase, noDecimal, min, max]
+    [onChange, type, autoUpperCase, noDecimal, min, max, sortValues]
   );
 
   const handleBlur = useCallback(() => {
     onBlur();
   }, [onBlur]);
 
-  const handleAutoCompleteFilterOption = useCallback(
+  const handleFilterSelectOptions = useCallback(
     (input: string, option?: { label?: unknown; value?: unknown }) => {
       const compareTo =
         option &&
@@ -300,16 +284,16 @@ export function FormField(props: FormFieldProps): JSX.Element {
 
   useEffect(() => {
     if (
-      (isTouched || !!value) &&
+      (isTouched || hasValue) &&
       (type === "autoComplete" ||
         type === "select" ||
         type === "radio" ||
         type === "date")
     ) {
-      onBlur();
+      handleBlur();
     }
     onValueChange?.(value as never);
-  }, [value, type, isTouched, onValueChange, onBlur]);
+  }, [value, type, isTouched, hasValue, onValueChange, handleBlur]);
 
   const placeholder = useMemo((): string => {
     if (placeholderProp) return placeholderProp;
@@ -369,8 +353,6 @@ export function FormField(props: FormFieldProps): JSX.Element {
     switch (type) {
       case "input":
       case "number":
-        if (typeof value !== "string")
-          throw `[FormField] Expected value to be a string for type="${type}", got "${value.toString()}" instead.`;
         return (
           <Input
             addonAfter={props.addonAfter}
@@ -385,17 +367,16 @@ export function FormField(props: FormFieldProps): JSX.Element {
             placeholder={placeholder}
             prefix={<FieldPreSuffix>{props.prefix}</FieldPreSuffix>}
             suffix={<FieldPreSuffix>{props.suffix}</FieldPreSuffix>}
-            value={value}
+            value={typeof value === "string" ? value : ""}
           />
         );
       case "password":
-        if (typeof value !== "string")
-          throw `[FormField] Expected value to be a string for type="${type}", got "${value.toString()}" instead.`;
         return (
           <Input.Password
             addonAfter={props.addonAfter}
             addonBefore={props.addonBefore}
             allowClear={props.allowClear}
+            autoComplete="current-password"
             autoFocus={autoFocus}
             disabled={disabled}
             id={name}
@@ -405,12 +386,10 @@ export function FormField(props: FormFieldProps): JSX.Element {
             placeholder={placeholder}
             prefix={<FieldPreSuffix>{props.prefix}</FieldPreSuffix>}
             suffix={<FieldPreSuffix>{props.suffix}</FieldPreSuffix>}
-            value={value}
+            value={typeof value === "string" ? value : ""}
           />
         );
       case "textArea":
-        if (typeof value !== "string")
-          throw `[FormField] Expected value to be a string for type="${type}", got "${value.toString()}" instead.`;
         return (
           <Input.TextArea
             allowClear={props.allowClear}
@@ -425,12 +404,10 @@ export function FormField(props: FormFieldProps): JSX.Element {
             onBlur={handleBlur}
             onChange={handleChange}
             placeholder={placeholder}
-            value={value}
+            value={typeof value === "string" ? value : ""}
           />
         );
       case "mask":
-        if (typeof value !== "string")
-          throw `[FormField] Expected value to be a string for type="${type}", got "${value.toString()}" instead.`;
         return (
           <InputMask
             addonAfter={props.addonAfter || null}
@@ -445,57 +422,49 @@ export function FormField(props: FormFieldProps): JSX.Element {
             onChange={handleChange}
             prefix={<FieldPreSuffix>{props.prefix}</FieldPreSuffix>}
             suffix={<FieldPreSuffix>{props.suffix}</FieldPreSuffix>}
-            value={value}
+            value={typeof value === "string" ? value : ""}
           />
         );
       case "autoComplete":
-        if (typeof value !== "string")
-          throw `[FormField] Expected value to be a string for type="${type}", got "${value.toString()}" instead.`;
         return (
           <AutoComplete
             allowClear={props.allowClear}
             autoFocus={autoFocus}
             defaultActiveFirstOption={props.defaultActiveFirstOption || false}
             disabled={disabled}
-            filterOption={handleAutoCompleteFilterOption}
+            filterOption={handleFilterSelectOptions}
             id={name}
             onBlur={handleBlur}
             onChange={handleChange}
             options={props.options}
             placeholder={placeholder}
-            value={value}
+            value={typeof value === "string" ? value : ""}
           />
         );
       case "select":
-        if (typeof value !== "string")
-          throw `[FormField] Expected value to be a string for type="${type}", got "${value.toString()}" instead.`;
         return (
-          <Select<string>
-            allowClear={props.allowClear}
-            autoFocus={autoFocus}
+          <Select
+            allowClear={props.allowClear || true}
+            autoFocus={autoFocus || false}
             disabled={disabled}
             id={name}
+            multiple={props.multiple || false}
             onBlur={handleBlur}
             onChange={handleChange}
+            onFilterOptions={handleFilterSelectOptions}
+            onTagProps={props.onTagProps || null}
+            options={props.options}
             placeholder={placeholder}
-            value={value || undefined}
-          >
-            {props.options.map(({ value, label }) => (
-              <Select.Option key={nanoid()} value={value}>
-                {label}
-              </Select.Option>
-            ))}
-          </Select>
+            value={(value !== true && value) || undefined}
+          />
         );
       case "radio":
-        if (typeof value !== "string")
-          throw `[FormField] Expected value to be a string for type="${type}", got "${value.toString()}" instead.`;
         return (
           <Radio.Group
             className={classes.RadioGroup}
             id={name}
             onChange={handleChange}
-            value={value}
+            value={typeof value === "string" ? value : ""}
           >
             {props.options.map(({ value, label }) => (
               <Radio.Button
@@ -521,20 +490,19 @@ export function FormField(props: FormFieldProps): JSX.Element {
           </div>
         );
       case "date":
-        if (typeof value !== "string")
-          throw `[FormField] Expected value to be a string for type="${type}", got "${value.toString()}" instead.`;
         return (
           <InputDate
             allowClear={props.allowClear || false}
-            allowFutureDates={props.allowFutureDates || false}
             autoFocus={autoFocus || false}
             disabled={disabled}
+            disallowFutureDates={props.disallowFutureDates || false}
+            disallowPastDates={props.disallowPastDates || false}
             format={props.format || "DD/MM/YYYY"}
             id={name}
             onBlur={handleBlur}
             onChange={handleChange}
             placeholder={placeholder}
-            value={value}
+            value={typeof value === "string" ? value : ""}
           />
         );
     }
@@ -544,7 +512,7 @@ export function FormField(props: FormFieldProps): JSX.Element {
     value,
     handleChange,
     handleBlur,
-    handleAutoCompleteFilterOption,
+    handleFilterSelectOptions,
     autoFocus,
     disabled,
     placeholder,

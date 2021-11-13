@@ -35,7 +35,7 @@ firebase.initializeApp({
 
 function Root(): JSX.Element {
   return (
-    <AntdConfigProvider locale={ptBR}>
+    <AntdConfigProvider input={{ autoComplete: "off" }} locale={ptBR}>
       <Na3Provider appVersion={APP_VERSION}>
         <BrowserRouter>
           <BreadcrumbProvider>

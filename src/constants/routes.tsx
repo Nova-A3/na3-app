@@ -154,7 +154,7 @@ export const ROUTES: AppRouteMap<
   },
   "/manutencao/projetos": {
     authorized: ["manutencao"],
-    component: null,
+    component: <MaintProjectsHomePage />,
     title: "Projetos",
   },
 };

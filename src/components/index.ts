@@ -26,6 +26,7 @@ export { LabelsTransfPrintForm } from "./specific/labels/LabelsTransfPrintForm";
 export { LabelsTransfTemplateForm } from "./specific/labels/LabelsTransfTemplateForm";
 export { LabelsTransfCard } from "./specific/labels/transfCard/LabelsTransfCard";
 export { LabelsTransfPreview } from "./specific/labels/transfPreview/LabelsTransfPreview";
+export { MaintCreateProjectForm } from "./specific/maintenance/projects/MaintCreateProjectForm";
 export { MaintProjectsList } from "./specific/maintenance/projects/MaintProjectsList";
 export { MaintServiceOrderDetailsModal } from "./specific/maintenance/serviceOrders/detailsModal/MaintServiceOrderDetailsModal";
 export { MaintCreateServiceOrderForm } from "./specific/maintenance/serviceOrders/MaintCreateServiceOrderForm";

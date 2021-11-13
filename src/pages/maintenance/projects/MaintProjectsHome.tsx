@@ -1,6 +1,10 @@
-import React, { useState } from "react";
+import React, { useMemo, useState } from "react";
 
-import { ListFormPage, MaintProjectsList } from "../../../components";
+import {
+  ListFormPage,
+  MaintCreateProjectForm,
+  MaintProjectsList,
+} from "../../../components";
 import { useNa3MaintProjects } from "../../../modules/na3-react/hooks";
 import type { Na3MaintenanceProject } from "../../../modules/na3-types";
 
@@ -10,16 +14,24 @@ export function MaintProjectsHomePage(): JSX.Element {
   const [selectedProject, setSelectedProject] =
     useState<Na3MaintenanceProject>();
 
+  const listData = useMemo(
+    () => [
+      ...maintProjects.helpers.sortByStatus(["running", "late"]).reverse(),
+      ...maintProjects.helpers.sortByStatus(["finished"]),
+    ],
+    [maintProjects.helpers]
+  );
+
   return (
     <ListFormPage
       actions={[
         { label: "Novo projeto", onClick: (): void => console.log("click") },
       ]}
-      form={"FORM"}
+      form={<MaintCreateProjectForm />}
       formTitle="Novo Projeto"
       list={
         <MaintProjectsList
-          data={maintProjects.data || []}
+          data={listData}
           onSelectProject={setSelectedProject}
         />
       }

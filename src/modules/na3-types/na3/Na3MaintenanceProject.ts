@@ -5,6 +5,8 @@ export type Na3MaintenanceProject = LegacyInternalProject & {
   ref?: firebase.firestore.DocumentReference<Na3MaintenanceProject>;
 };
 
+export type Na3MaintenanceProjectStatus = "finished" | "late" | "running";
+
 /* LegacyInternalProject */
 
 type LegacyInternalProjectChanges = Partial<{

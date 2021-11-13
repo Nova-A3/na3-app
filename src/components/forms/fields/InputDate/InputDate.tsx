@@ -1,6 +1,5 @@
 import "antd/es/date-picker/style/index";
 
-import type { DatePickerProps } from "antd";
 import generatePicker from "antd/es/date-picker/generatePicker";
 import type { Dayjs } from "dayjs";
 import dayjs from "dayjs";
@@ -11,12 +10,18 @@ import classes from "./InputDate.module.css";
 
 const DatePicker = generatePicker<Dayjs>(dayjsGenerateConfig);
 
-type InputDateProps = Required<
-  Pick<DatePickerProps, "allowClear" | "disabled" | "id">
+export type InputDateAsFieldProps = Partial<
+  Pick<
+    React.ComponentProps<typeof DatePicker>,
+    "allowClear" | "autoFocus" | "disabled" | "format"
+  >
 > & {
-  allowFutureDates: boolean;
-  autoFocus: boolean;
-  format: string;
+  disallowFutureDates?: boolean;
+  disallowPastDates?: boolean;
+};
+
+type InputDateProps = Required<InputDateAsFieldProps> & {
+  id: string;
   onBlur: () => void;
   onChange: (dateString: string) => void;
   placeholder: string;
@@ -30,7 +35,8 @@ export function InputDate({
   format,
   onBlur,
   onChange,
-  allowFutureDates,
+  disallowPastDates,
+  disallowFutureDates,
   value,
   placeholder,
   autoFocus,
@@ -44,9 +50,16 @@ export function InputDate({
 
   const handleSetDisabledDates = useCallback(
     (date: Dayjs): boolean => {
-      return allowFutureDates ? false : date.isAfter(dayjs());
+      let isAllowed = true;
+      if (disallowPastDates && date.isBefore(dayjs().subtract(1, "day"))) {
+        isAllowed = false;
+      }
+      if (disallowFutureDates && date.isAfter(dayjs())) {
+        isAllowed = false;
+      }
+      return !isAllowed;
     },
-    [allowFutureDates]
+    [disallowPastDates, disallowFutureDates]
   );
 
   const parsedValue = useMemo(() => (value ? dayjs(value) : null), [value]);
