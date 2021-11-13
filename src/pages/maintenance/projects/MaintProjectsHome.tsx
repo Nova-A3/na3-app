@@ -1,4 +1,4 @@
-import React, { useCallback, useMemo, useState } from "react";
+import React, { useCallback, useMemo } from "react";
 import { useHistory } from "react-router";
 
 import {
@@ -6,16 +6,16 @@ import {
   MaintCreateProjectForm,
   MaintProjectsList,
 } from "../../../components";
+import { useQuery } from "../../../hooks";
 import { useNa3MaintProjects } from "../../../modules/na3-react/hooks";
 import type { Na3MaintenanceProject } from "../../../modules/na3-types";
+import { MaintProjectDetails } from "./MaintProjectDetails";
 
 export function MaintProjectsHomePage(): JSX.Element {
   const history = useHistory();
+  const query = useQuery("id");
 
   const maintProjects = useNa3MaintProjects();
-
-  const [selectedProject, setSelectedProject] =
-    useState<Na3MaintenanceProject>();
 
   const listData = useMemo(
     () => [
@@ -29,7 +29,16 @@ export function MaintProjectsHomePage(): JSX.Element {
     history.push("/manutencao/projetos/novo-projeto");
   }, [history]);
 
-  return (
+  const handleSelectProject = useCallback(
+    (project: Na3MaintenanceProject) => {
+      history.push(`/manutencao/projetos?id=${project.id}`);
+    },
+    [history]
+  );
+
+  return query.id ? (
+    <MaintProjectDetails projectId={query.id} />
+  ) : (
     <ListFormPage
       actions={[{ label: "Novo projeto", onClick: handleCreateProjectClick }]}
       form={<MaintCreateProjectForm />}
@@ -37,7 +46,7 @@ export function MaintProjectsHomePage(): JSX.Element {
       list={
         <MaintProjectsList
           data={listData}
-          onSelectProject={setSelectedProject}
+          onSelectProject={handleSelectProject}
         />
       }
       listTitle="Projetos"

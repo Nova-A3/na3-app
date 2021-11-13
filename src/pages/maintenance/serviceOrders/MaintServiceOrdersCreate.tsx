@@ -2,7 +2,9 @@ import React, { useCallback } from "react";
 import { useHistory } from "react-router";
 
 import {
+  Divider,
   MaintCreateServiceOrderForm,
+  Page,
   PageDescription,
   PageTitle,
 } from "../../../components";
@@ -19,7 +21,11 @@ export function MaintServiceOrdersCreatePage(): JSX.Element {
       <PageTitle>Abrir OS</PageTitle>
       <PageDescription>Defina a ordem de serviço.</PageDescription>
 
-      <MaintCreateServiceOrderForm onSubmit={handleNavigateBack} />
+      <Divider marginTop={0} />
+
+      <Page scrollTopOffset={24}>
+        <MaintCreateServiceOrderForm onSubmit={handleNavigateBack} />
+      </Page>
     </>
   );
 }

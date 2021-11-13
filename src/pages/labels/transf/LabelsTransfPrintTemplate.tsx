@@ -3,8 +3,10 @@ import React, { useCallback, useEffect, useMemo } from "react";
 import { useHistory } from "react-router-dom";
 
 import {
+  Divider,
   LabelsTransfPreview,
   LabelsTransfPrintForm,
+  Page,
   PageDescription,
   PageTitle,
   Result,
@@ -196,10 +198,14 @@ export function LabelsTransfPrintTemplatePage({
       <PageTitle>Imprimir etiqueta</PageTitle>
       <PageDescription>Configure a etiqueta.</PageDescription>
 
-      <LabelsTransfPrintForm
-        onSubmit={handleOpenLabelPreview}
-        template={template}
-      />
+      <Divider marginTop={0} />
+
+      <Page scrollTopOffset={24}>
+        <LabelsTransfPrintForm
+          onSubmit={handleOpenLabelPreview}
+          template={template}
+        />
+      </Page>
 
       <LabelsTransfPreview
         copies={labelConfig?.copies}

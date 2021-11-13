@@ -16,14 +16,13 @@ export function MaintProjectStatusBadge({
       () => ({
         finished: { status: "success", text: "Finalizado" },
         late: { status: "error", text: "Atrasado" },
-        running: { color: "lime", text: "Em execução" },
+        running: { status: "processing", text: "Em execução" },
       }),
       []
     );
 
   return (
     <Badge
-      color={badgePropsMap[projectStatus].color}
       status={badgePropsMap[projectStatus].status}
       text={badgePropsMap[projectStatus].text}
     />

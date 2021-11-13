@@ -2,6 +2,10 @@
   border-radius: 6px;
 }
 
+.HeaderContainer {
+  margin-bottom: 4px;
+}
+
 .PreTitle {
   margin-right: 8px;
 }

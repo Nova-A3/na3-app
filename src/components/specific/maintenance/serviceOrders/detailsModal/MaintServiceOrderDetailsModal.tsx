@@ -4,7 +4,7 @@ import React, { useCallback, useState } from "react";
 
 import { useNa3Departments } from "../../../../../modules/na3-react";
 import type { Na3ServiceOrder } from "../../../../../modules/na3-types";
-import { translateId } from "../../../../../utils";
+import { parseStringId } from "../../../../../utils";
 import { ServiceOrderStatusBadge } from "../card/ServiceOrderStatusBadge";
 import { RejectSolutionModal } from "./RejectSolutionModal";
 import { ServiceOrderDetailsItem } from "./ServiceOrderDetailsItem";
@@ -118,18 +118,18 @@ export function MaintServiceOrderDetailsModal({
                 <ServiceOrderDetailsItem
                   label={breakpoint.md ? "Tipo de manutenção" : "Tipo"}
                 >
-                  {translateId(data.maintenanceType)}
+                  {parseStringId(data.maintenanceType)}
                 </ServiceOrderDetailsItem>
                 <ServiceOrderDetailsItem
                   label={breakpoint.md ? "Equipe responsável" : "Equipe"}
                 >
-                  {translateId(data.team)}
+                  {parseStringId(data.team)}
                 </ServiceOrderDetailsItem>
 
                 <ServiceOrderDetailsItem
                   label={breakpoint.md ? "Tipo de causa" : "Causa"}
                 >
-                  {translateId(data.cause)}
+                  {parseStringId(data.cause)}
                 </ServiceOrderDetailsItem>
 
                 <Divider />

@@ -9,7 +9,6 @@ import type {
 import { FormProvider } from "react-hook-form";
 
 import { Spinner } from "../ui/Spinner/Spinner";
-import classes from "./Form.module.css";
 
 export type HandleSubmit<Fields extends FieldValues = FieldValues> =
   SubmitHandler<Fields>;
@@ -80,11 +79,7 @@ export function Form<
       unregister={unregister}
       watch={watch}
     >
-      <Spinner
-        spinning={formState.isSubmitting}
-        text={null}
-        wrapperClassName={classes.FormContainer}
-      >
+      <Spinner spinning={formState.isSubmitting} text={null}>
         <AntdForm onFinish={handleSubmit(onSubmit, handleSubmitFailed)}>
           {children}
         </AntdForm>

@@ -6,6 +6,7 @@ import React from "react";
 
 import { PageActionButtons } from "../components/PageActionButtons";
 import { PageTitle } from "../components/PageTitle";
+import { Page } from "../Page";
 import classes from "./ListFormPage.module.css";
 
 type ListFormPageProps = {
@@ -66,7 +67,9 @@ export function ListFormPage({
               <Divider orientation="left">{formTitle}</Divider>
             </div>
 
-            <div className={classes.PageContent}>{form}</div>
+            <Page additionalPaddingBottom={24} scrollTopOffset={16}>
+              {form}
+            </Page>
           </Col>
         )}
       </Row>

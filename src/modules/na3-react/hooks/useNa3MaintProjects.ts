@@ -20,6 +20,7 @@ export type UseNa3MaintProjectsResult = {
       projectData: MaintProjectBuilderData
     ) => Promise<FirebaseOperationResult<Na3MaintenanceProject>>;
     formatInternalId: (internalId: number) => string;
+    getById: (id: string) => Na3MaintenanceProject | undefined;
     getByStatus: (
       status: Na3MaintenanceProjectStatus | Na3MaintenanceProjectStatus[],
       data?: Na3MaintenanceProject[]
@@ -60,6 +61,12 @@ export function useNa3MaintProjects(): UseNa3MaintProjectsResult {
   const formatInternalId = useCallback((internalId: number): string => {
     return `PR-${internalId.toString().padStart(4, "0")}`;
   }, []);
+
+  const getById = useCallback(
+    (id: string): Na3MaintenanceProject | undefined =>
+      maintProjects.data?.find((project) => project.id === id),
+    [maintProjects.data]
+  );
 
   const getProjectStatus = useCallback(
     (project: Na3MaintenanceProject): Na3MaintenanceProjectStatus => {
@@ -135,6 +142,7 @@ export function useNa3MaintProjects(): UseNa3MaintProjectsResult {
     helpers: {
       add,
       formatInternalId,
+      getById,
       getByStatus,
       getNextInternalId,
       getProjectStatus,

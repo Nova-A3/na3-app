@@ -2,7 +2,9 @@ import React, { useCallback } from "react";
 import { useHistory } from "react-router";
 
 import {
+  Divider,
   MaintCreateProjectForm,
+  Page,
   PageDescription,
   PageTitle,
 } from "../../../components";
@@ -19,7 +21,11 @@ export function MaintProjectsCreatePage(): JSX.Element {
       <PageTitle>Novo Projeto</PageTitle>
       <PageDescription>Defina o projeto.</PageDescription>
 
-      <MaintCreateProjectForm onSubmit={handleNavigateBack} />
+      <Divider marginTop={0} />
+
+      <Page scrollTopOffset={24}>
+        <MaintCreateProjectForm onSubmit={handleNavigateBack} />
+      </Page>
     </>
   );
 }

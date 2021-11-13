@@ -1,6 +1,6 @@
 import type { Falsy } from "utility-types";
 
-export function translateId(id: Falsy | string): string {
+export function parseStringId(id: Falsy | string): string {
   return id
     ? {
         corretiva: "Corretiva",
@@ -16,6 +16,10 @@ export function translateId(id: Falsy | string): string {
         preditiva: "Preditiva",
         preventiva: "Preventiva",
         priorityChanged: "Prioridade redefinida",
+        "project-complete": "Projeto entregue",
+        "project-create": "Projeto aberto",
+        "project-edit": "Projeto editado",
+        "project-status": "Progresso",
         solutionAccepted: "Solução aceita",
         solutionRefused: "Solução recusada",
         solutionStepAdded: "Progresso",

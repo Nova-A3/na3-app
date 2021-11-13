@@ -1,6 +1,6 @@
 import { Divider, Grid, Modal, notification, Tag } from "antd";
 import dayjs from "dayjs";
-import React, { useCallback, useMemo } from "react";
+import React, { useCallback } from "react";
 
 import { EMPLOYEES } from "../../../../constants";
 import { useForm } from "../../../../hooks";
@@ -27,6 +27,14 @@ type FormValues = {
   teamMembers: string[];
   title: string;
 };
+
+export const employeeSelectOptions = EMPLOYEES.MAINTENANCE.sort((a, b) =>
+  a.name.localeCompare(b.name)
+).map((maintainer) => ({
+  label: maintainer.name,
+  labelWhenSelected: <Tag color={maintainer.color}>{maintainer.name}</Tag>,
+  value: maintainer.name,
+}));
 
 export function MaintCreateProjectForm({
   onSubmit,
@@ -121,26 +129,12 @@ export function MaintCreateProjectForm({
       : `Em ${daysFromToday} dia${daysFromToday === 1 ? "" : "s"}`;
   }, []);
 
-  const employeeOptions = useMemo(
-    () =>
-      EMPLOYEES.MAINTENANCE.sort((a, b) => a.name.localeCompare(b.name)).map(
-        (maintainer) => ({
-          label: maintainer.name,
-          labelWhenSelected: (
-            <Tag color={maintainer.color}>{maintainer.name}</Tag>
-          ),
-          value: maintainer.name,
-        })
-      ),
-    []
-  );
-
   return (
     <Form form={form} onSubmit={handleSubmit}>
       <FormField
         label="Autor"
         name="author"
-        options={employeeOptions}
+        options={employeeSelectOptions}
         rules={{ required: "Atribua um autor" }}
         type="select"
       />
@@ -162,7 +156,7 @@ export function MaintCreateProjectForm({
       <FormField
         label="Responsável"
         name="teamManager"
-        options={employeeOptions}
+        options={employeeSelectOptions}
         rules={{ required: "Defina o manutentor responsável" }}
         type="select"
       />
@@ -174,7 +168,7 @@ export function MaintCreateProjectForm({
             (maintainer) => maintainer.name === value
           )?.color,
         })}
-        options={employeeOptions}
+        options={employeeSelectOptions}
         rules={{ required: "Selecione pelo menos um membro" }}
         sortValues={(a, b): number =>
           a.toLowerCase().localeCompare(b.toLowerCase())

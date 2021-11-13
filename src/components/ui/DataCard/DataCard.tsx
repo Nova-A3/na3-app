@@ -60,7 +60,7 @@ export function DataCard<T>({
       hoverable={!!onClick}
       onClick={handleClick}
     >
-      {header && <div>{header}</div>}
+      {header && <div className={classes.HeaderContainer}>{header}</div>}
 
       {preTitle && (
         <small className={classes.PreTitle}>

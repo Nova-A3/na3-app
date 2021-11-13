@@ -4,7 +4,7 @@ import React, { useMemo } from "react";
 import { useNa3MaintProjects } from "../../../../../modules/na3-react";
 import type { Na3MaintenanceProject } from "../../../../../modules/na3-types";
 import { DataCard } from "../../../../ui/DataCard/DataCard";
-import { MaintProjectStatusBadge } from "./MaintProjectStatusBadge";
+import { MaintProjectCardHeader } from "./MaintProjectCardHeader";
 
 type MaintProjectCardProps = {
   data: Na3MaintenanceProject;
@@ -27,7 +27,12 @@ export function MaintProjectCard({
   return (
     <DataCard
       data={data}
-      header={<MaintProjectStatusBadge status={projectStatus} />}
+      header={
+        <MaintProjectCardHeader
+          priority={data.priority}
+          status={projectStatus}
+        />
+      }
       onClick={onSelect}
       preTitle={formatInternalId(data.internalId)}
       title={data.title}
