@@ -65,10 +65,12 @@ export function Na3TransfLabelTemplatesController(): null {
 
       dispatch(
         setTransfLabelTemplatesData(
-          templatesSnapshot.docs.map((doc) => ({
-            ...(doc.data() as Na3TransfLabelTemplate),
-            id: doc.id,
-          })) || null
+          templatesSnapshot.docs
+            .map((doc) => ({
+              ...(doc.data() as Na3TransfLabelTemplate),
+              id: doc.id,
+            }))
+            .sort((a, b) => a.name.localeCompare(b.name)) || null
         )
       );
     }
