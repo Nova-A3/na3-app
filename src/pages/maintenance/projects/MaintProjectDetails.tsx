@@ -1,5 +1,5 @@
 import { CheckOutlined, TeamOutlined, UserOutlined } from "@ant-design/icons";
-import { Button, Col, Divider, Row, Timeline, Typography } from "antd";
+import { Button, Col, Divider, Modal, Row, Timeline, Typography } from "antd";
 import dayjs from "dayjs";
 import { nanoid } from "nanoid";
 import React, { useCallback, useEffect, useMemo, useState } from "react";
@@ -17,6 +17,7 @@ import {
 } from "../../../components";
 import { useBreadcrumb } from "../../../hooks";
 import { useNa3MaintProjects } from "../../../modules/na3-react";
+import type { Na3MaintenanceProject } from "../../../modules/na3-types";
 import { parseStringId } from "../../../utils";
 import classes from "./MaintProjectDetails.module.css";
 
@@ -53,13 +54,98 @@ export function MaintProjectDetails({ projectId }: PageProps): JSX.Element {
     setActionForm(undefined);
   }, []);
 
-  const handleProjectDeliver = useCallback(() => {
-    return;
-  }, []);
+  const handleProjectDeliver = useCallback(
+    (
+      project: Na3MaintenanceProject,
+      actionPayload: { author: string; message: string | null }
+    ) => {
+      const confirmModal = Modal.confirm({
+        content: (
+          <>
+            Confirma a entrega do projeto {formatInternalId(project.internalId)}{" "}
+            — <em>{project.title}</em>?
+          </>
+        ),
+        okText: "Confirmar entrega",
+        onOk: () => {
+          confirmModal.update({ okText: "Entregando projeto..." });
 
-  const handleProjectShareStatus = useCallback(() => {
-    return;
-  }, []);
+          /*
+          const operationRes = await serviceOrders.helpers.acceptSolution(
+            data.id
+          );
+
+          if (operationRes.error) {
+            notification.error({
+              description: operationRes.error.message,
+              message: "Erro ao encerrar a OS",
+            });
+          } else {
+            notification.success({
+              description: (
+                <>
+                  OS #{data.id} <em>({data.description})</em> encerrada com
+                  sucesso!
+                </>
+              ),
+              message: "OS encerrada",
+            });
+            setSelectedOrder(undefined);
+          }
+          */
+        },
+        title: "Entregar projeto?",
+      });
+    },
+    [formatInternalId]
+  );
+
+  const handleProjectShareStatus = useCallback(
+    (
+      project: Na3MaintenanceProject,
+      actionPayload: { author: string; message: string | null }
+    ) => {
+      const confirmModal = Modal.confirm({
+        content: (
+          <>
+            Confirma o seguinte status para o projeto{" "}
+            {formatInternalId(project.internalId)}:{" "}
+            <em>{actionPayload.message}</em>?
+          </>
+        ),
+        okText: "Confirmar status",
+        onOk: () => {
+          confirmModal.update({ okText: "Enviando status..." });
+
+          /*
+          const operationRes = await serviceOrders.helpers.acceptSolution(
+            data.id
+          );
+
+          if (operationRes.error) {
+            notification.error({
+              description: operationRes.error.message,
+              message: "Erro ao encerrar a OS",
+            });
+          } else {
+            notification.success({
+              description: (
+                <>
+                  OS #{data.id} <em>({data.description})</em> encerrada com
+                  sucesso!
+                </>
+              ),
+              message: "OS encerrada",
+            });
+            setSelectedOrder(undefined);
+          }
+          */
+        },
+        title: "Compartilhar status?",
+      });
+    },
+    [formatInternalId]
+  );
 
   useEffect(() => {
     setBreadcrumbExtra(project && formatInternalId(project.internalId));

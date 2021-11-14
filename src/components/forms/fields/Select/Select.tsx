@@ -94,8 +94,6 @@ export function Select({
     [onTagProps, valueOrValues]
   );
 
-  console.log(showSearch || multiple || !!onTagProps);
-
   return (
     <AntdSelect
       allowClear={allowClear}

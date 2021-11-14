@@ -66,14 +66,14 @@ export function MaintProjectActionForm<T extends ActionFormType>({
           required={type === "status"}
           rules={
             type === "status"
-              ? { required: "Descreva o status atual do projeto" }
+              ? { required: "Descreva o status do projeto" }
               : null
           }
           type="textArea"
         />
 
         <SubmitButton
-          label={type === "status" ? "Confirmar status" : "Confirmar entrega"}
+          label={type === "status" ? "Compartilhar status" : "Entregar projeto"}
           labelWhenLoading="Aguardando confirmação..."
         />
       </Form>
