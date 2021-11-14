@@ -466,7 +466,7 @@ export function FormField(props: FormFieldProps): JSX.Element {
             onTagProps={props.onTagProps || null}
             options={props.options}
             placeholder={placeholder}
-            showSearch={props.showSearch ?? true}
+            showSearch={props.showSearch || false}
             value={(value !== true && value) || undefined}
           />
         );

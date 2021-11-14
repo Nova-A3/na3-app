@@ -94,6 +94,8 @@ export function Select({
     [onTagProps, valueOrValues]
   );
 
+  console.log(showSearch || multiple || !!onTagProps);
+
   return (
     <AntdSelect
       allowClear={allowClear}
@@ -119,7 +121,7 @@ export function Select({
         value: opt.value,
       }))}
       placeholder={placeholder}
-      showSearch={showSearch}
+      showSearch={showSearch || multiple || !!onTagProps}
       tagRender={handleRenderTag}
       tokenSeparators={[",", ";", "  "]}
       value={valueOrValues}
