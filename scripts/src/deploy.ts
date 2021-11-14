@@ -28,10 +28,10 @@ function incrementMetaVersion(): Promise<AsyncCommandResult> {
   });
 }
 
-async function gitCommit(): Promise<AsyncCommandResult> {
+async function gitCommitPush(): Promise<AsyncCommandResult> {
   return replaceMetaVariable("VERSION", (value) => {
     void (async (): Promise<void> => {
-      await execAsync(`git add . && git commit -m "v${value}"`);
+      await execAsync(`git add . && git commit -m "v${value}" && git push`);
     })();
 
     return value;
@@ -44,7 +44,7 @@ const commands = registerCommands([
   { command: "yarn eslint src/ --fix --ext .ts,.tsx", name: "eslint" },
   { command: "yarn build", name: "build" },
   { command: "firebase deploy --only hosting:novaa3", name: "deploy" },
-  { command: gitCommit, name: "git commit" },
+  { command: gitCommitPush, name: "git push" },
 ]);
 
 void commands.run();
