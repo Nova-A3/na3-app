@@ -58,7 +58,7 @@ export function ListFormPage({
             <Divider orientation="left">{listTitle}</Divider>
           </div>
 
-          <div className={classes.PageContent}>{list}</div>
+          <Page additionalPaddingBottom={breakpoint.lg ? 8 : 96}>{list}</Page>
         </Col>
 
         {breakpoint.lg && (

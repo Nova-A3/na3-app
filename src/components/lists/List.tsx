@@ -85,9 +85,7 @@ export function List<Item extends Record<string, unknown>>({
                   verticalSpacing
                     ? {
                         marginBottom:
-                          index < filteredData.length - 1
-                            ? verticalSpacing
-                            : verticalSpacing * 2.5,
+                          index < filteredData.length - 1 ? verticalSpacing : 0,
                       }
                     : undefined
                 }
