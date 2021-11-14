@@ -55,7 +55,7 @@ export function useNa3MaintProjects(): UseNa3MaintProjectsResult {
       ?.map((project) => project.internalId)
       .sort((a, b) => a - b)
       .pop();
-    return lastId;
+    return lastId ? lastId + 1 : undefined;
   }, [maintProjects.data]);
 
   const formatInternalId = useCallback((internalId: number): string => {
