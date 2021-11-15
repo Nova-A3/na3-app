@@ -114,22 +114,6 @@ export function LabelsTransfPrintForm({
     [selectedDate]
   );
 
-  const batchIdTooltip = useMemo(
-    () => (
-      <>
-        Formato:{" "}
-        <strong>
-          {template.batchIdFormat === "commercial"
-            ? "COMERCIAL"
-            : template.batchIdFormat === "mexico"
-            ? "MÉXICO"
-            : "BRASIL"}
-        </strong>
-      </>
-    ),
-    [template.batchIdFormat]
-  );
-
   return (
     <Form form={form} onSubmit={handleSubmit}>
       <Row gutter={16}>
@@ -261,7 +245,21 @@ export function LabelsTransfPrintForm({
               required: "Informe o número do lote",
               validate: handleBatchIdValidate,
             }}
-            tooltip={batchIdTooltip}
+            tooltip={{
+              placement: "right",
+              title: (
+                <>
+                  Formato:{" "}
+                  <strong>
+                    {template.batchIdFormat === "commercial"
+                      ? "COMERCIAL"
+                      : template.batchIdFormat === "mexico"
+                      ? "MÉXICO"
+                      : "BRASIL"}
+                  </strong>
+                </>
+              ),
+            }}
             type="mask"
           />
         </Col>

@@ -1,0 +1,16 @@
+.Messages {
+  margin-bottom: 12px;
+}
+
+.MessageGroup {
+  display: flex;
+  flex-direction: column;
+}
+
+.MessageGroupIcon {
+  margin-right: 4px;
+}
+
+.MessageGroupButton {
+  margin-top: 10px;
+}

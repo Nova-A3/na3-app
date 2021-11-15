@@ -124,7 +124,8 @@ export function useNa3ServiceOrders(): UseNa3ServiceOrdersResult {
   const orderRequiresAction = useCallback(
     (order: Na3ServiceOrder): boolean => {
       if (!department) return false;
-      if (department.type === "shop-floor") return order.status === "solved";
+      if (department.type === "shop-floor")
+        return order.username === department.id && order.status === "solved";
       else if (department.id === "manutencao")
         return order.status === "pending" || order.status === "solving";
       else return false;
