@@ -54,13 +54,9 @@ function Main(): JSX.Element {
     window.addEventListener("online", handleIsOnline);
     window.addEventListener("offline", handleIsOffline);
 
-    void screen.orientation.lock("portrait");
-
     return (): void => {
       window.removeEventListener("online", handleIsOnline);
       window.removeEventListener("offline", handleIsOffline);
-
-      screen.orientation.unlock();
     };
   }, []);
 
