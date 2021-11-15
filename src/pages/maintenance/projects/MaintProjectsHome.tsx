@@ -19,7 +19,12 @@ export function MaintProjectsHomePage(): JSX.Element {
 
   const listData = useMemo(
     () => [
-      ...maintProjects.helpers.sortByStatus(["running", "late"]).reverse(),
+      ...maintProjects.helpers.sortByPriority(
+        [...maintProjects.helpers.sortByStatus(["running"])].reverse()
+      ),
+      ...maintProjects.helpers.sortByPriority(
+        [...maintProjects.helpers.sortByStatus(["late"])].reverse()
+      ),
       ...maintProjects.helpers.sortByStatus(["finished"]),
     ],
     [maintProjects.helpers]

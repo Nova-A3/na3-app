@@ -1,6 +1,14 @@
 import { CheckOutlined, TeamOutlined, UserOutlined } from "@ant-design/icons";
-import { Button, Col, Divider, Modal, Row, Timeline, Typography } from "antd";
-import dayjs from "dayjs";
+import {
+  Button,
+  Col,
+  Divider,
+  Modal,
+  notification,
+  Row,
+  Timeline,
+  Typography,
+} from "antd";
 import { nanoid } from "nanoid";
 import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { useHistory } from "react-router-dom";
@@ -9,6 +17,7 @@ import {
   MaintProjectActionForm,
   MaintProjectPriorityTag,
   MaintProjectStatusBadge,
+  MaintProjectTimelineItem,
   Page,
   PageActionButtons,
   PageDescription,
@@ -18,7 +27,7 @@ import {
 import { useBreadcrumb } from "../../../hooks";
 import { useNa3MaintProjects } from "../../../modules/na3-react";
 import type { Na3MaintenanceProject } from "../../../modules/na3-types";
-import { parseStringId } from "../../../utils";
+import { createErrorNotifier } from "../../../utils";
 import classes from "./MaintProjectDetails.module.css";
 
 type PageProps = {
@@ -33,7 +42,13 @@ export function MaintProjectDetails({ projectId }: PageProps): JSX.Element {
   const { setExtra: setBreadcrumbExtra } = useBreadcrumb();
 
   const {
-    helpers: { formatInternalId, getProjectStatus, getById: getProjectById },
+    helpers: {
+      formatInternalId,
+      getProjectStatus,
+      getById: getProjectById,
+      shareProjectStatus,
+      deliverProject,
+    },
   } = useNa3MaintProjects();
 
   const project = useMemo(
@@ -67,37 +82,36 @@ export function MaintProjectDetails({ projectId }: PageProps): JSX.Element {
           </>
         ),
         okText: "Confirmar entrega",
-        onOk: () => {
+        onOk: async () => {
+          const notifyError = createErrorNotifier("Erro ao entregar o projeto");
+
           confirmModal.update({ okText: "Entregando projeto..." });
 
-          /*
-          const operationRes = await serviceOrders.helpers.acceptSolution(
-            data.id
-          );
+          const operationRes = await deliverProject(project.id, {
+            author: actionPayload.author,
+            message: actionPayload.message,
+          });
 
           if (operationRes.error) {
-            notification.error({
-              description: operationRes.error.message,
-              message: "Erro ao encerrar a OS",
-            });
+            notifyError(operationRes.error.message);
           } else {
             notification.success({
               description: (
                 <>
-                  OS #{data.id} <em>({data.description})</em> encerrada com
-                  sucesso!
+                  Projeto {formatInternalId(project.internalId)}{" "}
+                  <em>({project.title.trim()})</em> entregue com sucesso!
                 </>
               ),
-              message: "OS encerrada",
+              message: "Projeto entregue",
             });
-            setSelectedOrder(undefined);
+            setActionForm(undefined);
+            history.push("/manutencao/projetos");
           }
-          */
         },
         title: "Entregar projeto?",
       });
     },
-    [formatInternalId]
+    [formatInternalId, deliverProject, history]
   );
 
   const handleProjectShareStatus = useCallback(
@@ -114,37 +128,41 @@ export function MaintProjectDetails({ projectId }: PageProps): JSX.Element {
           </>
         ),
         okText: "Confirmar status",
-        onOk: () => {
+        onOk: async () => {
+          const notifyError = createErrorNotifier("Erro ao informar status");
+
           confirmModal.update({ okText: "Enviando status..." });
 
-          /*
-          const operationRes = await serviceOrders.helpers.acceptSolution(
-            data.id
-          );
+          if (!actionPayload.message) {
+            notifyError("Nenhum status encontrado para informar.");
+            return;
+          }
+
+          const operationRes = await shareProjectStatus(project.id, {
+            author: actionPayload.author,
+            message: actionPayload.message,
+          });
 
           if (operationRes.error) {
-            notification.error({
-              description: operationRes.error.message,
-              message: "Erro ao encerrar a OS",
-            });
+            notifyError(operationRes.error.message);
           } else {
             notification.success({
               description: (
                 <>
-                  OS #{data.id} <em>({data.description})</em> encerrada com
-                  sucesso!
+                  Status do projeto {formatInternalId(project.internalId)}{" "}
+                  <em>({project.title.trim()})</em> compartilhado com sucesso!
                 </>
               ),
-              message: "OS encerrada",
+              message: "Status compartilhado",
             });
-            setSelectedOrder(undefined);
+            setActionForm(undefined);
+            history.push("/manutencao/projetos");
           }
-          */
         },
         title: "Compartilhar status?",
       });
     },
-    [formatInternalId]
+    [formatInternalId, shareProjectStatus, history]
   );
 
   useEffect(() => {
@@ -216,36 +234,9 @@ export function MaintProjectDetails({ projectId }: PageProps): JSX.Element {
           </Col>
 
           <Col lg={20} xs={24}>
-            <Timeline className={classes.Timeline} mode="left">
+            <Timeline className={classes.Timeline} mode="left" reverse={true}>
               {project.events.map((ev) => (
-                <Timeline.Item
-                  color={
-                    ev.type === "complete"
-                      ? "green"
-                      : ev.type === "create"
-                      ? "cyan"
-                      : undefined
-                  }
-                  key={nanoid()}
-                >
-                  <div>
-                    <Typography.Text>
-                      {parseStringId(`project-${ev.type}`)}
-                    </Typography.Text>
-
-                    <small className={classes.TimelineTimestamp}>
-                      <Typography.Text italic={true} type="secondary">
-                        {dayjs(ev.timestamp.toDate()).format("DD/MM/YY HH:mm")}
-                      </Typography.Text>
-                    </small>
-                  </div>
-
-                  {"message" in ev && (
-                    <Typography.Text type="secondary">
-                      {ev.message}
-                    </Typography.Text>
-                  )}
-                </Timeline.Item>
+                <MaintProjectTimelineItem event={ev} key={nanoid()} />
               ))}
             </Timeline>
           </Col>

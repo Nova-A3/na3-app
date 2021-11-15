@@ -7,11 +7,13 @@ import classes from "./Spinner.module.css";
 
 type SpinnerProps = Omit<SpinProps, "tip"> & {
   children?: React.ReactNode;
+  color?: string;
   text?: string | null;
 };
 
 const defaultProps: SpinnerProps = {
   children: null,
+  color: undefined,
   text: undefined,
 };
 
@@ -26,6 +28,7 @@ export function Spinner({
   style,
   text,
   wrapperClassName,
+  color,
 }: SpinnerProps): JSX.Element {
   return (
     <Spin
@@ -33,7 +36,11 @@ export function Spinner({
       delay={delay}
       indicator={
         indicator || (
-          <LoadingOutlined className={classes.Indicator} spin={true} />
+          <LoadingOutlined
+            className={classes.Indicator}
+            color={color}
+            spin={true}
+          />
         )
       }
       prefixCls={prefixCls}

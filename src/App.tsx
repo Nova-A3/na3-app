@@ -54,9 +54,13 @@ function Main(): JSX.Element {
     window.addEventListener("online", handleIsOnline);
     window.addEventListener("offline", handleIsOffline);
 
+    void screen.orientation.lock("portrait");
+
     return (): void => {
       window.removeEventListener("online", handleIsOnline);
       window.removeEventListener("offline", handleIsOffline);
+
+      screen.orientation.unlock();
     };
   }, []);
 
@@ -81,7 +85,7 @@ function Main(): JSX.Element {
 
       {themeStatus === "loading" && (
         <div className={classes.ThemeLoadingModal}>
-          <Spinner text={null} />
+          <Spinner color="#fff" text={null} />
         </div>
       )}
     </>

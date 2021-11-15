@@ -29,6 +29,7 @@ export { LabelsTransfCard } from "./specific/labels/transfCard/LabelsTransfCard"
 export { LabelsTransfPreview } from "./specific/labels/transfPreview/LabelsTransfPreview";
 export { MaintProjectPriorityTag } from "./specific/maintenance/projects/card/MaintProjectPriorityTag";
 export { MaintProjectStatusBadge } from "./specific/maintenance/projects/card/MaintProjectStatusBadge";
+export { MaintProjectTimelineItem } from "./specific/maintenance/projects/details/MaintProjectTimelineItem";
 export { MaintCreateProjectForm } from "./specific/maintenance/projects/MaintCreateProjectForm";
 export { MaintProjectActionForm } from "./specific/maintenance/projects/MaintProjectActionForm";
 export { MaintProjectsList } from "./specific/maintenance/projects/MaintProjectsList";

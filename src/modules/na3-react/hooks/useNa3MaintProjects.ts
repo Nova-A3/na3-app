@@ -8,6 +8,7 @@ import type {
 } from "../../na3-types";
 import type { FirebaseOperationResult } from "../types";
 import type { MaintProjectBuilderData } from "../utils";
+import { buildMaintProjectEvents } from "../utils";
 import { buildMaintProject, resolveCollectionId } from "../utils";
 import { useStateSlice } from "./useStateSlice";
 
@@ -18,6 +19,10 @@ export type UseNa3MaintProjectsResult = {
     add: (
       internalId: number,
       projectData: MaintProjectBuilderData
+    ) => Promise<FirebaseOperationResult<Na3MaintenanceProject>>;
+    deliverProject: (
+      projectId: string,
+      eventData: { author: string; message?: string | null }
     ) => Promise<FirebaseOperationResult<Na3MaintenanceProject>>;
     formatInternalId: (internalId: number) => string;
     getById: (id: string) => Na3MaintenanceProject | undefined;
@@ -32,6 +37,11 @@ export type UseNa3MaintProjectsResult = {
     mapByStatus: (
       data?: Na3MaintenanceProject[]
     ) => Record<Na3MaintenanceProjectStatus, Na3MaintenanceProject[]>;
+    shareProjectStatus: (
+      projectId: string,
+      eventData: { author: string; message: string }
+    ) => Promise<FirebaseOperationResult<Na3MaintenanceProject>>;
+    sortByPriority: (data?: Na3MaintenanceProject[]) => Na3MaintenanceProject[];
     sortByStatus: (
       sortingOrder: Na3MaintenanceProjectStatus[],
       data?: Na3MaintenanceProject[]
@@ -121,6 +131,20 @@ export function useNa3MaintProjects(): UseNa3MaintProjectsResult {
     [mapByStatus]
   );
 
+  const sortByPriority = useCallback(
+    (data?: Na3MaintenanceProject[]) => {
+      const priorityMap: Record<Na3MaintenanceProject["priority"], number> = {
+        high: 3,
+        low: 1,
+        medium: 2,
+      };
+      return (data || maintProjects.data || []).sort(
+        (a, b) => priorityMap[b.priority] - priorityMap[a.priority]
+      );
+    },
+    [maintProjects.data]
+  );
+
   const add = useCallback(
     async (internalId: number, projectData: MaintProjectBuilderData) => {
       const project = buildMaintProject(internalId, projectData);
@@ -137,16 +161,75 @@ export function useNa3MaintProjects(): UseNa3MaintProjectsResult {
     []
   );
 
+  const shareProjectStatus = useCallback(
+    async (
+      projectId: string,
+      eventData: { author: string; message: string }
+    ) => {
+      const ev = buildMaintProjectEvents({
+        author: eventData.author,
+        message: eventData.message,
+        type: "status",
+      });
+
+      try {
+        const docRef = fbCollectionRef.current.doc(
+          projectId
+        ) as firebase.firestore.DocumentReference<Na3MaintenanceProject>;
+
+        await docRef.update({
+          events: firebase.firestore.FieldValue.arrayUnion(ev),
+        });
+
+        return { data: docRef, error: null };
+      } catch (error) {
+        return { data: null, error: error as firebase.FirebaseError };
+      }
+    },
+    []
+  );
+
+  const deliverProject = useCallback(
+    async (
+      projectId: string,
+      eventData: { author: string; message?: string | null }
+    ) => {
+      const ev = buildMaintProjectEvents({
+        author: eventData.author,
+        message: eventData.message || null,
+        type: "complete",
+      });
+
+      try {
+        const docRef = fbCollectionRef.current.doc(
+          projectId
+        ) as firebase.firestore.DocumentReference<Na3MaintenanceProject>;
+
+        await docRef.update({
+          events: firebase.firestore.FieldValue.arrayUnion(ev),
+        });
+
+        return { data: docRef, error: null };
+      } catch (error) {
+        return { data: null, error: error as firebase.FirebaseError };
+      }
+    },
+    []
+  );
+
   return {
     ...maintProjects,
     helpers: {
       add,
+      deliverProject,
       formatInternalId,
       getById,
       getByStatus,
       getNextInternalId,
       getProjectStatus,
       mapByStatus,
+      shareProjectStatus,
+      sortByPriority,
       sortByStatus,
     },
   };
