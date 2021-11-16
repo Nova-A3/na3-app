@@ -24,11 +24,13 @@ export function MaintServiceOrdersHomePage(): JSX.Element {
   );
 
   const listData = useMemo(
-    () =>
-      serviceOrders.helpers.sortByStatus(
-        ["solved", "solving", "pending", "closed"],
-        userOrders
+    () => [
+      ...serviceOrders.helpers.sortByStatus(["solved"], userOrders).reverse(),
+      ...serviceOrders.helpers.sortByPriority(
+        serviceOrders.helpers.sortByStatus(["solving"], userOrders)
       ),
+      ...serviceOrders.helpers.sortByStatus(["pending", "closed"], userOrders),
+    ],
     [serviceOrders.helpers, userOrders]
   );
 

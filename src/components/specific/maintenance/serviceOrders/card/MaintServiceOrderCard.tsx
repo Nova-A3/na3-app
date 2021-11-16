@@ -14,18 +14,30 @@ import { ServiceOrderStep } from "./ServiceOrderStep";
 
 type MaintServiceOrderCardProps = {
   data: Na3ServiceOrder;
+  isStatusHidden?: boolean;
   onSelect: ((serviceOrder: Na3ServiceOrder) => void) | null;
+};
+
+const defaultProps = {
+  isStatusHidden: false,
 };
 
 export function MaintServiceOrderCard({
   data,
   onSelect,
+  isStatusHidden,
 }: MaintServiceOrderCardProps): JSX.Element {
   return (
     <DataCard
       data={data}
       header={
-        <ServiceOrderCardHeader priority={data.priority} status={data.status} />
+        (!isStatusHidden || (!!data.priority && data.status === "solving")) && (
+          <ServiceOrderCardHeader
+            isStatusHidden={isStatusHidden}
+            priority={data.priority}
+            status={data.status}
+          />
+        )
       }
       onClick={onSelect}
       preTitle={`#${data.id}`}
@@ -52,3 +64,5 @@ export function MaintServiceOrderCard({
     </DataCard>
   );
 }
+
+MaintServiceOrderCard.defaultProps = defaultProps;

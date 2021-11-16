@@ -15,6 +15,7 @@ import {
   LabelsTransfCreateTemplatePage,
   LabelsTransfManagePage,
   LabelsTransfPrintPage,
+  MaintDashboardHomePage,
   MaintenanceHomePage,
   MaintProjectsCreatePage,
   MaintProjectsHomePage,
@@ -141,7 +142,7 @@ export const ROUTES: AppRouteMap<
   },
   "/manutencao/dashboard": {
     authorized: ["manutencao"],
-    component: null,
+    component: <MaintDashboardHomePage />,
     title: "Dashboard",
   },
   "/manutencao/os": {

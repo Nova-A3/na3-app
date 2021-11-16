@@ -6,17 +6,23 @@ import { ServiceOrderPriorityTag } from "./ServiceOrderPriorityTag";
 import { ServiceOrderStatusBadge } from "./ServiceOrderStatusBadge";
 
 type ServiceOrderCardHeaderProps = {
+  isStatusHidden?: boolean;
   priority: Na3ServiceOrder["priority"];
   status: Na3ServiceOrder["status"];
+};
+
+const defaultProps = {
+  isStatusHidden: false,
 };
 
 export function ServiceOrderCardHeader({
   priority,
   status,
+  isStatusHidden,
 }: ServiceOrderCardHeaderProps): JSX.Element {
   return (
     <div className={classes.Header}>
-      <ServiceOrderStatusBadge status={status} />
+      {!isStatusHidden && <ServiceOrderStatusBadge status={status} />}
 
       {priority && status === "solving" && (
         <ServiceOrderPriorityTag priority={priority} />
@@ -24,3 +30,5 @@ export function ServiceOrderCardHeader({
     </div>
   );
 }
+
+ServiceOrderCardHeader.defaultProps = defaultProps;

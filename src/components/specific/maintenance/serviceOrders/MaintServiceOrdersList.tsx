@@ -7,23 +7,42 @@ import { List } from "../../../lists/List";
 import { MaintServiceOrderCard } from "./card/MaintServiceOrderCard";
 
 type MaintServiceOrdersListProps = {
+  cardRenderOptions?: {
+    hideStatus?: boolean;
+    hideUrgencyRibbon?: boolean;
+  };
   data: Na3ServiceOrder[];
-  onSelectOrder: (serviceOrder: Na3ServiceOrder) => void;
+  isSearchDisabled?: boolean;
+  onSelectOrder: ((serviceOrder: Na3ServiceOrder) => void) | null;
+};
+
+const defaultProps = {
+  cardRenderOptions: undefined,
+  isSearchDisabled: false,
 };
 
 export function MaintServiceOrdersList({
   data,
   onSelectOrder,
+  isSearchDisabled,
+  cardRenderOptions,
 }: MaintServiceOrdersListProps): JSX.Element {
   const serviceOrders = useNa3ServiceOrders();
 
   const handleRenderItem = useCallback(
     (order: Na3ServiceOrder) => {
       const card = (
-        <MaintServiceOrderCard data={order} onSelect={onSelectOrder} />
+        <MaintServiceOrderCard
+          data={order}
+          isStatusHidden={cardRenderOptions?.hideStatus}
+          onSelect={onSelectOrder}
+        />
       );
 
-      if (serviceOrders.helpers.orderRequiresAction(order)) {
+      if (
+        serviceOrders.helpers.orderRequiresAction(order) &&
+        !cardRenderOptions?.hideUrgencyRibbon
+      ) {
         return (
           <Badge.Ribbon color="red" text="Ação necessária">
             {card}
@@ -33,7 +52,12 @@ export function MaintServiceOrdersList({
         return card;
       }
     },
-    [onSelectOrder, serviceOrders.helpers]
+    [
+      onSelectOrder,
+      serviceOrders.helpers,
+      cardRenderOptions?.hideStatus,
+      cardRenderOptions?.hideUrgencyRibbon,
+    ]
   );
 
   const handleFilterItemOnSearch = useCallback(
@@ -49,10 +73,12 @@ export function MaintServiceOrdersList({
     <List
       data={data}
       error={serviceOrders.error?.message}
-      filterItem={handleFilterItemOnSearch}
+      filterItem={isSearchDisabled ? undefined : handleFilterItemOnSearch}
       isLoading={serviceOrders.loading}
       renderItem={handleRenderItem}
       verticalSpacing={8}
     />
   );
 }
+
+MaintServiceOrdersList.defaultProps = defaultProps;

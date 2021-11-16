@@ -41,6 +41,7 @@ export type UseNa3ServiceOrdersResult = {
       id: string,
       payload: { reason: string }
     ) => Promise<FirebaseOperationResult<Na3ServiceOrder>>;
+    sortByPriority: (data?: Na3ServiceOrder[]) => Na3ServiceOrder[];
     sortByStatus: (
       sortingOrder: Na3ServiceOrder["status"][],
       data?: Na3ServiceOrder[]
@@ -119,6 +120,25 @@ export function useNa3ServiceOrders(): UseNa3ServiceOrdersResult {
       );
     },
     [mapByStatus]
+  );
+
+  const sortByPriority = useCallback(
+    (data?: Na3ServiceOrder[]) => {
+      const priorityMap: Record<
+        NonNullable<Na3ServiceOrder["priority"]>,
+        number
+      > = {
+        high: 3,
+        low: 1,
+        medium: 2,
+      };
+
+      return [...(data || serviceOrders.data || [])].sort(
+        (a, b) =>
+          priorityMap[b.priority || "low"] - priorityMap[a.priority || "low"]
+      );
+    },
+    [serviceOrders.data]
   );
 
   const orderRequiresAction = useCallback(
@@ -250,6 +270,7 @@ export function useNa3ServiceOrders(): UseNa3ServiceOrdersResult {
       mapByStatus,
       orderRequiresAction,
       rejectSolution,
+      sortByPriority,
       sortByStatus,
     },
   };

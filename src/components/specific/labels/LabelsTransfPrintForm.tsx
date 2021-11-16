@@ -246,7 +246,8 @@ export function LabelsTransfPrintForm({
               validate: handleBatchIdValidate,
             }}
             tooltip={{
-              placement: "right",
+              arrowPointAtCenter: true,
+              placement: "rightBottom",
               title: (
                 <>
                   Formato:{" "}

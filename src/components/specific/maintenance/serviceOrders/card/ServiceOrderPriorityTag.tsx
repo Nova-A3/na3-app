@@ -5,7 +5,7 @@ import type { Na3ServiceOrder } from "../../../../../modules/na3-types";
 import classes from "./ServiceOrderPriorityTag.module.css";
 
 type ServiceOrderPriorityTagProps = {
-  priority: Exclude<Na3ServiceOrder["priority"], null | undefined>;
+  priority: NonNullable<Na3ServiceOrder["priority"]>;
 };
 
 export function ServiceOrderPriorityTag({

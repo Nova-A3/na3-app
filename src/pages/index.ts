@@ -7,6 +7,7 @@ export { LabelsPrintPage } from "./labels/LabelsPrint";
 export { LabelsTransfCreateTemplatePage } from "./labels/transf/LabelsTransfCreateTemplate";
 export { LabelsTransfManagePage } from "./labels/transf/LabelsTransfManage";
 export { LabelsTransfPrintPage } from "./labels/transf/LabelsTransfPrint";
+export { MaintDashboardHomePage } from "./maintenance/dashboard/MaintDashboardHome";
 export { MaintenanceHomePage } from "./maintenance/MaintenanceHome";
 export { MaintProjectsCreatePage } from "./maintenance/projects/MaintProjectsCreate";
 export { MaintProjectsHomePage } from "./maintenance/projects/MaintProjectsHome";

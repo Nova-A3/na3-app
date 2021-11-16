@@ -33,6 +33,8 @@ export { MaintProjectTimelineItem } from "./specific/maintenance/projects/detail
 export { MaintCreateProjectForm } from "./specific/maintenance/projects/MaintCreateProjectForm";
 export { MaintProjectActionForm } from "./specific/maintenance/projects/MaintProjectActionForm";
 export { MaintProjectsList } from "./specific/maintenance/projects/MaintProjectsList";
+export { MaintServiceOrderCard } from "./specific/maintenance/serviceOrders/card/MaintServiceOrderCard";
+export { MaintDashboardColumn } from "./specific/maintenance/serviceOrders/dashboard/MaintDashboardColumn";
 export { MaintServiceOrderDetailsModal } from "./specific/maintenance/serviceOrders/detailsModal/MaintServiceOrderDetailsModal";
 export { MaintCreateServiceOrderForm } from "./specific/maintenance/serviceOrders/MaintCreateServiceOrderForm";
 export { MaintServiceOrdersList } from "./specific/maintenance/serviceOrders/MaintServiceOrdersList";

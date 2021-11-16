@@ -33,7 +33,11 @@ export function Divider({
       orientation={orientation}
       plain={plain}
       prefixCls={prefixCls}
-      style={{ marginBottom, marginTop, ...style }}
+      style={{
+        ...style,
+        marginBottom: marginBottom ?? style?.marginBottom,
+        marginTop: marginTop ?? style?.marginTop,
+      }}
       type={type}
     >
       {children}
