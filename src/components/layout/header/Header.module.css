@@ -12,9 +12,9 @@
   align-items: center;
 }
 
-.SignOutButton {
+.AuthButton {
   margin-left: 6px;
-  margin-right: -9px;
+  margin-right: -3px;
 }
 
 /* up to md */
@@ -23,7 +23,8 @@
     padding: 0 14px 0 48px;
   }
 
-  .SignOutButton {
-    margin-left: 4px;
+  .AuthButton {
+    margin-left: 3px;
+    margin-right: -10px;
   }
 }

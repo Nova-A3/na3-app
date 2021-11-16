@@ -51,7 +51,7 @@ export function PageContainer({
         children
       ) : (
         <AuthPage
-          authorizedDpts={
+          authorized={
             departments.helpers.getByIdsOrTypes(authorized || []) || []
           }
         />

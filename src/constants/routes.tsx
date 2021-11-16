@@ -3,11 +3,13 @@ import {
   HomeOutlined,
   SettingOutlined,
   TagsOutlined,
+  UserOutlined,
 } from "@ant-design/icons";
 import React from "react";
 
 import type { Na3DepartmentId, Na3DepartmentType } from "../modules/na3-types";
 import {
+  AuthPage,
   HomePage,
   LabelsHomePage,
   LabelsManagePage,
@@ -51,6 +53,7 @@ export const ROUTES: AppRouteMap<
   | "/docs"
   | "/docs/comex"
   | "/docs/transferencia"
+  | "/entrar"
   | "/etiquetas"
   | "/etiquetas/gerenciar"
   | "/etiquetas/gerenciar/transferencia"
@@ -82,6 +85,7 @@ export const ROUTES: AppRouteMap<
     },
     title: "Documentos",
   },
+
   "/docs/comex": {
     component: null,
     title: "Comércio Exterior",
@@ -89,6 +93,12 @@ export const ROUTES: AppRouteMap<
   "/docs/transferencia": {
     component: null,
     title: "Transferência",
+  },
+
+  "/entrar": {
+    component: <AuthPage authorized="all" redirectUrl="/" />,
+    icon: <UserOutlined />,
+    title: "Entrar",
   },
 
   "/etiquetas": {

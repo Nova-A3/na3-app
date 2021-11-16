@@ -1,6 +1,7 @@
 import { LockOutlined, LoginOutlined, UserOutlined } from "@ant-design/icons";
 import { message } from "antd";
-import React, { useCallback } from "react";
+import React, { useCallback, useMemo } from "react";
+import { useHistory } from "react-router";
 
 import {
   Form,
@@ -14,14 +15,31 @@ import { useNa3Auth, useNa3Departments } from "../../modules/na3-react";
 import type { Na3Department } from "../../modules/na3-types";
 
 type AuthProps = {
-  authorizedDpts: Na3Department[];
+  authorized: Na3Department[] | "all";
+  redirectUrl?: string;
+};
+
+const defaultProps = {
+  redirectUrl: undefined,
 };
 
 type FormValues = { dpt: string; password: string };
 
-export function AuthPage({ authorizedDpts }: AuthProps): JSX.Element {
+export function AuthPage({ authorized, redirectUrl }: AuthProps): JSX.Element {
+  const history = useHistory();
+
   const auth = useNa3Auth();
   const departments = useNa3Departments();
+
+  const authorizedDpts = useMemo(() => {
+    if (!departments.data) {
+      return [];
+    } else if (authorized === "all") {
+      return departments.data;
+    } else {
+      return authorized;
+    }
+  }, [authorized, departments.data]);
 
   const form = useForm<FormValues>({
     defaultValues: {
@@ -56,9 +74,10 @@ export function AuthPage({ authorizedDpts }: AuthProps): JSX.Element {
         setSignInError(signInResult.error.message);
       } else {
         void message.success("Autenticado!");
+        if (redirectUrl) history.replace(redirectUrl);
       }
     },
-    [form, auth.helpers, departments.helpers]
+    [form, auth.helpers, departments.helpers, redirectUrl, history]
   );
 
   return (
@@ -118,3 +137,5 @@ export function AuthPage({ authorizedDpts }: AuthProps): JSX.Element {
     </>
   );
 }
+
+AuthPage.defaultProps = defaultProps;

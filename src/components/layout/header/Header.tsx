@@ -1,7 +1,9 @@
-import { LogoutOutlined } from "@ant-design/icons";
+import { LoginOutlined, LogoutOutlined } from "@ant-design/icons";
 import { Button, message, Tooltip } from "antd";
 import React, { useCallback } from "react";
+import { useHistory } from "react-router";
 
+import { useTheme } from "../../../hooks";
 import { useNa3Auth } from "../../../modules/na3-react";
 import { HomeLogo } from "../../specific/home/HomeLogo";
 import classes from "./Header.module.css";
@@ -9,12 +11,20 @@ import { ThemeSwitch } from "./ThemeSwitch";
 import { UserInfo } from "./UserInfo";
 
 export function Header(): JSX.Element {
+  const history = useHistory();
+
   const auth = useNa3Auth();
+
+  const [theme] = useTheme();
 
   const handleSignOut = useCallback(async () => {
     await auth.helpers.signOut();
     await message.info("Você saiu");
   }, [auth.helpers]);
+
+  const handleAuthRedirect = useCallback(() => {
+    history.push("/entrar");
+  }, [history]);
 
   return (
     <div className={classes.HeaderContainer}>
@@ -29,18 +39,21 @@ export function Header(): JSX.Element {
       <div className={classes.Actions}>
         <ThemeSwitch />
 
-        {auth.department && (
-          <Tooltip color="#ff4d4f" title="Sair">
-            <Button
-              className={`${classes.SignOutButton} animate__animated animate__fadeIn`}
-              danger={true}
-              icon={<LogoutOutlined />}
-              onClick={handleSignOut}
-              shape="circle"
-              type="text"
-            />
-          </Tooltip>
-        )}
+        <Tooltip
+          arrowPointAtCenter={true}
+          color={auth.department ? "#ff4d4f" : undefined}
+          placement="bottomRight"
+          title={auth.department ? "Sair" : "Entrar"}
+        >
+          <Button
+            className={`${classes.AuthButton} animate__animated animate__fadeIn`}
+            danger={!!auth.department}
+            icon={auth.department ? <LogoutOutlined /> : <LoginOutlined />}
+            onClick={auth.department ? handleSignOut : handleAuthRedirect}
+            shape="circle"
+            type={auth.department || theme === "dark" ? "text" : "link"}
+          />
+        </Tooltip>
       </div>
     </div>
   );
