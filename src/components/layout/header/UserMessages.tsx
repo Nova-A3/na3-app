@@ -8,11 +8,13 @@ import type { Na3ServiceOrder } from "../../../modules/na3-types";
 import classes from "./UserMessages.module.css";
 
 type UserMessagesProps = {
+  onActionBtnClick: () => void;
   serviceOrders: Na3ServiceOrder[];
 };
 
 export function UserMessages({
   serviceOrders,
+  onActionBtnClick,
 }: UserMessagesProps): JSX.Element {
   const { department } = useNa3Auth();
 
@@ -51,6 +53,7 @@ export function UserMessages({
           <Button
             block={true}
             className={classes.MessageGroupButton}
+            onClick={onActionBtnClick}
             size="small"
             type="primary"
           >
