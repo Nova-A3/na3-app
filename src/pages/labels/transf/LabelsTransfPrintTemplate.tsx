@@ -1,6 +1,5 @@
-import { Button, message, notification } from "antd";
+import { message, notification } from "antd";
 import React, { useCallback, useEffect, useMemo } from "react";
-import { useHistory } from "react-router-dom";
 
 import {
   Divider,
@@ -9,7 +8,7 @@ import {
   Page,
   PageDescription,
   PageTitle,
-  Result,
+  Result404,
 } from "../../../components";
 import { useBreadcrumb, usePdf } from "../../../hooks";
 import { useNa3TransfLabelTemplates } from "../../../modules/na3-react";
@@ -27,8 +26,6 @@ type PageProps = {
 export function LabelsTransfPrintTemplatePage({
   templateId,
 }: PageProps): JSX.Element {
-  const history = useHistory();
-
   const { setExtra: setBreadcrumbExtra } = useBreadcrumb();
 
   const {
@@ -45,10 +42,6 @@ export function LabelsTransfPrintTemplatePage({
     () => getTemplate(templateId),
     [templateId, getTemplate]
   );
-
-  const handleNavigateBack = useCallback(() => {
-    history.replace("/etiquetas/imprimir/transferencia");
-  }, [history]);
 
   const handleOpenLabelPreview = useCallback(
     (labelConfig: LabelsTransfPrintFormOnSubmitValues) => {
@@ -216,15 +209,8 @@ export function LabelsTransfPrintTemplatePage({
       />
     </>
   ) : (
-    <Result
-      description="O modelo de etiqueta solicitado não existe ou foi desabilitado."
-      extra={
-        <Button onClick={handleNavigateBack} type="primary">
-          Voltar
-        </Button>
-      }
-      status="404"
-      title="Oops!"
-    />
+    <Result404 backUrl="/etiquetas/imprimir">
+      O modelo de etiqueta solicitado não existe ou foi desabilitado.
+    </Result404>
   );
 }

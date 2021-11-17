@@ -3,17 +3,18 @@ import {
   Button,
   Col,
   Divider,
+  Grid,
   Modal,
   notification,
   Row,
   Timeline,
-  Typography,
 } from "antd";
 import { nanoid } from "nanoid";
 import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { useHistory } from "react-router-dom";
 
 import {
+  DataInfo,
   MaintProjectActionForm,
   MaintProjectPriorityTag,
   MaintProjectStatusBadge,
@@ -22,7 +23,7 @@ import {
   PageActionButtons,
   PageDescription,
   PageTitle,
-  Result,
+  Result404,
 } from "../../../components";
 import { useBreadcrumb } from "../../../hooks";
 import { useNa3MaintProjects } from "../../../modules/na3-react";
@@ -38,6 +39,7 @@ export function MaintProjectDetails({ projectId }: PageProps): JSX.Element {
   const [actionForm, setActionForm] = useState<"deliver" | "status">();
 
   const history = useHistory();
+  const breakpoint = Grid.useBreakpoint();
 
   const { setExtra: setBreadcrumbExtra } = useBreadcrumb();
 
@@ -60,10 +62,6 @@ export function MaintProjectDetails({ projectId }: PageProps): JSX.Element {
     () => (project ? getProjectStatus(project) : undefined),
     [getProjectStatus, project]
   );
-
-  const handleNavigateBack = useCallback(() => {
-    history.replace("/manutencao/projetos");
-  }, [history]);
 
   const handleActionFormClose = useCallback(() => {
     setActionForm(undefined);
@@ -193,33 +191,29 @@ export function MaintProjectDetails({ projectId }: PageProps): JSX.Element {
 
       <Divider />
 
-      <Row>
-        <Col className={classes.MarginCol} lg={6} xs={12}>
-          <Typography.Text className={classes.DataLabel}>
-            Status:
-          </Typography.Text>
-          <MaintProjectStatusBadge status={projectStatus || "running"} />
+      <Row gutter={12}>
+        <Col lg={6} xs={12}>
+          <DataInfo label="Status" marginBottom={!breakpoint.lg}>
+            <MaintProjectStatusBadge status={projectStatus || "running"} />
+          </DataInfo>
         </Col>
 
         <Col lg={6} xs={12}>
-          <Typography.Text className={classes.DataLabel}>
-            Prioridade:
-          </Typography.Text>
-          <MaintProjectPriorityTag priority={project.priority} />
+          <DataInfo label="Prioridade">
+            <MaintProjectPriorityTag priority={project.priority} />
+          </DataInfo>
         </Col>
 
         <Col lg={6} xs={12}>
-          <Typography.Text className={classes.DataLabel}>
-            <UserOutlined /> Responsável:
-          </Typography.Text>
-          <strong>{project.team.manager.trim()}</strong>
+          <DataInfo icon={<UserOutlined />} label="Responsável">
+            <strong>{project.team.manager.trim()}</strong>
+          </DataInfo>
         </Col>
 
         <Col lg={6} xs={12}>
-          <Typography.Text className={classes.DataLabel}>
-            <TeamOutlined /> Equipe:
-          </Typography.Text>
-          {project.team.others.trim()}
+          <DataInfo icon={<TeamOutlined />} label="Equipe">
+            {project.team.others.trim()}
+          </DataInfo>
         </Col>
       </Row>
 
@@ -228,9 +222,7 @@ export function MaintProjectDetails({ projectId }: PageProps): JSX.Element {
       <Page scrollTopOffset={24}>
         <Row>
           <Col lg={4} xs={24}>
-            <Typography.Text className={classes.DataLabel}>
-              Histórico:
-            </Typography.Text>
+            <DataInfo label="Histórico" />
           </Col>
 
           <Col lg={20} xs={24}>
@@ -256,15 +248,8 @@ export function MaintProjectDetails({ projectId }: PageProps): JSX.Element {
       />
     </>
   ) : (
-    <Result
-      description="O projeto de manutenção solicitado não existe ou foi desabilitado."
-      extra={
-        <Button onClick={handleNavigateBack} type="primary">
-          Voltar
-        </Button>
-      }
-      status="404"
-      title="Oops!"
-    />
+    <Result404 backUrl="/manutencao/projetos">
+      O projeto de manutenção solicitado não existe ou foi desabilitado.
+    </Result404>
   );
 }

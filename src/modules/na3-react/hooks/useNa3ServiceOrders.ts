@@ -2,7 +2,7 @@ import dayjs from "dayjs";
 import firebase from "firebase";
 import { useCallback, useRef } from "react";
 
-import type { Na3ServiceOrder } from "../../na3-types";
+import type { Na3Machine, Na3ServiceOrder } from "../../na3-types";
 import type { FirebaseOperationResult } from "../types";
 import type { ServiceOrderBuilderData } from "../utils";
 import {
@@ -11,6 +11,7 @@ import {
   formatServiceOrderId,
   resolveCollectionId,
 } from "../utils";
+import { useNa3Departments } from "./useNa3Departments";
 import { useStateSlice } from "./useStateSlice";
 
 export type UseNa3ServiceOrdersResult = {
@@ -24,6 +25,7 @@ export type UseNa3ServiceOrdersResult = {
       id: string,
       data: ServiceOrderBuilderData
     ) => Promise<FirebaseOperationResult<Na3ServiceOrder>>;
+    getById: (id: string) => Na3ServiceOrder | undefined;
     getByStatus: (
       status: Na3ServiceOrder["status"] | Na3ServiceOrder["status"][],
       data?: Na3ServiceOrder[]
@@ -32,6 +34,7 @@ export type UseNa3ServiceOrdersResult = {
       data?: Na3ServiceOrder[]
     ) => Na3ServiceOrder[] | undefined;
     getNextId: () => string | undefined;
+    getOrderMachine: (serviceOrder: Na3ServiceOrder) => Na3Machine | undefined;
     getWithActionRequired: (data?: Na3ServiceOrder[]) => Na3ServiceOrder[];
     mapByStatus: (
       data?: Na3ServiceOrder[]
@@ -41,6 +44,7 @@ export type UseNa3ServiceOrdersResult = {
       id: string,
       payload: { reason: string }
     ) => Promise<FirebaseOperationResult<Na3ServiceOrder>>;
+    sortById: (data?: Na3ServiceOrder[]) => Na3ServiceOrder[];
     sortByPriority: (data?: Na3ServiceOrder[]) => Na3ServiceOrder[];
     sortByStatus: (
       sortingOrder: Na3ServiceOrder["status"][],
@@ -55,6 +59,8 @@ export function useNa3ServiceOrders(): UseNa3ServiceOrdersResult {
   const { device } = useStateSlice("global");
   const { department } = useStateSlice("auth");
   const serviceOrders = useStateSlice("serviceOrders");
+
+  const departments = useNa3Departments();
 
   const fbCollectionRef = useRef(
     firebase.firestore().collection(resolveCollectionId("tickets", environment))
@@ -79,6 +85,13 @@ export function useNa3ServiceOrders(): UseNa3ServiceOrdersResult {
     [department, serviceOrders.data]
   );
 
+  const getById = useCallback(
+    (id: number | string) => {
+      return serviceOrders.data?.find((order) => +order.id === +id);
+    },
+    [serviceOrders.data]
+  );
+
   const getByStatus = useCallback(
     (
       status: Na3ServiceOrder["status"] | Na3ServiceOrder["status"][],
@@ -92,6 +105,15 @@ export function useNa3ServiceOrders(): UseNa3ServiceOrdersResult {
       );
     },
     [serviceOrders.data]
+  );
+
+  const getOrderMachine = useCallback(
+    (serviceOrder: Na3ServiceOrder) => {
+      return departments.helpers.getById(serviceOrder.username)?.machines[
+        serviceOrder.machine
+      ];
+    },
+    [departments.helpers]
   );
 
   const mapByStatus = useCallback(
@@ -109,17 +131,24 @@ export function useNa3ServiceOrders(): UseNa3ServiceOrdersResult {
     [getByStatus]
   );
 
+  const sortById = useCallback(
+    (data?: Na3ServiceOrder[]) => {
+      return [...(data || serviceOrders.data || [])].sort(
+        (a, b) => +a.id - +b.id
+      );
+    },
+    [serviceOrders.data]
+  );
+
   const sortByStatus = useCallback(
     (
       sortingOrder: Na3ServiceOrder["status"][],
       data?: Na3ServiceOrder[]
     ): Na3ServiceOrder[] => {
       const statusMap = mapByStatus(data);
-      return sortingOrder.flatMap((status) =>
-        [...statusMap[status]].sort((a, b) => b.id.localeCompare(a.id))
-      );
+      return sortingOrder.flatMap((status) => [...sortById(statusMap[status])]);
     },
-    [mapByStatus]
+    [mapByStatus, sortById]
   );
 
   const sortByPriority = useCallback(
@@ -263,13 +292,16 @@ export function useNa3ServiceOrders(): UseNa3ServiceOrdersResult {
     helpers: {
       acceptSolution,
       add,
+      getById,
       getByStatus,
       getDepartmentOrders,
       getNextId,
+      getOrderMachine,
       getWithActionRequired,
       mapByStatus,
       orderRequiresAction,
       rejectSolution,
+      sortById,
       sortByPriority,
       sortByStatus,
     },

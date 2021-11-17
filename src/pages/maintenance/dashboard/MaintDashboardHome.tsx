@@ -1,5 +1,6 @@
 import { Alert, Grid, Row } from "antd";
-import React, { useMemo, useState } from "react";
+import React, { useCallback, useMemo } from "react";
+import { useHistory } from "react-router";
 
 import {
   MaintDashboardColumn,
@@ -11,11 +12,10 @@ import type { Na3ServiceOrder } from "../../../modules/na3-types";
 import classes from "./MaintDashboardHome.module.css";
 
 export function MaintDashboardHomePage(): JSX.Element {
+  const history = useHistory();
   const breakpoint = Grid.useBreakpoint();
 
   const serviceOrders = useNa3ServiceOrders();
-
-  const [selectedOrder, setSelectedOrder] = useState<Na3ServiceOrder>();
 
   const serviceOrdersByStatus = useMemo(
     () => serviceOrders.helpers.mapByStatus(),
@@ -30,6 +30,13 @@ export function MaintDashboardHomePage(): JSX.Element {
       ),
     ],
     [serviceOrders.helpers]
+  );
+
+  const handleOrderSelect = useCallback(
+    (serviceOrder: Na3ServiceOrder) => {
+      history.push(`/manutencao/os?numero=${serviceOrder.id}`);
+    },
+    [history]
   );
 
   return (
@@ -53,7 +60,7 @@ export function MaintDashboardHomePage(): JSX.Element {
           <MaintDashboardColumn
             className={classes.DashboardCol}
             data={serviceOrdersByStatus.pending}
-            onSelectOrder={setSelectedOrder}
+            onSelectOrder={handleOrderSelect}
             status="pending"
           />
 
@@ -62,7 +69,7 @@ export function MaintDashboardHomePage(): JSX.Element {
             data={serviceOrders.helpers.sortByPriority(
               serviceOrdersByStatus.solving
             )}
-            onSelectOrder={setSelectedOrder}
+            onSelectOrder={handleOrderSelect}
             status="solving"
           />
 
@@ -84,7 +91,7 @@ export function MaintDashboardHomePage(): JSX.Element {
         <MaintServiceOrdersList
           cardRenderOptions={{ hideUrgencyRibbon: true }}
           data={mobileListData}
-          onSelectOrder={setSelectedOrder}
+          onSelectOrder={handleOrderSelect}
         />
       )}
     </>
