@@ -28,7 +28,7 @@ export function Page({
       style={{
         ...style,
         ...(additionalPaddingBottom && {
-          paddingBottom: 44 + additionalPaddingBottom,
+          paddingBottom: 32 + additionalPaddingBottom,
         }),
         ...(scrollTopOffset && {
           marginTop: -scrollTopOffset,
