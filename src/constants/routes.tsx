@@ -64,6 +64,7 @@ export const ROUTES: AppRouteMap<
   | "/manutencao/dashboard"
   | "/manutencao/os"
   | "/manutencao/os/abrir-os"
+  | "/manutencao/predprev"
   | "/manutencao/projetos"
   | "/manutencao/projetos/novo-projeto"
 > = {
@@ -85,7 +86,6 @@ export const ROUTES: AppRouteMap<
     },
     title: "Documentos",
   },
-
   "/docs/comex": {
     component: null,
     title: "Comércio Exterior",
@@ -146,6 +146,7 @@ export const ROUTES: AppRouteMap<
         { path: "/manutencao/os", title: "Ordens de Serviço" },
         { path: "/manutencao/dashboard", title: "Dashboard" },
         { path: "/manutencao/projetos", title: "Projetos" },
+        { path: "/manutencao/predprev", title: "Pred/Prev" },
       ],
     },
     title: "Manutenção",
@@ -164,6 +165,11 @@ export const ROUTES: AppRouteMap<
     authorized: ["shop-floor"],
     component: <MaintServiceOrdersCreatePage />,
     title: "Abrir OS",
+  },
+  "/manutencao/predprev": {
+    authorized: ["manutencao"],
+    component: null,
+    title: "Pred/Prev",
   },
   "/manutencao/projetos": {
     authorized: ["manutencao"],
