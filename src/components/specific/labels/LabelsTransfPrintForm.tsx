@@ -274,18 +274,21 @@ export function LabelsTransfPrintForm({
                 .replace(".", ",")} ${template.productUnitName.toLowerCase()}`
             }
             label="Valor de quantidade"
-            max={template.productSnapshot?.perCarton}
+            max={/* template.productSnapshot?.perCarton */ undefined}
             maxLength={8}
             name="productQuantity"
             rules={{
               min: { message: "Deve ser maior que zero", value: 0 },
               required: "Defina a quantidade na caixa",
+              /* TEMPORARILY DISABLED:
+
               ...(template.productSnapshot?.perCarton && {
                 max: {
                   message: "Deve ser menor que o máx./caixa",
                   value: template.productSnapshot.perCarton,
                 },
               }),
+              */
             }}
             suffix={template.productUnitName.toLowerCase()}
             tooltip={
