@@ -5,8 +5,8 @@ import { useHistory } from "react-router";
 import { Result } from "./Result";
 
 type Result404Props = {
-  backUrl: string;
-  children: string;
+  backUrl: `/${string}`;
+  children: React.ReactNode;
 };
 
 export function Result404({ children, backUrl }: Result404Props): JSX.Element {

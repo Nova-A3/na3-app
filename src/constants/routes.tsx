@@ -65,6 +65,7 @@ export const ROUTES: AppRouteMap<
   | "/manutencao/os"
   | "/manutencao/os/abrir-os"
   | "/manutencao/predprev"
+  | "/manutencao/predprev/nova-predprev"
   | "/manutencao/projetos"
   | "/manutencao/projetos/novo-projeto"
 > = {
@@ -168,17 +169,22 @@ export const ROUTES: AppRouteMap<
   },
   "/manutencao/predprev": {
     authorized: ["manutencao"],
-    component: null,
+    component: <MaintProjectsHomePage isPredPrev={true} />,
     title: "Pred/Prev",
+  },
+  "/manutencao/predprev/nova-predprev": {
+    authorized: ["manutencao"],
+    component: <MaintProjectsCreatePage isPredPrev={true} />,
+    title: "Nova Pred/Prev",
   },
   "/manutencao/projetos": {
     authorized: ["manutencao"],
-    component: <MaintProjectsHomePage />,
+    component: <MaintProjectsHomePage isPredPrev={false} />,
     title: "Projetos",
   },
   "/manutencao/projetos/novo-projeto": {
     authorized: ["manutencao"],
-    component: <MaintProjectsCreatePage />,
+    component: <MaintProjectsCreatePage isPredPrev={false} />,
     title: "Novo Projeto",
   },
 };

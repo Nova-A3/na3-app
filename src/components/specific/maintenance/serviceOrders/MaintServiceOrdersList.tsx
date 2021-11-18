@@ -48,9 +48,8 @@ export function MaintServiceOrdersList({
             {card}
           </Badge.Ribbon>
         );
-      } else {
-        return card;
       }
+      return card;
     },
     [
       onSelectOrder,
@@ -64,7 +63,10 @@ export function MaintServiceOrdersList({
     (query: string): Na3ServiceOrder[] =>
       data?.filter((order) => {
         const formattedQuery = query.trim().toLowerCase();
-        return order.description.toLowerCase().includes(formattedQuery);
+        return (
+          order.description.toLowerCase().includes(formattedQuery) ||
+          parseInt(order.id) === parseInt(query)
+        );
       }) || [],
     [data]
   );

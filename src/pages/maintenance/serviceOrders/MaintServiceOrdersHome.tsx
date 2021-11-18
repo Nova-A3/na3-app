@@ -28,7 +28,9 @@ export function MaintServiceOrdersHomePage(): JSX.Element {
       ...serviceOrders.helpers.sortByPriority(
         serviceOrders.helpers.sortByStatus(["solving"], userOrders)
       ),
-      ...serviceOrders.helpers.sortByStatus(["pending", "closed"], userOrders),
+      ...serviceOrders.helpers
+        .sortByStatus(["closed", "pending"], userOrders)
+        .reverse(),
     ],
     [serviceOrders.helpers, userOrders]
   );

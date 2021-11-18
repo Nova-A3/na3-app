@@ -9,7 +9,13 @@ import {
   PageTitle,
 } from "../../../components";
 
-export function MaintProjectsCreatePage(): JSX.Element {
+type PageProps = {
+  isPredPrev: boolean;
+};
+
+export function MaintProjectsCreatePage({
+  isPredPrev,
+}: PageProps): JSX.Element {
   const history = useHistory();
 
   const handleNavigateBack = useCallback(() => {
@@ -18,13 +24,18 @@ export function MaintProjectsCreatePage(): JSX.Element {
 
   return (
     <>
-      <PageTitle>Novo Projeto</PageTitle>
-      <PageDescription>Defina o projeto.</PageDescription>
+      <PageTitle>{isPredPrev ? "Nova Pred/Prev" : "Novo Projeto"}</PageTitle>
+      <PageDescription>
+        Defina {isPredPrev ? "a Pred/Prev" : "o projeto"}.
+      </PageDescription>
 
       <Divider marginTop={0} />
 
       <Page scrollTopOffset={24}>
-        <MaintCreateProjectForm onSubmit={handleNavigateBack} />
+        <MaintCreateProjectForm
+          isPredPrev={isPredPrev}
+          onSubmit={handleNavigateBack}
+        />
       </Page>
     </>
   );

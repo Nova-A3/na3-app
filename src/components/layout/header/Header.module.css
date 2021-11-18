@@ -14,7 +14,6 @@
 
 .AuthButton {
   margin-left: 6px;
-  margin-right: -3px;
 }
 
 /* up to md */
@@ -24,7 +23,7 @@
   }
 
   .AuthButton {
-    margin-left: 3px;
+    margin-left: 2px;
     margin-right: -10px;
   }
 }

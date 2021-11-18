@@ -9,6 +9,7 @@ import { MaintProjectPriorityTag } from "./MaintProjectPriorityTag";
 import { MaintProjectStatusBadge } from "./MaintProjectStatusBadge";
 
 type MaintProjectCardHeaderProps = {
+  isPredPrev: boolean;
   priority: Na3MaintenanceProject["priority"];
   status: Na3MaintenanceProjectStatus;
 };
@@ -16,10 +17,11 @@ type MaintProjectCardHeaderProps = {
 export function MaintProjectCardHeader({
   priority,
   status,
+  isPredPrev,
 }: MaintProjectCardHeaderProps): JSX.Element {
   return (
     <div className={classes.Header}>
-      <MaintProjectStatusBadge status={status} />
+      <MaintProjectStatusBadge isPredPrev={isPredPrev} status={status} />
 
       {status !== "finished" && <MaintProjectPriorityTag priority={priority} />}
     </div>

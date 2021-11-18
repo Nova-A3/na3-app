@@ -11,6 +11,7 @@ import { FormField } from "../../../forms/FormField/FormField";
 import { SubmitButton } from "../../../forms/SubmitButton";
 
 type MaintCreateProjectFormProps = {
+  isPredPrev: boolean;
   onSubmit?: () => void;
 };
 
@@ -38,6 +39,7 @@ export const employeeSelectOptions = EMPLOYEES.MAINTENANCE.sort((a, b) =>
 
 export function MaintCreateProjectForm({
   onSubmit,
+  isPredPrev,
 }: MaintCreateProjectFormProps): JSX.Element {
   const breakpoint = Grid.useBreakpoint();
 
@@ -57,7 +59,7 @@ export function MaintCreateProjectForm({
 
   const handleSubmit = useCallback(
     (values: FormValues) => {
-      const notifyError = createErrorNotifier("Erro ao criar o projeto");
+      const notifyError = createErrorNotifier("Erro ao abrir o projeto");
 
       const internalId = helpers.getNextInternalId();
 
@@ -73,11 +75,19 @@ export function MaintCreateProjectForm({
           content: (
             <>
               Confirma a abertura do projeto{" "}
+              {isPredPrev ? (
+                <>
+                  {" "}
+                  <em>(Pred/Prev)</em>{" "}
+                </>
+              ) : (
+                " "
+              )}
               {helpers.formatInternalId(internalId)} —{" "}
               <em>{values.title.trim()}</em>?
             </>
           ),
-          okText: "Abrir projeto",
+          okText: `Abrir ${isPredPrev ? "Pred/Prev" : "projeto"}`,
           onCancel: () => resolve(),
           onOk: async () => {
             confirmModal.update({ okText: "Enviando..." });
@@ -86,6 +96,7 @@ export function MaintCreateProjectForm({
               author: values.author,
               description: values.description,
               eta: dayjs(values.eta),
+              isPredPrev,
               priority: values.priority === "" ? "low" : values.priority,
               team: {
                 manager: values.teamManager,
@@ -100,11 +111,15 @@ export function MaintCreateProjectForm({
               notification.success({
                 description: (
                   <>
-                    Projeto {helpers.formatInternalId(internalId)}{" "}
-                    <em>({values.title.trim()})</em> aberto com sucesso!
+                    {isPredPrev ? "Pred/Prev" : "Projeto"}{" "}
+                    {helpers.formatInternalId(internalId)}{" "}
+                    <em>({values.title.trim()})</em>{" "}
+                    {isPredPrev ? "aberta" : "aberto"} com sucesso!
                   </>
                 ),
-                message: "Projeto aberto",
+                message: `${
+                  isPredPrev ? "Pred/Prev aberta" : "Projeto aberto"
+                }`,
               });
               form.resetForm();
               onSubmit?.();
@@ -112,11 +127,11 @@ export function MaintCreateProjectForm({
 
             resolve();
           },
-          title: "Abrir projeto?",
+          title: `Abrir ${isPredPrev ? "Pred/Prev" : "projeto"}?`,
         });
       });
     },
-    [form, onSubmit, helpers]
+    [form, helpers, onSubmit, isPredPrev]
   );
 
   const handleDateHelpWhenValid = useCallback((dateString: string): string => {
@@ -200,8 +215,8 @@ export function MaintCreateProjectForm({
       />
 
       <SubmitButton
-        label="Abrir projeto"
-        labelWhenLoading="Enviando projeto..."
+        label={`Abrir ${isPredPrev ? "Pred/Prev" : "projeto"}`}
+        labelWhenLoading={`Enviando ${isPredPrev ? "Pred/Prev" : "projeto"}...`}
       />
     </Form>
   );

@@ -8,13 +8,18 @@ import classes from "./MaintProjectTimelineItem.module.css";
 
 type MaintProjectTimelineItemProps = {
   event: Na3MaintenanceProjectEvent;
+  isPredPrev: boolean;
 };
 
 export function MaintProjectTimelineItem({
   event,
+  isPredPrev,
 }: MaintProjectTimelineItemProps): JSX.Element {
   return (
     <Timeline.Item
+      className={
+        event.type === "create" ? "ant-timeline-item-pending" : undefined
+      }
       color={
         event.type === "complete"
           ? "green"
@@ -25,7 +30,9 @@ export function MaintProjectTimelineItem({
     >
       <div>
         <Typography.Text>
-          {parseStringId(`project-${event.type}`)}
+          {parseStringId(
+            `maint-${isPredPrev ? "predprev" : "project"}-${event.type}`
+          )}
         </Typography.Text>
 
         <small className={classes.TimelineItemTimestamp}>

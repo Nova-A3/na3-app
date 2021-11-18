@@ -1,13 +1,25 @@
 import type firebase from "firebase";
 
-export type Na3MaintenanceProject = LegacyInternalProject & {
+export type Na3MaintenanceProjectStatus = "finished" | "late" | "running";
+
+export type Na3MaintenanceProjectEvent = LegacyInternalProjectEvent;
+
+type Na3MaintenanceProjectBase = LegacyInternalProject & {
   id: string;
   ref?: firebase.firestore.DocumentReference<Na3MaintenanceProject>;
 };
 
-export type Na3MaintenanceProjectStatus = "finished" | "late" | "running";
+export type Na3MaintenanceProjectGeneral = Na3MaintenanceProjectBase & {
+  isPredPrev: false | null;
+};
 
-export type Na3MaintenanceProjectEvent = LegacyInternalProjectEvent;
+export type Na3MaintenanceProjectPredPrev = Na3MaintenanceProjectBase & {
+  isPredPrev: true;
+};
+
+export type Na3MaintenanceProject =
+  | Na3MaintenanceProjectGeneral
+  | Na3MaintenanceProjectPredPrev;
 
 /* LegacyInternalProject */
 

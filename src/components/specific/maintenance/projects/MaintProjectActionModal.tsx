@@ -15,7 +15,7 @@ type FormValues<T extends ActionFormType> = {
   message: T extends "status" ? string : string | null;
 };
 
-type MaintProjectActionFormProps<T extends ActionFormType> = {
+type MaintProjectActionModalProps<T extends ActionFormType> = {
   isVisible: boolean;
   onClose: () => void;
   onSubmit: (
@@ -26,13 +26,13 @@ type MaintProjectActionFormProps<T extends ActionFormType> = {
   type: T;
 };
 
-export function MaintProjectActionForm<T extends ActionFormType>({
+export function MaintProjectActionModal<T extends ActionFormType>({
   type,
   isVisible,
   project,
   onSubmit,
   onClose,
-}: MaintProjectActionFormProps<T>): JSX.Element {
+}: MaintProjectActionModalProps<T>): JSX.Element {
   const form = useForm({
     defaultValues: { author: project.events[0]?.author || "", message: "" },
   });
@@ -48,7 +48,11 @@ export function MaintProjectActionForm<T extends ActionFormType>({
     <Modal
       footer={null}
       onCancel={onClose}
-      title={type === "status" ? "Informar status" : "Entregar projeto"}
+      title={
+        type === "status"
+          ? "Informar status"
+          : `Entregar ${project.isPredPrev ? "Pred/Prev" : "projeto"}`
+      }
       visible={isVisible}
     >
       <Form form={form} onSubmit={handleSubmit}>
@@ -61,19 +65,31 @@ export function MaintProjectActionForm<T extends ActionFormType>({
         />
 
         <FormField
-          label={type === "status" ? "Status do projeto" : "Comentários"}
+          label={
+            type === "status"
+              ? `Status ${project.isPredPrev ? "da Pred/Prev" : "do projeto"}`
+              : "Comentários"
+          }
           name="message"
           required={type === "status"}
           rules={
             type === "status"
-              ? { required: "Descreva o status do projeto" }
+              ? {
+                  required: `Descreva o status ${
+                    project.isPredPrev ? "da Pred/Prev" : "do projeto"
+                  }`,
+                }
               : null
           }
           type="textArea"
         />
 
         <SubmitButton
-          label={type === "status" ? "Compartilhar status" : "Entregar projeto"}
+          label={
+            type === "status"
+              ? "Compartilhar status"
+              : `Entregar ${project.isPredPrev ? "Pred/Prev" : "projeto"}`
+          }
           labelWhenLoading="Aguardando confirmação..."
         />
       </Form>

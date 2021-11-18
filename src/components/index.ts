@@ -31,7 +31,7 @@ export { MaintProjectPriorityTag } from "./specific/maintenance/projects/card/Ma
 export { MaintProjectStatusBadge } from "./specific/maintenance/projects/card/MaintProjectStatusBadge";
 export { MaintProjectTimelineItem } from "./specific/maintenance/projects/details/MaintProjectTimelineItem";
 export { MaintCreateProjectForm } from "./specific/maintenance/projects/MaintCreateProjectForm";
-export { MaintProjectActionForm } from "./specific/maintenance/projects/MaintProjectActionForm";
+export { MaintProjectActionModal } from "./specific/maintenance/projects/MaintProjectActionModal";
 export { MaintProjectsList } from "./specific/maintenance/projects/MaintProjectsList";
 export { RejectSolutionModal } from "./specific/maintenance/serviceOrders/actionModals/RejectSolutionModal";
 export { MaintServiceOrderCard } from "./specific/maintenance/serviceOrders/card/MaintServiceOrderCard";

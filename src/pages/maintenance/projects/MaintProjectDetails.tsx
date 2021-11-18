@@ -15,7 +15,7 @@ import { useHistory } from "react-router-dom";
 
 import {
   DataInfo,
-  MaintProjectActionForm,
+  MaintProjectActionModal,
   MaintProjectPriorityTag,
   MaintProjectStatusBadge,
   MaintProjectTimelineItem,
@@ -28,14 +28,18 @@ import {
 import { useBreadcrumb } from "../../../hooks";
 import { useNa3MaintProjects } from "../../../modules/na3-react";
 import type { Na3MaintenanceProject } from "../../../modules/na3-types";
-import { createErrorNotifier } from "../../../utils";
+import { createErrorNotifier, getMaintProjectsRootUrl } from "../../../utils";
 import classes from "./MaintProjectDetails.module.css";
 
 type PageProps = {
+  isPredPrev: boolean;
   projectId: string;
 };
 
-export function MaintProjectDetails({ projectId }: PageProps): JSX.Element {
+export function MaintProjectDetails({
+  projectId,
+  isPredPrev,
+}: PageProps): JSX.Element {
   const [actionForm, setActionForm] = useState<"deliver" | "status">();
 
   const history = useHistory();
@@ -75,15 +79,15 @@ export function MaintProjectDetails({ projectId }: PageProps): JSX.Element {
       const confirmModal = Modal.confirm({
         content: (
           <>
-            Confirma a entrega do projeto {formatInternalId(project.internalId)}{" "}
-            — <em>{project.title}</em>?
+            Confirma a entrega {isPredPrev ? "da Pred/Prev" : "do projeto"}{" "}
+            {formatInternalId(project.internalId)} — <em>{project.title}</em>?
           </>
         ),
         okText: "Confirmar entrega",
         onOk: async () => {
           const notifyError = createErrorNotifier("Erro ao entregar o projeto");
 
-          confirmModal.update({ okText: "Entregando projeto..." });
+          confirmModal.update({ okText: "Entregando..." });
 
           const operationRes = await deliverProject(project.id, {
             author: actionPayload.author,
@@ -96,20 +100,21 @@ export function MaintProjectDetails({ projectId }: PageProps): JSX.Element {
             notification.success({
               description: (
                 <>
-                  Projeto {formatInternalId(project.internalId)}{" "}
+                  {isPredPrev ? "Pred/Prev" : "Projeto"}{" "}
+                  {formatInternalId(project.internalId)}{" "}
                   <em>({project.title.trim()})</em> entregue com sucesso!
                 </>
               ),
-              message: "Projeto entregue",
+              message: `${isPredPrev ? "Pred/Prev" : "Projeto"} entregue`,
             });
             setActionForm(undefined);
-            history.push("/manutencao/projetos");
+            history.push(getMaintProjectsRootUrl({ isPredPrev }));
           }
         },
-        title: "Entregar projeto?",
+        title: `Entregar ${isPredPrev ? "Pred/Prev" : "projeto"}?`,
       });
     },
-    [formatInternalId, deliverProject, history]
+    [formatInternalId, deliverProject, history, isPredPrev]
   );
 
   const handleProjectShareStatus = useCallback(
@@ -120,7 +125,8 @@ export function MaintProjectDetails({ projectId }: PageProps): JSX.Element {
       const confirmModal = Modal.confirm({
         content: (
           <>
-            Confirma o seguinte status para o projeto{" "}
+            Confirma o seguinte status para{" "}
+            {isPredPrev ? "a Pred/Prev" : "o projeto"}{" "}
             {formatInternalId(project.internalId)}:{" "}
             <em>{actionPayload.message}</em>?
           </>
@@ -132,7 +138,7 @@ export function MaintProjectDetails({ projectId }: PageProps): JSX.Element {
           confirmModal.update({ okText: "Enviando status..." });
 
           if (!actionPayload.message) {
-            notifyError("Nenhum status encontrado para informar.");
+            notifyError("Mensagem de status inválida.");
             return;
           }
 
@@ -147,20 +153,21 @@ export function MaintProjectDetails({ projectId }: PageProps): JSX.Element {
             notification.success({
               description: (
                 <>
-                  Status do projeto {formatInternalId(project.internalId)}{" "}
+                  Status {isPredPrev ? "da Pred/Prev" : "do projeto"}{" "}
+                  {formatInternalId(project.internalId)}{" "}
                   <em>({project.title.trim()})</em> compartilhado com sucesso!
                 </>
               ),
               message: "Status compartilhado",
             });
             setActionForm(undefined);
-            history.push("/manutencao/projetos");
+            history.push(getMaintProjectsRootUrl({ isPredPrev }));
           }
         },
         title: "Compartilhar status?",
       });
     },
-    [formatInternalId, shareProjectStatus, history]
+    [formatInternalId, shareProjectStatus, history, isPredPrev]
   );
 
   useEffect(() => {
@@ -184,7 +191,7 @@ export function MaintProjectDetails({ projectId }: PageProps): JSX.Element {
             onClick={(): void => setActionForm("deliver")}
             type="primary"
           >
-            Entregar projeto
+            Entregar {isPredPrev ? "Pred/Prev" : "projeto"}
           </Button>
         </PageActionButtons>
       )}
@@ -194,7 +201,10 @@ export function MaintProjectDetails({ projectId }: PageProps): JSX.Element {
       <Row gutter={12}>
         <Col lg={6} xs={12}>
           <DataInfo label="Status" marginBottom={!breakpoint.lg}>
-            <MaintProjectStatusBadge status={projectStatus || "running"} />
+            <MaintProjectStatusBadge
+              isPredPrev={isPredPrev}
+              status={projectStatus || "running"}
+            />
           </DataInfo>
         </Col>
 
@@ -226,16 +236,20 @@ export function MaintProjectDetails({ projectId }: PageProps): JSX.Element {
           </Col>
 
           <Col lg={20} xs={24}>
-            <Timeline className={classes.Timeline} mode="left" reverse={true}>
-              {project.events.map((ev) => (
-                <MaintProjectTimelineItem event={ev} key={nanoid()} />
+            <Timeline className={classes.Timeline} mode="left">
+              {[...project.events].reverse().map((ev) => (
+                <MaintProjectTimelineItem
+                  event={ev}
+                  isPredPrev={isPredPrev}
+                  key={nanoid()}
+                />
               ))}
             </Timeline>
           </Col>
         </Row>
       </Page>
 
-      <MaintProjectActionForm
+      <MaintProjectActionModal
         isVisible={!!actionForm}
         onClose={handleActionFormClose}
         onSubmit={
@@ -248,8 +262,10 @@ export function MaintProjectDetails({ projectId }: PageProps): JSX.Element {
       />
     </>
   ) : (
-    <Result404 backUrl="/manutencao/projetos">
-      O projeto de manutenção solicitado não existe ou foi desabilitado.
+    <Result404 backUrl={getMaintProjectsRootUrl({ isPredPrev })}>
+      {isPredPrev ? "A Pred/Prev" : "O projeto de manutenção"}{" "}
+      {isPredPrev ? "solicitada" : "solicitado"} não existe ou foi{" "}
+      {isPredPrev ? "desabilitada" : "desabilitado"}.
     </Result404>
   );
 }

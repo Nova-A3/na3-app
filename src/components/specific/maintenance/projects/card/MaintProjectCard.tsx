@@ -29,6 +29,7 @@ export function MaintProjectCard({
       data={data}
       header={
         <MaintProjectCardHeader
+          isPredPrev={!!data.isPredPrev}
           priority={data.priority}
           status={projectStatus}
         />

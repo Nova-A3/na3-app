@@ -4,6 +4,7 @@ import { Button, Col, Divider, Grid, Row } from "antd";
 import { nanoid } from "nanoid";
 import React from "react";
 
+import { PageDescription } from "../..";
 import { PageActionButtons } from "../components/PageActionButtons";
 import { PageTitle } from "../components/PageTitle";
 import { Page } from "../Page";
@@ -16,11 +17,16 @@ type ListFormPageProps = {
     onClick: () => void;
     type?: ButtonProps["type"];
   }[];
+  description?: React.ReactNode;
   form: React.ReactNode;
   formTitle: React.ReactNode;
   list: React.ReactNode;
   listTitle: React.ReactNode;
   title: React.ReactNode;
+};
+
+const defaultProps = {
+  description: undefined,
 };
 
 export function ListFormPage({
@@ -30,12 +36,15 @@ export function ListFormPage({
   list,
   listTitle,
   title,
+  description,
 }: ListFormPageProps): JSX.Element {
   const breakpoint = Grid.useBreakpoint();
 
   return (
     <>
       <PageTitle>{title}</PageTitle>
+
+      {description && <PageDescription>{description}</PageDescription>}
 
       {!breakpoint.lg && (
         <PageActionButtons>
@@ -76,3 +85,5 @@ export function ListFormPage({
     </>
   );
 }
+
+ListFormPage.defaultProps = defaultProps;

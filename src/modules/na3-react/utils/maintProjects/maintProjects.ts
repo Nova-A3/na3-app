@@ -7,7 +7,10 @@ import type {
 } from "../../../na3-types";
 
 export type MaintProjectBuilderData = Required<
-  Pick<Na3MaintenanceProject, "description" | "priority" | "title"> &
+  Omit<
+    Na3MaintenanceProject,
+    "eta" | "events" | "id" | "internalId" | "ref" | "team"
+  > &
     Pick<Na3MaintenanceProjectEvent, "author"> & {
       eta: Dayjs;
       team: { manager: string; members: string[] };
@@ -17,18 +20,19 @@ export type MaintProjectBuilderData = Required<
 export function buildMaintProject(
   internalId: number,
   data: MaintProjectBuilderData
-): Omit<Na3MaintenanceProject, "id"> {
+): Omit<Na3MaintenanceProject, "id" | "ref"> {
   const creationEvent = buildMaintProjectEvents({
     author: data.author,
     type: "create",
   });
-  const project: Omit<Na3MaintenanceProject, "id"> = {
+  const project: Omit<Na3MaintenanceProject, "id" | "ref"> = {
     description: data.description.trim(),
     eta: firebase.firestore.Timestamp.fromDate(
       data.eta.clone().endOf("day").toDate()
     ),
     events: [creationEvent],
     internalId,
+    isPredPrev: data.isPredPrev,
     priority: data.priority,
     team: {
       manager: data.team.manager.trim(),
