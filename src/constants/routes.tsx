@@ -147,7 +147,7 @@ export const ROUTES: AppRouteMap<
         { path: "/manutencao/os", title: "Ordens de Serviço" },
         { path: "/manutencao/dashboard", title: "Dashboard" },
         { path: "/manutencao/projetos", title: "Projetos" },
-        { path: "/manutencao/predprev", title: "Pred/Prev" },
+        { path: "/manutencao/predprev", title: "Pred/Prev/Lub" },
       ],
     },
     title: "Manutenção",

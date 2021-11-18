@@ -66,7 +66,7 @@ export function MaintProjectsHomePage({ isPredPrev }: PageProps): JSX.Element {
       ]}
       description={
         isPredPrev
-          ? "Projetos de preditiva/preventiva da Manutenção."
+          ? "Projetos de preditiva/preventiva e lubrificação da Manutenção."
           : undefined
       }
       form={<MaintCreateProjectForm isPredPrev={isPredPrev} />}

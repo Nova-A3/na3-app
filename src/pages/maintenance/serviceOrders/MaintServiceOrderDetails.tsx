@@ -1,4 +1,8 @@
-import { CheckOutlined, CloseOutlined } from "@ant-design/icons";
+import {
+  CheckOutlined,
+  CloseOutlined,
+  HistoryOutlined,
+} from "@ant-design/icons";
 import { Button, Col, Grid, Modal, notification, Row, Space } from "antd";
 import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { useHistory } from "react-router";
@@ -14,6 +18,7 @@ import {
   RejectSolutionModal,
   Result404,
   ServiceOrderMachineTag,
+  ServiceOrderMaintainerTag,
   ServiceOrderPriorityTag,
   ServiceOrderSolutionActionsModal,
   ServiceOrderStatusBadge,
@@ -376,11 +381,16 @@ export function MaintServiceOrderDetailsPage({
           </Col>
 
           <Col lg={6} xs={12}>
-            <DataInfo label="Prioridade">
-              {serviceOrder.priority ? (
-                <ServiceOrderPriorityTag priority={serviceOrder.priority} />
+            <DataInfo label="Prioridade/Responsável">
+              {serviceOrder.priority && serviceOrder.assignedMaintainer ? (
+                <Space>
+                  <ServiceOrderPriorityTag priority={serviceOrder.priority} />
+                  <ServiceOrderMaintainerTag
+                    maintainer={serviceOrder.assignedMaintainer}
+                  />
+                </Space>
               ) : (
-                <em>Não atribuída</em>
+                <em>Não definidos</em>
               )}
             </DataInfo>
           </Col>
@@ -464,7 +474,11 @@ export function MaintServiceOrderDetailsPage({
               label="Informações adicionais"
               marginBottom={!breakpoint.lg}
             >
-              <em>{serviceOrder.additionalInfo || "—"}</em>
+              {serviceOrder.additionalInfo ? (
+                <em>{serviceOrder.additionalInfo}</em>
+              ) : (
+                "—"
+              )}
             </DataInfo>
           </Col>
 
@@ -476,6 +490,16 @@ export function MaintServiceOrderDetailsPage({
                 <em>Nenhuma disponível</em>
               )}
             </DataInfo>
+          </Col>
+        </Row>
+
+        <Divider />
+
+        <Row>
+          <Col span={24}>
+            <Button block={true} icon={<HistoryOutlined />}>
+              Ver histórico
+            </Button>
           </Col>
         </Row>
       </Page>

@@ -30,7 +30,7 @@ export { LabelsTransfCard } from "./specific/labels/transfCard/LabelsTransfCard"
 export { LabelsTransfPreview } from "./specific/labels/transfPreview/LabelsTransfPreview";
 export { MaintProjectPriorityTag } from "./specific/maintenance/projects/card/MaintProjectPriorityTag";
 export { MaintProjectStatusBadge } from "./specific/maintenance/projects/card/MaintProjectStatusBadge";
-export { MaintProjectTimelineItem } from "./specific/maintenance/projects/details/MaintProjectTimelineItem";
+export { MaintProjectTimeline } from "./specific/maintenance/projects/details/MaintProjectTimeline";
 export { MaintCreateProjectForm } from "./specific/maintenance/projects/MaintCreateProjectForm";
 export { MaintProjectActionModal } from "./specific/maintenance/projects/MaintProjectActionModal";
 export { MaintProjectsList } from "./specific/maintenance/projects/MaintProjectsList";
@@ -39,6 +39,7 @@ export { RejectSolutionModal } from "./specific/maintenance/serviceOrders/action
 export { ServiceOrderSolutionActionsModal } from "./specific/maintenance/serviceOrders/actionModals/ServiceOrderSolutionActionsModal";
 export { MaintServiceOrderCard } from "./specific/maintenance/serviceOrders/card/MaintServiceOrderCard";
 export { ServiceOrderMachineTag } from "./specific/maintenance/serviceOrders/card/ServiceOrderMachineTag";
+export { ServiceOrderMaintainerTag } from "./specific/maintenance/serviceOrders/card/ServiceOrderMaintainerTag";
 export { ServiceOrderPriorityTag } from "./specific/maintenance/serviceOrders/card/ServiceOrderPriorityTag";
 export { ServiceOrderStatusBadge } from "./specific/maintenance/serviceOrders/card/ServiceOrderStatusBadge";
 export { MaintDashboardColumn } from "./specific/maintenance/serviceOrders/dashboard/MaintDashboardColumn";
@@ -51,3 +52,4 @@ export { Empty } from "./ui/Empty/Empty";
 export { Result } from "./ui/Result/Result";
 export { Result404 } from "./ui/Result/Result404";
 export { Spinner } from "./ui/Spinner/Spinner";
+export { Timeline } from "./ui/Timeline/Timeline";

@@ -1,15 +1,5 @@
 import { CheckOutlined, TeamOutlined, UserOutlined } from "@ant-design/icons";
-import {
-  Button,
-  Col,
-  Divider,
-  Grid,
-  Modal,
-  notification,
-  Row,
-  Timeline,
-} from "antd";
-import { nanoid } from "nanoid";
+import { Button, Col, Divider, Grid, Modal, notification, Row } from "antd";
 import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { useHistory } from "react-router-dom";
 
@@ -18,7 +8,7 @@ import {
   MaintProjectActionModal,
   MaintProjectPriorityTag,
   MaintProjectStatusBadge,
-  MaintProjectTimelineItem,
+  MaintProjectTimeline,
   Page,
   PageActionButtons,
   PageDescription,
@@ -237,25 +227,36 @@ export function MaintProjectDetails({
 
       <Divider />
 
-      <Page scrollTopOffset={24}>
-        <Row>
-          <Col lg={4} xs={24}>
+      {breakpoint.lg ? (
+        <Row className={classes.TimelineLgContainer}>
+          <Col span={4}>
             <DataInfo label="Histórico" />
           </Col>
-
-          <Col lg={20} xs={24}>
-            <Timeline className={classes.Timeline} mode="left">
-              {[...project.events].reverse().map((ev) => (
-                <MaintProjectTimelineItem
-                  event={ev}
-                  isPredPrev={isPredPrev}
-                  key={nanoid()}
-                />
-              ))}
-            </Timeline>
+          <Col className={classes.TimelineLg} span={19}>
+            <Page scrollTopOffset={24}>
+              <MaintProjectTimeline
+                events={project.events}
+                isPredPrev={isPredPrev}
+              />
+            </Page>
           </Col>
         </Row>
-      </Page>
+      ) : (
+        <Page scrollTopOffset={24}>
+          <Row>
+            <Col span={24}>
+              <DataInfo label="Histórico" />
+            </Col>
+
+            <Col span={23}>
+              <MaintProjectTimeline
+                events={project.events}
+                isPredPrev={isPredPrev}
+              />
+            </Col>
+          </Row>
+        </Page>
+      )}
 
       <MaintProjectActionModal
         isVisible={!!actionModalType}
