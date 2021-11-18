@@ -34,7 +34,9 @@ export function UserMessages({
 
         <Typography.Text italic={true}>
           Você tem {serviceOrders.length} OS{" "}
-          {department.id === "manutencao" ? "pendentes" : "para encerrar"}
+          {department.id === "manutencao"
+            ? `pendente${serviceOrders.length === 1 ? "" : "s"}`
+            : "para encerrar"}
         </Typography.Text>
 
         <small>

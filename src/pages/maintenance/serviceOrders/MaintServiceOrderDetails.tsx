@@ -4,6 +4,7 @@ import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { useHistory } from "react-router";
 
 import {
+  ConfirmServiceOrderModal,
   DataInfo,
   Divider,
   Page,
@@ -14,23 +15,30 @@ import {
   Result404,
   ServiceOrderMachineTag,
   ServiceOrderPriorityTag,
+  ServiceOrderSolutionActionsModal,
   ServiceOrderStatusBadge,
 } from "../../../components";
 import { useBreadcrumb } from "../../../hooks";
 import { useNa3ServiceOrders } from "../../../modules/na3-react";
 import type { Na3ServiceOrder } from "../../../modules/na3-types";
-import { parseStringId } from "../../../utils";
+import { createErrorNotifier, parseStringId } from "../../../utils";
 
 type PageProps = {
+  hasCameFromDashboard: boolean;
   serviceOrderId: string;
 };
 
-const BACK_URL = "/manutencao/os";
-
 export function MaintServiceOrderDetailsPage({
   serviceOrderId,
+  hasCameFromDashboard,
 }: PageProps): JSX.Element {
-  const [rejectModalIsVisible, setRejectModalIsVisible] = useState(false);
+  const [rejectSolutionModalIsVisible, setRejectSolutionModalIsVisible] =
+    useState(false);
+  const [acceptOrderModalIsVisible, setAcceptOrderModalIsVisible] =
+    useState(false);
+  const [solutionActionModalType, setSolutionActionModalType] = useState<
+    "deliver" | "status"
+  >();
 
   const history = useHistory();
   const breakpoint = Grid.useBreakpoint();
@@ -44,23 +52,52 @@ export function MaintServiceOrderDetailsPage({
       orderRequiresAction,
       acceptSolution: acceptOrderSolution,
       rejectSolution: rejectOrderSolution,
+      confirm: confirmServiceOrder,
+      shareStatus: shareOrderSolutionStatus,
+      deliver: deliverServiceOrder,
     },
   } = useNa3ServiceOrders();
+
+  const backUrl = useMemo(
+    (): `/${string}` =>
+      `/manutencao/${hasCameFromDashboard ? "dashboard" : "os"}`,
+    [hasCameFromDashboard]
+  );
 
   const serviceOrder = useMemo(
     () => getServiceOrderById(serviceOrderId),
     [getServiceOrderById, serviceOrderId]
   );
 
-  const handleOpenRejectModal = useCallback(() => {
-    setRejectModalIsVisible(true);
+  const handleOpenRejectSolutionModal = useCallback(() => {
+    setRejectSolutionModalIsVisible(true);
   }, []);
 
-  const handleCloseRejectModal = useCallback(() => {
-    setRejectModalIsVisible(false);
+  const handleCloseRejectSolutionModal = useCallback(() => {
+    setRejectSolutionModalIsVisible(false);
   }, []);
 
-  const handleAcceptOrderSolution = useCallback(() => {
+  const handleOpenAcceptOrderModal = useCallback(() => {
+    setAcceptOrderModalIsVisible(true);
+  }, []);
+
+  const handleCloseAcceptOrderModal = useCallback(() => {
+    setAcceptOrderModalIsVisible(false);
+  }, []);
+
+  const handleSolutionActionModalStatusOpen = useCallback(() => {
+    setSolutionActionModalType("status");
+  }, []);
+
+  const handleSolutionActionModalDeliverOpen = useCallback(() => {
+    setSolutionActionModalType("deliver");
+  }, []);
+
+  const handleSolutionActionModalClose = useCallback(() => {
+    setSolutionActionModalType(undefined);
+  }, []);
+
+  const handleOrderSolutionAccept = useCallback(() => {
     if (!serviceOrder) return;
 
     const confirmModal = Modal.confirm({
@@ -86,14 +123,14 @@ export function MaintServiceOrderDetailsPage({
             ),
             message: "OS encerrada",
           });
-          history.push(BACK_URL);
+          history.push(backUrl);
         }
       },
       title: "Aceitar solução?",
     });
-  }, [serviceOrder, acceptOrderSolution, history]);
+  }, [serviceOrder, acceptOrderSolution, history, backUrl]);
 
-  const handleRejectOrderSolution = useCallback(
+  const handleOrderSolutionReject = useCallback(
     async (data: Na3ServiceOrder, payload: { reason: string }) => {
       return new Promise<void>((resolve) => {
         const confirmModal = Modal.confirm({
@@ -131,7 +168,7 @@ export function MaintServiceOrderDetailsPage({
                 ),
                 message: "Solução recusada",
               });
-              history.push(BACK_URL);
+              history.push(backUrl);
             }
 
             resolve();
@@ -140,7 +177,138 @@ export function MaintServiceOrderDetailsPage({
         });
       });
     },
-    [rejectOrderSolution, history]
+    [rejectOrderSolution, history, backUrl]
+  );
+
+  const handleOrderConfirm = useCallback(
+    (
+      data: Na3ServiceOrder,
+      payload: {
+        assignee: string;
+        priority: NonNullable<Na3ServiceOrder["priority"]> | "";
+      }
+    ) => {
+      const confirmModal = Modal.confirm({
+        content: `Confirma o aceite da OS #${data.id}?`,
+        okText: "Aceitar OS",
+        onOk: async () => {
+          const notifyError = createErrorNotifier("Erro ao aceitar a OS");
+
+          confirmModal.update({ okText: "Enviando..." });
+
+          if (payload.priority === "") {
+            notifyError("Defina uma prioridade para a OS primeiro.");
+            return;
+          }
+
+          const operationRes = await confirmServiceOrder(data.id, {
+            ...payload,
+            priority: payload.priority,
+          });
+
+          if (operationRes.error) {
+            notifyError(operationRes.error.message);
+          } else {
+            notification.success({
+              description: (
+                <>
+                  OS #{data.id} <em>({data.description})</em> aceita com
+                  sucesso!
+                </>
+              ),
+              message: "OS aceita",
+            });
+            history.push(backUrl);
+          }
+        },
+        title: "Aceitar OS?",
+      });
+    },
+    [confirmServiceOrder, history, backUrl]
+  );
+
+  const handleOrderSolutionShareStatus = useCallback(
+    (data: Na3ServiceOrder, payload: { assignee: string; message: string }) => {
+      const confirmModal = Modal.confirm({
+        content: (
+          <>
+            Confirma o seguinte status da OS #{data.id}:{" "}
+            <em>{payload.message}</em>?
+          </>
+        ),
+        okText: "Confirmar status",
+        onOk: async () => {
+          confirmModal.update({ okText: "Enviando status..." });
+
+          const operationRes = await shareOrderSolutionStatus(data.id, {
+            assignee: payload.assignee.trim(),
+            status: payload.message.trim(),
+          });
+
+          if (operationRes.error) {
+            notification.error({
+              description: operationRes.error.message,
+              message: "Erro ao informar status",
+            });
+          } else {
+            notification.success({
+              description: (
+                <>
+                  Status da OS #{data.id} <em>({data.description})</em>{" "}
+                  compartilhado com sucesso!
+                </>
+              ),
+              message: "Status compartilhado",
+            });
+            history.push(backUrl);
+          }
+        },
+        title: "Compartilhar status?",
+      });
+    },
+    [shareOrderSolutionStatus, history, backUrl]
+  );
+
+  const handleOrderDeliver = useCallback(
+    (data: Na3ServiceOrder, payload: { assignee: string; message: string }) => {
+      const confirmModal = Modal.confirm({
+        content: (
+          <>
+            Confirma a seguinte solução para a OS #{data.id}:{" "}
+            <em>{payload.message}</em>?
+          </>
+        ),
+        okText: "Transmitir solução",
+        onOk: async () => {
+          confirmModal.update({ okText: "Enviando solução..." });
+
+          const operationRes = await deliverServiceOrder(data.id, {
+            assignee: payload.assignee.trim(),
+            solution: payload.message.trim(),
+          });
+
+          if (operationRes.error) {
+            notification.error({
+              description: operationRes.error.message,
+              message: "Erro ao transmitir solução",
+            });
+          } else {
+            notification.success({
+              description: (
+                <>
+                  Solução da OS #{data.id} <em>({data.description})</em>{" "}
+                  transmitida com sucesso!
+                </>
+              ),
+              message: "Solução transmitida",
+            });
+            history.push(backUrl);
+          }
+        },
+        title: "Transmitir solução?",
+      });
+    },
+    [deliverServiceOrder, history, backUrl]
   );
 
   useEffect(() => {
@@ -158,7 +326,7 @@ export function MaintServiceOrderDetailsPage({
             <>
               <Button
                 icon={<CheckOutlined />}
-                onClick={handleAcceptOrderSolution}
+                onClick={handleOrderSolutionAccept}
                 type="primary"
               >
                 Aceitar solução
@@ -166,25 +334,30 @@ export function MaintServiceOrderDetailsPage({
               <Button
                 danger={true}
                 icon={<CloseOutlined />}
-                onClick={handleOpenRejectModal}
+                onClick={handleOpenRejectSolutionModal}
                 type="text"
               >
                 Rejeitar{breakpoint.lg && " solução"}
               </Button>
             </>
           ) : serviceOrder.status === "pending" ? (
-            <>
-              <Button icon={<CheckOutlined />} type="primary">
-                Aceitar OS
-              </Button>
-              <Button danger={true} icon={<CloseOutlined />} type="text">
-                Recusar{breakpoint.lg && " OS"}
-              </Button>
-            </>
+            <Button
+              icon={<CheckOutlined />}
+              onClick={handleOpenAcceptOrderModal}
+              type="primary"
+            >
+              Aceitar OS
+            </Button>
           ) : (
             <>
-              <Button>Informar status</Button>
-              <Button icon={<CheckOutlined />} type="primary">
+              <Button onClick={handleSolutionActionModalStatusOpen}>
+                Informar status
+              </Button>
+              <Button
+                icon={<CheckOutlined />}
+                onClick={handleSolutionActionModalDeliverOpen}
+                type="primary"
+              >
                 Transmitir solução
               </Button>
             </>
@@ -308,14 +481,33 @@ export function MaintServiceOrderDetailsPage({
       </Page>
 
       <RejectSolutionModal
-        isVisible={rejectModalIsVisible}
-        onClose={handleCloseRejectModal}
-        onSubmit={handleRejectOrderSolution}
+        isVisible={rejectSolutionModalIsVisible}
+        onClose={handleCloseRejectSolutionModal}
+        onSubmit={handleOrderSolutionReject}
         serviceOrder={serviceOrder}
+      />
+
+      <ConfirmServiceOrderModal
+        isVisible={acceptOrderModalIsVisible}
+        onClose={handleCloseAcceptOrderModal}
+        onSubmit={handleOrderConfirm}
+        serviceOrder={serviceOrder}
+      />
+
+      <ServiceOrderSolutionActionsModal
+        isVisible={!!solutionActionModalType}
+        onClose={handleSolutionActionModalClose}
+        onSubmit={
+          solutionActionModalType === "status"
+            ? handleOrderSolutionShareStatus
+            : handleOrderDeliver
+        }
+        serviceOrder={serviceOrder}
+        type={solutionActionModalType || "status"}
       />
     </>
   ) : (
-    <Result404 backUrl={BACK_URL}>
+    <Result404 backUrl={backUrl}>
       A ordem de serviço solicitada não existe ou foi desabilitada.
     </Result404>
   );

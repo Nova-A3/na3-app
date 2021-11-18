@@ -40,7 +40,9 @@ export function MaintProjectDetails({
   projectId,
   isPredPrev,
 }: PageProps): JSX.Element {
-  const [actionForm, setActionForm] = useState<"deliver" | "status">();
+  const [actionModalType, setActionModalType] = useState<
+    "deliver" | "status"
+  >();
 
   const history = useHistory();
   const breakpoint = Grid.useBreakpoint();
@@ -67,8 +69,16 @@ export function MaintProjectDetails({
     [getProjectStatus, project]
   );
 
-  const handleActionFormClose = useCallback(() => {
-    setActionForm(undefined);
+  const handleActionModalStatusOpen = useCallback(() => {
+    setActionModalType("status");
+  }, []);
+
+  const handleActionModalDeliverOpen = useCallback(() => {
+    setActionModalType("deliver");
+  }, []);
+
+  const handleActionModalClose = useCallback(() => {
+    setActionModalType(undefined);
   }, []);
 
   const handleProjectDeliver = useCallback(
@@ -107,7 +117,7 @@ export function MaintProjectDetails({
               ),
               message: `${isPredPrev ? "Pred/Prev" : "Projeto"} entregue`,
             });
-            setActionForm(undefined);
+            setActionModalType(undefined);
             history.push(getMaintProjectsRootUrl({ isPredPrev }));
           }
         },
@@ -125,8 +135,8 @@ export function MaintProjectDetails({
       const confirmModal = Modal.confirm({
         content: (
           <>
-            Confirma o seguinte status para{" "}
-            {isPredPrev ? "a Pred/Prev" : "o projeto"}{" "}
+            Confirma o seguinte status{" "}
+            {isPredPrev ? "da Pred/Prev" : "do projeto"}{" "}
             {formatInternalId(project.internalId)}:{" "}
             <em>{actionPayload.message}</em>?
           </>
@@ -160,7 +170,7 @@ export function MaintProjectDetails({
               ),
               message: "Status compartilhado",
             });
-            setActionForm(undefined);
+            setActionModalType(undefined);
             history.push(getMaintProjectsRootUrl({ isPredPrev }));
           }
         },
@@ -183,12 +193,10 @@ export function MaintProjectDetails({
 
       {projectStatus !== "finished" && (
         <PageActionButtons>
-          <Button onClick={(): void => setActionForm("status")}>
-            Informar status
-          </Button>
+          <Button onClick={handleActionModalStatusOpen}>Informar status</Button>
           <Button
             icon={<CheckOutlined />}
-            onClick={(): void => setActionForm("deliver")}
+            onClick={handleActionModalDeliverOpen}
             type="primary"
           >
             Entregar {isPredPrev ? "Pred/Prev" : "projeto"}
@@ -250,15 +258,15 @@ export function MaintProjectDetails({
       </Page>
 
       <MaintProjectActionModal
-        isVisible={!!actionForm}
-        onClose={handleActionFormClose}
+        isVisible={!!actionModalType}
+        onClose={handleActionModalClose}
         onSubmit={
-          actionForm === "status"
+          actionModalType === "status"
             ? handleProjectShareStatus
             : handleProjectDeliver
         }
         project={project}
-        type={actionForm || "status"}
+        type={actionModalType || "status"}
       />
     </>
   ) : (

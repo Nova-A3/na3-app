@@ -1,11 +1,15 @@
-import { Divider, Grid, Modal, notification, Tag } from "antd";
+import { Divider, Grid, Modal, notification } from "antd";
 import dayjs from "dayjs";
 import React, { useCallback } from "react";
 
 import { EMPLOYEES } from "../../../../constants";
 import { useForm } from "../../../../hooks";
 import { useNa3MaintProjects } from "../../../../modules/na3-react";
-import { createErrorNotifier } from "../../../../utils";
+import {
+  createErrorNotifier,
+  maintEmployeeSelectOptions,
+  serviceOrderPrioritySelectOptions,
+} from "../../../../utils";
 import { Form } from "../../../forms/Form";
 import { FormField } from "../../../forms/FormField/FormField";
 import { SubmitButton } from "../../../forms/SubmitButton";
@@ -28,14 +32,6 @@ type FormValues = {
   teamMembers: string[];
   title: string;
 };
-
-export const employeeSelectOptions = EMPLOYEES.MAINTENANCE.sort((a, b) =>
-  a.name.localeCompare(b.name)
-).map((maintainer) => ({
-  label: maintainer.name,
-  labelWhenSelected: <Tag color={maintainer.color}>{maintainer.name}</Tag>,
-  value: maintainer.name,
-}));
 
 export function MaintCreateProjectForm({
   onSubmit,
@@ -149,7 +145,7 @@ export function MaintCreateProjectForm({
       <FormField
         label="Autor"
         name="author"
-        options={employeeSelectOptions}
+        options={maintEmployeeSelectOptions}
         rules={{ required: "Atribua um autor" }}
         type="select"
       />
@@ -171,7 +167,7 @@ export function MaintCreateProjectForm({
       <FormField
         label="Responsável"
         name="teamManager"
-        options={employeeSelectOptions}
+        options={maintEmployeeSelectOptions}
         rules={{ required: "Defina o manutentor responsável" }}
         type="select"
       />
@@ -183,7 +179,7 @@ export function MaintCreateProjectForm({
             (maintainer) => maintainer.name === value
           )?.color,
         })}
-        options={employeeSelectOptions}
+        options={maintEmployeeSelectOptions}
         rules={{ required: "Selecione pelo menos um membro" }}
         sortValues={(a, b): number =>
           a.toLowerCase().localeCompare(b.toLowerCase())
@@ -196,11 +192,7 @@ export function MaintCreateProjectForm({
       <FormField
         label="Prioridade"
         name="priority"
-        options={[
-          { label: "Alta", value: "high" },
-          { label: "Média", value: "medium" },
-          { label: "Baixa", value: "low" },
-        ]}
+        options={serviceOrderPrioritySelectOptions}
         rules={{ required: "Defina a prioridade" }}
         type={breakpoint.md ? "radio" : "select"}
       />

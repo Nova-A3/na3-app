@@ -25,6 +25,17 @@ export type UseNa3ServiceOrdersResult = {
       id: string,
       data: ServiceOrderBuilderData
     ) => Promise<FirebaseOperationResult<Na3ServiceOrder>>;
+    confirm: (
+      id: string,
+      payload: {
+        assignee: string;
+        priority: NonNullable<Na3ServiceOrder["priority"]>;
+      }
+    ) => Promise<FirebaseOperationResult<Na3ServiceOrder>>;
+    deliver: (
+      id: string,
+      payload: { assignee: string; solution: string }
+    ) => Promise<FirebaseOperationResult<Na3ServiceOrder>>;
     getById: (id: string) => Na3ServiceOrder | undefined;
     getByStatus: (
       status: Na3ServiceOrder["status"] | Na3ServiceOrder["status"][],
@@ -43,6 +54,10 @@ export type UseNa3ServiceOrdersResult = {
     rejectSolution: (
       id: string,
       payload: { reason: string }
+    ) => Promise<FirebaseOperationResult<Na3ServiceOrder>>;
+    shareStatus: (
+      id: string,
+      payload: { assignee: string; status: string }
     ) => Promise<FirebaseOperationResult<Na3ServiceOrder>>;
     sortById: (data?: Na3ServiceOrder[]) => Na3ServiceOrder[];
     sortByPriority: (data?: Na3ServiceOrder[]) => Na3ServiceOrder[];
@@ -195,6 +210,7 @@ export function useNa3ServiceOrders(): UseNa3ServiceOrdersResult {
       data: ServiceOrderBuilderData
     ): Promise<FirebaseOperationResult<Na3ServiceOrder>> => {
       const serviceOrder = buildServiceOrder(id, data, device);
+
       try {
         const docRef = fbCollectionRef.current.doc(
           id
@@ -217,8 +233,13 @@ export function useNa3ServiceOrders(): UseNa3ServiceOrdersResult {
           id
         ) as firebase.firestore.DocumentReference<Na3ServiceOrder>;
 
-        await docRef.update({
+        const update: Required<Pick<Na3ServiceOrder, "closedAt" | "status">> = {
           closedAt: dayjs().format(),
+          status: "closed",
+        };
+
+        await docRef.update({
+          ...update,
           events: firebase.firestore.FieldValue.arrayUnion(
             ...buildServiceOrderEvents(
               [
@@ -232,7 +253,6 @@ export function useNa3ServiceOrders(): UseNa3ServiceOrdersResult {
               device
             )
           ),
-          status: "closed",
         });
 
         return { data: docRef, error: null };
@@ -253,8 +273,29 @@ export function useNa3ServiceOrders(): UseNa3ServiceOrdersResult {
           id
         ) as firebase.firestore.DocumentReference<Na3ServiceOrder>;
 
-        await docRef.update({
+        const update: Required<
+          Pick<
+            Na3ServiceOrder,
+            | "acceptedAt"
+            | "priority"
+            | "refusalReason"
+            | "reopenedAt"
+            | "solution"
+            | "solvedAt"
+            | "status"
+          >
+        > = {
           acceptedAt: null,
+          priority: null,
+          refusalReason: payload.reason.trim(),
+          reopenedAt: dayjs().format(),
+          solution: null,
+          solvedAt: null,
+          status: "pending",
+        };
+
+        await docRef.update({
+          ...update,
           events: firebase.firestore.FieldValue.arrayUnion(
             ...buildServiceOrderEvents(
               [
@@ -271,12 +312,159 @@ export function useNa3ServiceOrders(): UseNa3ServiceOrdersResult {
               device
             )
           ),
-          priority: null,
-          refusalReason: payload.reason.trim(),
-          reopenedAt: dayjs().format(),
-          solution: null,
-          solvedAt: null,
-          status: "pending",
+        });
+
+        return { data: docRef, error: null };
+      } catch (error) {
+        return { data: null, error: error as firebase.FirebaseError };
+      }
+    },
+    [device]
+  );
+
+  const confirm = useCallback(
+    async (
+      id: string,
+      payload: {
+        assignee: string;
+        priority: NonNullable<Na3ServiceOrder["priority"]>;
+      }
+    ): Promise<FirebaseOperationResult<Na3ServiceOrder>> => {
+      try {
+        const docRef = fbCollectionRef.current.doc(
+          id
+        ) as firebase.firestore.DocumentReference<Na3ServiceOrder>;
+
+        const update: Required<
+          Pick<
+            Na3ServiceOrder,
+            "acceptedAt" | "assignedMaintainer" | "priority" | "status"
+          >
+        > = {
+          acceptedAt: dayjs().format(),
+          assignedMaintainer: payload.assignee.trim(),
+          priority: payload.priority,
+          status: "solving",
+        };
+
+        await docRef.update({
+          ...update,
+          events: firebase.firestore.FieldValue.arrayUnion(
+            buildServiceOrderEvents(
+              {
+                payload: {
+                  assignedMaintainer: payload.assignee.trim(),
+                  priority: payload.priority,
+                },
+                type: "ticketConfirmed",
+              },
+              device
+            )
+          ),
+        });
+
+        return { data: docRef, error: null };
+      } catch (error) {
+        return { data: null, error: error as firebase.FirebaseError };
+      }
+    },
+    [device]
+  );
+
+  const shareStatus = useCallback(
+    async (
+      id: string,
+      payload: { assignee: string; status: string }
+    ): Promise<FirebaseOperationResult<Na3ServiceOrder>> => {
+      try {
+        const docRef = fbCollectionRef.current.doc(
+          id
+        ) as firebase.firestore.DocumentReference<Na3ServiceOrder>;
+
+        const update: Required<
+          Record<
+            keyof Pick<Na3ServiceOrder, "solutionSteps">,
+            firebase.firestore.FieldValue
+          >
+        > = {
+          solutionSteps: firebase.firestore.FieldValue.arrayUnion(
+            payload.status.trim()
+          ),
+        };
+
+        await docRef.update({
+          ...update,
+          events: firebase.firestore.FieldValue.arrayUnion(
+            buildServiceOrderEvents(
+              {
+                payload: {
+                  solutionStep: {
+                    content: payload.status.trim(),
+                    type: "step",
+                    who: payload.assignee.trim(),
+                  },
+                },
+                type: "solutionStepAdded",
+              },
+              device
+            )
+          ),
+        });
+
+        return { data: docRef, error: null };
+      } catch (error) {
+        return { data: null, error: error as firebase.FirebaseError };
+      }
+    },
+    [device]
+  );
+
+  const deliver = useCallback(
+    async (
+      id: string,
+      payload: { assignee: string; solution: string }
+    ): Promise<FirebaseOperationResult<Na3ServiceOrder>> => {
+      try {
+        const docRef = fbCollectionRef.current.doc(
+          id
+        ) as firebase.firestore.DocumentReference<Na3ServiceOrder>;
+
+        const update: Required<
+          Pick<Na3ServiceOrder, "solution" | "solvedAt" | "status">
+        > = {
+          solution: payload.solution.trim(),
+          solvedAt: dayjs().format(),
+          status: "solved",
+        };
+
+        await docRef.update({
+          ...update,
+          events: firebase.firestore.FieldValue.arrayUnion(
+            ...buildServiceOrderEvents(
+              [
+                {
+                  payload: {
+                    solution: {
+                      content: payload.solution.trim(),
+                      who: payload.assignee.trim(),
+                    },
+                  },
+                  type: "solutionTransmitted",
+                },
+                {
+                  payload: {
+                    solutionStep: {
+                      content: payload.solution.trim(),
+                      type: "solutionTransmitted",
+                      who: payload.assignee.trim(),
+                    },
+                  },
+                  type: "solutionStepAdded",
+                },
+              ],
+              device
+            )
+          ),
         });
 
         return { data: docRef, error: null };
@@ -292,6 +480,8 @@ export function useNa3ServiceOrders(): UseNa3ServiceOrdersResult {
     helpers: {
       acceptSolution,
       add,
+      confirm,
+      deliver,
       getById,
       getByStatus,
       getDepartmentOrders,
@@ -301,6 +491,7 @@ export function useNa3ServiceOrders(): UseNa3ServiceOrdersResult {
       mapByStatus,
       orderRequiresAction,
       rejectSolution,
+      shareStatus,
       sortById,
       sortByPriority,
       sortByStatus,

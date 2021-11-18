@@ -7,12 +7,16 @@ import {
   MaintServiceOrdersList,
   PageTitle,
 } from "../../../components";
+import { useQuery } from "../../../hooks";
 import { useNa3ServiceOrders } from "../../../modules/na3-react";
 import type { Na3ServiceOrder } from "../../../modules/na3-types";
+import { MaintServiceOrderDetailsPage } from "../serviceOrders/MaintServiceOrderDetails";
 import classes from "./MaintDashboardHome.module.css";
 
 export function MaintDashboardHomePage(): JSX.Element {
   const history = useHistory();
+  const query = useQuery("numero");
+
   const breakpoint = Grid.useBreakpoint();
 
   const serviceOrders = useNa3ServiceOrders();
@@ -34,15 +38,20 @@ export function MaintDashboardHomePage(): JSX.Element {
 
   const handleOrderSelect = useCallback(
     (serviceOrder: Na3ServiceOrder) => {
-      history.push(`/manutencao/os?numero=${serviceOrder.id}`);
+      history.push(`/manutencao/dashboard?numero=${serviceOrder.id}`);
     },
     [history]
   );
 
-  return (
+  return query.numero ? (
+    <MaintServiceOrderDetailsPage
+      hasCameFromDashboard={true}
+      serviceOrderId={query.numero}
+    />
+  ) : (
     <>
       <PageTitle>
-        Manutenção • {breakpoint.lg ? "Dashboard" : "Ordens de Serviço"}
+        Manutenção • {breakpoint.lg ? "Dashboard" : "OS Pendentes"}
       </PageTitle>
 
       {!breakpoint.lg && (

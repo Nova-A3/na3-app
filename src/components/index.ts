@@ -1,4 +1,5 @@
 export { FormCollapse } from "./forms/components/FormCollapse/FormCollapse";
+export type { SelectAsFieldProps as SelectProps } from "./forms/fields/Select/Select";
 export type { HandleSubmit, HandleSubmitFailed } from "./forms/Form";
 export { Form } from "./forms/Form";
 export { FormField } from "./forms/FormField/FormField";
@@ -33,7 +34,9 @@ export { MaintProjectTimelineItem } from "./specific/maintenance/projects/detail
 export { MaintCreateProjectForm } from "./specific/maintenance/projects/MaintCreateProjectForm";
 export { MaintProjectActionModal } from "./specific/maintenance/projects/MaintProjectActionModal";
 export { MaintProjectsList } from "./specific/maintenance/projects/MaintProjectsList";
+export { ConfirmServiceOrderModal } from "./specific/maintenance/serviceOrders/actionModals/ConfirmServiceOrderModal";
 export { RejectSolutionModal } from "./specific/maintenance/serviceOrders/actionModals/RejectSolutionModal";
+export { ServiceOrderSolutionActionsModal } from "./specific/maintenance/serviceOrders/actionModals/ServiceOrderSolutionActionsModal";
 export { MaintServiceOrderCard } from "./specific/maintenance/serviceOrders/card/MaintServiceOrderCard";
 export { ServiceOrderMachineTag } from "./specific/maintenance/serviceOrders/card/ServiceOrderMachineTag";
 export { ServiceOrderPriorityTag } from "./specific/maintenance/serviceOrders/card/ServiceOrderPriorityTag";

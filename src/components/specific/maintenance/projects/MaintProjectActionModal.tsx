@@ -1,12 +1,12 @@
 import { Modal } from "antd";
 import React, { useCallback } from "react";
 
-import { useForm } from "../../../../hooks/useForm";
+import { useForm } from "../../../../hooks";
 import type { Na3MaintenanceProject } from "../../../../modules/na3-types";
+import { maintEmployeeSelectOptions } from "../../../../utils";
 import { Form } from "../../../forms/Form";
 import { FormField } from "../../../forms/FormField/FormField";
 import { SubmitButton } from "../../../forms/SubmitButton";
-import { employeeSelectOptions } from "./MaintCreateProjectForm";
 
 type ActionFormType = "deliver" | "status";
 
@@ -59,7 +59,7 @@ export function MaintProjectActionModal<T extends ActionFormType>({
         <FormField
           label="Autor"
           name="author"
-          options={employeeSelectOptions}
+          options={maintEmployeeSelectOptions}
           rules={{ required: "Atribua um autor" }}
           type="select"
         />

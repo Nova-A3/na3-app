@@ -47,7 +47,10 @@ export function MaintServiceOrdersHomePage(): JSX.Element {
   );
 
   return query.numero ? (
-    <MaintServiceOrderDetailsPage serviceOrderId={query.numero} />
+    <MaintServiceOrderDetailsPage
+      hasCameFromDashboard={false}
+      serviceOrderId={query.numero}
+    />
   ) : (
     <ListFormPage
       actions={[{ label: "Abrir OS", onClick: handleCreateServiceOrderClick }]}

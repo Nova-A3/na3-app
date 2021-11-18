@@ -54,20 +54,20 @@ type EventBuildConfig = {
 };
 
 export function buildServiceOrderEvents(
-  events: EventBuildConfig,
+  event: EventBuildConfig,
   originDevice: Na3AppDevice
-): Na3ServiceOrder["events"][0];
+): Na3ServiceOrder["events"][number];
 export function buildServiceOrderEvents(
   events: EventBuildConfig[],
   originDevice: Na3AppDevice
-): Na3ServiceOrder["events"][0][];
+): Na3ServiceOrder["events"][number][];
 export function buildServiceOrderEvents(
-  events: EventBuildConfig | EventBuildConfig[],
+  eventOrEvents: EventBuildConfig | EventBuildConfig[],
   originDevice: Na3AppDevice
-): Na3ServiceOrder["events"][0] | Na3ServiceOrder["events"][0][] {
+): Na3ServiceOrder["events"][number] | Na3ServiceOrder["events"][number][] {
   function buildOneEvent(
     config: EventBuildConfig
-  ): Na3ServiceOrder["events"][0] {
+  ): Na3ServiceOrder["events"][number] {
     return {
       device: originDevice,
       id: nanoid(),
@@ -77,9 +77,9 @@ export function buildServiceOrderEvents(
     };
   }
 
-  if (!("length" in events)) {
-    return buildOneEvent(events);
+  if (!("length" in eventOrEvents)) {
+    return buildOneEvent(eventOrEvents);
   } else {
-    return events.map(buildOneEvent);
+    return eventOrEvents.map(buildOneEvent);
   }
 }
