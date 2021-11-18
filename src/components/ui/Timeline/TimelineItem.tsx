@@ -1,11 +1,24 @@
 import type { TimelineItemProps as AntdTimelineItemProps } from "antd";
 import { Grid, Space, Timeline, Typography } from "antd";
 import React from "react";
+import type { LiteralUnion } from "type-fest";
 
 export type TimelineItemProps = Partial<
-  Pick<AntdTimelineItemProps, "className" | "color">
+  Pick<AntdTimelineItemProps, "className">
 > & {
   body?: React.ReactNode;
+  color?: LiteralUnion<
+    | "cyan"
+    | "gold"
+    | "green"
+    | "lime"
+    | "magenta"
+    | "orange"
+    | "purple"
+    | "red"
+    | "volcano",
+    string
+  >;
   postTitle?: React.ReactNode;
   title: React.ReactNode;
 };

@@ -5,6 +5,8 @@ export type Na3ServiceOrder = LegacyTicket & {
   ref?: firebase.firestore.DocumentReference<Na3ServiceOrder>;
 };
 
+export type Na3ServiceOrderEvent = Na3ServiceOrder["events"][number];
+
 /* LegacyTicket */
 
 type LegacyTicketEditedEventChanges = {

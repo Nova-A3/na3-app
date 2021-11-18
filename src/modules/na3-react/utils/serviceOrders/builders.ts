@@ -1,7 +1,11 @@
 import dayjs from "dayjs";
 import { nanoid } from "nanoid";
 
-import type { Na3AppDevice, Na3ServiceOrder } from "../../../na3-types";
+import type {
+  Na3AppDevice,
+  Na3ServiceOrder,
+  Na3ServiceOrderEvent,
+} from "../../../na3-types";
 
 export type ServiceOrderBuilderData = Required<
   Pick<
@@ -49,25 +53,23 @@ export function buildServiceOrder(
 }
 
 type EventBuildConfig = {
-  payload?: Na3ServiceOrder["events"][0]["payload"];
-  type: Na3ServiceOrder["events"][0]["type"];
+  payload?: Na3ServiceOrderEvent["payload"];
+  type: Na3ServiceOrderEvent["type"];
 };
 
 export function buildServiceOrderEvents(
   event: EventBuildConfig,
   originDevice: Na3AppDevice
-): Na3ServiceOrder["events"][number];
+): Na3ServiceOrderEvent;
 export function buildServiceOrderEvents(
   events: EventBuildConfig[],
   originDevice: Na3AppDevice
-): Na3ServiceOrder["events"][number][];
+): Na3ServiceOrderEvent[];
 export function buildServiceOrderEvents(
   eventOrEvents: EventBuildConfig | EventBuildConfig[],
   originDevice: Na3AppDevice
-): Na3ServiceOrder["events"][number] | Na3ServiceOrder["events"][number][] {
-  function buildOneEvent(
-    config: EventBuildConfig
-  ): Na3ServiceOrder["events"][number] {
+): Na3ServiceOrderEvent | Na3ServiceOrderEvent[] {
+  function buildOneEvent(config: EventBuildConfig): Na3ServiceOrderEvent {
     return {
       device: originDevice,
       id: nanoid(),

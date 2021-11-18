@@ -43,6 +43,7 @@ export { ServiceOrderMaintainerTag } from "./specific/maintenance/serviceOrders/
 export { ServiceOrderPriorityTag } from "./specific/maintenance/serviceOrders/card/ServiceOrderPriorityTag";
 export { ServiceOrderStatusBadge } from "./specific/maintenance/serviceOrders/card/ServiceOrderStatusBadge";
 export { MaintDashboardColumn } from "./specific/maintenance/serviceOrders/dashboard/MaintDashboardColumn";
+export { MaintServiceOrderTimelineModal } from "./specific/maintenance/serviceOrders/details/MaintServiceOrderTimelineModal";
 export { MaintCreateServiceOrderForm } from "./specific/maintenance/serviceOrders/MaintCreateServiceOrderForm";
 export { MaintServiceOrdersList } from "./specific/maintenance/serviceOrders/MaintServiceOrdersList";
 export { DataCard } from "./ui/DataCard/DataCard";

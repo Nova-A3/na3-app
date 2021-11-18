@@ -11,6 +11,7 @@ import {
   ConfirmServiceOrderModal,
   DataInfo,
   Divider,
+  MaintServiceOrderTimelineModal,
   Page,
   PageActionButtons,
   PageDescription,
@@ -45,6 +46,8 @@ export function MaintServiceOrderDetailsPage({
     "deliver" | "status"
   >();
 
+  const [timelineIsVisible, setTimelineIsVisible] = useState(false);
+
   const history = useHistory();
   const breakpoint = Grid.useBreakpoint();
 
@@ -73,6 +76,14 @@ export function MaintServiceOrderDetailsPage({
     () => getServiceOrderById(serviceOrderId),
     [getServiceOrderById, serviceOrderId]
   );
+
+  const handleTimelineOpen = useCallback(() => {
+    setTimelineIsVisible(true);
+  }, []);
+
+  const handleTimelineClose = useCallback(() => {
+    setTimelineIsVisible(false);
+  }, []);
 
   const handleOpenRejectSolutionModal = useCallback(() => {
     setRejectSolutionModalIsVisible(true);
@@ -497,12 +508,22 @@ export function MaintServiceOrderDetailsPage({
 
         <Row>
           <Col span={24}>
-            <Button block={true} icon={<HistoryOutlined />}>
+            <Button
+              block={true}
+              icon={<HistoryOutlined />}
+              onClick={handleTimelineOpen}
+            >
               Ver histórico
             </Button>
           </Col>
         </Row>
       </Page>
+
+      <MaintServiceOrderTimelineModal
+        events={serviceOrder.events}
+        isVisible={timelineIsVisible}
+        onClose={handleTimelineClose}
+      />
 
       <RejectSolutionModal
         isVisible={rejectSolutionModalIsVisible}
