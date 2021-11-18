@@ -59,55 +59,50 @@ export function MaintCreateServiceOrderForm({
         return;
       }
 
-      return new Promise<void>((resolve) => {
-        const confirmModal = Modal.confirm({
-          content: (
-            <>
-              Confirma a abertura da OS #{orderId} —{" "}
-              <em>{values.issue.trim()}</em>?
-            </>
-          ),
-          okText: "Abrir OS",
-          onCancel: () => resolve(),
-          onOk: async () => {
-            confirmModal.update({ okText: "Enviando..." });
+      const confirmModal = Modal.confirm({
+        content: (
+          <>
+            Confirma a abertura da OS #{orderId} —{" "}
+            <em>{values.issue.trim()}</em>?
+          </>
+        ),
+        okText: "Abrir OS",
+        onOk: async () => {
+          confirmModal.update({ okText: "Enviando..." });
 
-            const operationRes = await helpers.add(orderId, {
-              additionalInfo: values.additionalInfo,
-              cause: values.cause,
-              description: values.issue,
-              dpt: values.departmentDisplayName,
-              interruptions: {
-                equipment: values.didStopMachine,
-                line: values.didStopLine,
-                production: values.didStopProduction,
-              },
-              machine: values.machineId,
-              maintenanceType: values.maintenanceType,
-              team: values.team,
-              username: values.departmentId,
+          const operationRes = await helpers.add(orderId, {
+            additionalInfo: values.additionalInfo,
+            cause: values.cause,
+            description: values.issue,
+            dpt: values.departmentDisplayName,
+            interruptions: {
+              equipment: values.didStopMachine,
+              line: values.didStopLine,
+              production: values.didStopProduction,
+            },
+            machine: values.machineId,
+            maintenanceType: values.maintenanceType,
+            team: values.team,
+            username: values.departmentId,
+          });
+
+          if (operationRes.error) {
+            notifyError(operationRes.error.message);
+          } else {
+            notification.success({
+              description: (
+                <>
+                  OS #{orderId} <em>({values.issue.trim()})</em> aberta com
+                  sucesso!
+                </>
+              ),
+              message: "OS aberta",
             });
-
-            if (operationRes.error) {
-              notifyError(operationRes.error.message);
-            } else {
-              notification.success({
-                description: (
-                  <>
-                    OS #{orderId} <em>({values.issue.trim()})</em> aberta com
-                    sucesso!
-                  </>
-                ),
-                message: "OS aberta",
-              });
-              form.resetForm();
-              onSubmit?.();
-            }
-
-            resolve();
-          },
-          title: "Abrir OS?",
-        });
+            form.resetForm();
+            onSubmit?.();
+          }
+        },
+        title: "Abrir OS?",
       });
     },
     [helpers, form, onSubmit]

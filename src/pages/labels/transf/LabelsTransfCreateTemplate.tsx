@@ -19,9 +19,7 @@ export function LabelsTransfCreateTemplatePage(): JSX.Element {
   return (
     <>
       <PageTitle>Novo modelo</PageTitle>
-      <PageDescription>
-        Preencha as informações do modelo abaixo.
-      </PageDescription>
+      <PageDescription>Preencha as informações do modelo.</PageDescription>
 
       <Divider marginTop={0} />
 

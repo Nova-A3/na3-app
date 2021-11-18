@@ -1,15 +1,13 @@
-import { PlusCircleOutlined } from "@ant-design/icons";
-import { Button, Grid, Modal } from "antd";
+import { Grid, Modal, notification } from "antd";
 import React, { useCallback, useState } from "react";
 import { useHistory } from "react-router-dom";
 
 import {
   LabelsTransfList,
   LabelsTransfTemplateForm,
-  PageActionButtons,
-  PageTitle,
+  ListFormPage,
 } from "../../../components";
-// import { useNa3TransfLabelTemplates } from "../../../modules/na3-react";
+import { useNa3TransfLabelTemplates } from "../../../modules/na3-react";
 import type { Na3TransfLabelTemplate } from "../../../modules/na3-types";
 
 export function LabelsTransfManagePage(): JSX.Element {
@@ -19,7 +17,7 @@ export function LabelsTransfManagePage(): JSX.Element {
   const history = useHistory();
   const breakpoint = Grid.useBreakpoint();
 
-  // const transfLabelTemplates = useNa3TransfLabelTemplates();
+  const transfLabelTemplates = useNa3TransfLabelTemplates();
 
   const handleCreateTemplateClick = useCallback(() => {
     history.push("/etiquetas/gerenciar/transferencia/criar-modelo");
@@ -36,24 +34,27 @@ export function LabelsTransfManagePage(): JSX.Element {
     setSelectedTemplate(undefined);
   }, []);
 
-  /*
   const handleDeleteTemplate = useCallback(
     (template: Na3TransfLabelTemplate) => {
-      const onConfirmDelete = async (): Promise<void> => {
+      async function onConfirmDelete(): Promise<void> {
+        setSelectedTemplate(undefined);
+
         const deletionResult = await transfLabelTemplates.helpers.delete(
           template.id
         );
-        if (deletionResult.error)
+
+        if (deletionResult.error) {
           notification.error({
             description: deletionResult.error.message,
             message: "Erro ao excluir o modelo",
           });
-        else
+        } else {
           notification.success({
             description: `O modelo "${template.name}" foi excluído com sucesso.`,
             message: "Modelo excluído",
           });
-      };
+        }
+      }
 
       Modal.confirm({
         cancelText: "Voltar",
@@ -66,40 +67,34 @@ export function LabelsTransfManagePage(): JSX.Element {
     },
     [transfLabelTemplates.helpers]
   );
-  */
 
   return (
     <>
-      <PageTitle>Modelos • Transferência</PageTitle>
-      <PageActionButtons>
-        <Button
-          icon={<PlusCircleOutlined />}
-          onClick={handleCreateTemplateClick}
-          type="primary"
-        >
-          Criar modelo
-        </Button>
-      </PageActionButtons>
-
-      <LabelsTransfList
-        cardTooltipActionText="editar"
-        onSelectTemplate={handleSelectTemplate}
+      <ListFormPage
+        actions={[
+          { label: "Criar modelo", onClick: handleCreateTemplateClick },
+        ]}
+        form={<LabelsTransfTemplateForm />}
+        formTitle="Novo modelo"
+        list={<LabelsTransfList onSelectTemplate={handleSelectTemplate} />}
+        listTitle="Modelos"
+        title="Etiquetas • Transferência"
       />
 
-      {selectedTemplate && (
-        <Modal
-          footer={null}
-          onCancel={handleCloseModal}
-          title={selectedTemplate.name.trim().toUpperCase()}
-          visible={true}
-          width={breakpoint.lg ? "65%" : breakpoint.md ? "80%" : undefined}
-        >
-          <LabelsTransfTemplateForm
-            editingTemplate={selectedTemplate}
-            onSubmit={handleCloseModal}
-          />
-        </Modal>
-      )}
+      <Modal
+        destroyOnClose={true}
+        footer={null}
+        onCancel={handleCloseModal}
+        title={selectedTemplate?.name.trim().toUpperCase()}
+        visible={!!selectedTemplate}
+        width={breakpoint.lg ? "65%" : breakpoint.md ? "80%" : undefined}
+      >
+        <LabelsTransfTemplateForm
+          editingTemplate={selectedTemplate}
+          onDelete={handleDeleteTemplate}
+          onSubmit={handleCloseModal}
+        />
+      </Modal>
     </>
   );
 }

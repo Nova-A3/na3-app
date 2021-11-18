@@ -1,4 +1,5 @@
-import { notification } from "antd";
+import { DeleteOutlined } from "@ant-design/icons";
+import { Button, notification } from "antd";
 import dayjs from "dayjs";
 import React, { useCallback, useEffect, useState } from "react";
 
@@ -19,14 +20,17 @@ import { FormCollapse } from "../../forms/components/FormCollapse/FormCollapse";
 import { Form } from "../../forms/Form";
 import { FormField } from "../../forms/FormField/FormField";
 import { SubmitButton } from "../../forms/SubmitButton";
+import classes from "./LabelsTransfTemplateForm.module.css";
 
 type LabelTemplateFormProps = {
   editingTemplate?: Na3TransfLabelTemplate;
+  onDelete?: (template: Na3TransfLabelTemplate) => void;
   onSubmit?: () => void;
 };
 
-const defaultProps: LabelTemplateFormProps = {
+const defaultProps = {
   editingTemplate: undefined,
+  onDelete: undefined,
   onSubmit: undefined,
 };
 
@@ -45,6 +49,7 @@ const DEFAULT_BATCH_ID_FORMAT = "commercial";
 export function LabelsTransfTemplateForm({
   editingTemplate,
   onSubmit,
+  onDelete,
 }: LabelTemplateFormProps): JSX.Element {
   // Controls productCode input's mask: S-\d{7} if Dart product, \d{9} otherwise
   const [productCodeMaskType, setProductCodeMaskType] = useState<
@@ -195,12 +200,17 @@ export function LabelsTransfTemplateForm({
           } com sucesso!`,
           message: `Modelo ${editingTemplate ? "editado" : "criado"}`,
         });
+        form.resetForm();
+        onSubmit?.();
       }
-
-      onSubmit?.();
     },
-    [editingTemplate, productData, customersData, helpers, onSubmit]
+    [editingTemplate, productData, customersData, helpers, form, onSubmit]
   );
+
+  const handleDelete = useCallback(() => {
+    if (!editingTemplate) return;
+    onDelete?.(editingTemplate);
+  }, [editingTemplate, onDelete]);
 
   useEffect(() => {
     if (productData) {
@@ -255,6 +265,7 @@ export function LabelsTransfTemplateForm({
 
       <FormField
         autoUpperCase={true}
+        helpWhenLoading="Buscando..."
         isLoading={productLoading}
         label="Código do produto"
         mask={[
@@ -340,6 +351,18 @@ export function LabelsTransfTemplateForm({
               }}
               type="select"
             />
+
+            {editingTemplate && onDelete && (
+              <div className={classes.DeleteBtnContainer}>
+                <Button
+                  danger={true}
+                  icon={<DeleteOutlined />}
+                  onClick={handleDelete}
+                >
+                  Excluir modelo
+                </Button>
+              </div>
+            )}
           </FormCollapse>
 
           <SubmitButton

@@ -30,10 +30,7 @@ export function LabelsTransfPrintPage(): JSX.Element {
         Selecione um modelo de etiqueta para imprimir.
       </PageDescription>
 
-      <LabelsTransfList
-        cardTooltipActionText="imprimir"
-        onSelectTemplate={handleSelectTemplate}
-      />
+      <LabelsTransfList onSelectTemplate={handleSelectTemplate} />
     </>
   );
 }
