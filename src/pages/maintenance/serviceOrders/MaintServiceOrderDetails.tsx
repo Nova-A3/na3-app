@@ -54,6 +54,7 @@ export function MaintServiceOrderDetailsPage({
   const { setExtra: setBreadcrumbExtra } = useBreadcrumb();
 
   const {
+    loading,
     helpers: {
       getById: getServiceOrderById,
       getOrderMachine,
@@ -552,7 +553,7 @@ export function MaintServiceOrderDetailsPage({
       />
     </>
   ) : (
-    <Result404 backUrl={backUrl}>
+    <Result404 backUrl={backUrl} isLoading={loading}>
       A ordem de serviço solicitada não existe ou foi desabilitada.
     </Result404>
   );

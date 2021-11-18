@@ -40,6 +40,7 @@ export function MaintProjectDetails({
   const { setExtra: setBreadcrumbExtra } = useBreadcrumb();
 
   const {
+    loading,
     helpers: {
       formatInternalId,
       getProjectStatus,
@@ -271,7 +272,10 @@ export function MaintProjectDetails({
       />
     </>
   ) : (
-    <Result404 backUrl={getMaintProjectsRootUrl({ isPredPrev })}>
+    <Result404
+      backUrl={getMaintProjectsRootUrl({ isPredPrev })}
+      isLoading={loading}
+    >
       {isPredPrev ? "A Pred/Prev" : "O projeto de manutenção"}{" "}
       {isPredPrev ? "solicitada" : "solicitado"} não existe ou foi{" "}
       {isPredPrev ? "desabilitada" : "desabilitado"}.

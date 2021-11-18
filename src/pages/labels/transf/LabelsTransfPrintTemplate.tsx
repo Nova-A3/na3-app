@@ -29,6 +29,7 @@ export function LabelsTransfPrintTemplatePage({
   const { setExtra: setBreadcrumbExtra } = useBreadcrumb();
 
   const {
+    loading,
     helpers: { getById: getTemplate },
   } = useNa3TransfLabelTemplates();
 
@@ -209,7 +210,7 @@ export function LabelsTransfPrintTemplatePage({
       />
     </>
   ) : (
-    <Result404 backUrl="/etiquetas/imprimir">
+    <Result404 backUrl="/etiquetas/imprimir" isLoading={loading}>
       O modelo de etiqueta solicitado não existe ou foi desabilitado.
     </Result404>
   );
