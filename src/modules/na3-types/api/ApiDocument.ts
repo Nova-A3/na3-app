@@ -1,8 +1,8 @@
-import type { ApiCompany } from "./ApiCompany";
-import type { ApiPerson } from "./ApiPerson";
-import type { ApiProduct } from "./ApiProduct";
+import type { Na3ApiCompany } from "./ApiCompany";
+import type { Na3ApiPerson } from "./ApiPerson";
+import type { Na3ApiProduct } from "./ApiProduct";
 
-type ApiDocumentItem = {
+type DocItem = {
   batchSeries: { code: string; id: string; type: "L" | "S" } | null;
   id: string;
   inputDepartmentId: string | null;
@@ -16,7 +16,7 @@ type ApiDocumentItem = {
   };
 };
 
-type ApiDocumentPayt = {
+type DocPayment = {
   agreementPersonId: string | null;
   agreementRate: number;
   agreementTacRate: number;
@@ -47,7 +47,7 @@ type ApiDocumentPayt = {
   writeOffTypeId: string | null;
 };
 
-export type ApiDocument = {
+export type Na3ApiDocument = {
   accessKey: string;
   billing: string | null;
   businessUnit: { code: string; description: string; id: string } | null;
@@ -58,7 +58,7 @@ export type ApiDocument = {
   id: string;
   inventoryBatchId: string;
   issuedAt: string;
-  items: ApiDocumentItem[];
+  items: DocItem[];
   messages: { code: string; description: string; id: string }[];
   nfStatus: "A" | "C" | "D" | "E" | "I" | "N" | "R" | "S" | "X";
   note: string;
@@ -66,15 +66,15 @@ export type ApiDocument = {
   operationId: string;
   originEntityName: string | null;
   paymentRefDate: string;
-  payments: ApiDocumentPayt[];
+  payments: DocPayment[];
   purposeType: string;
   refDate: string;
   released: boolean;
   sellerCompanyCode: string;
 };
 
-export type ApiDocumentExpanded = Omit<ApiDocument, "items"> & {
-  customer: ApiPerson | null;
-  items: (ApiDocumentItem & { product: ApiProduct | null })[];
-  sellerCompany: ApiCompany | null;
+export type Na3ApiDocumentExpanded = Omit<Na3ApiDocument, "items"> & {
+  customer: Na3ApiPerson | null;
+  items: (DocItem & { product: Na3ApiProduct | null })[];
+  sellerCompany: Na3ApiCompany | null;
 };

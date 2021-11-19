@@ -1,4 +1,21 @@
-const firebaseErrorsTranslationMap: { [key: string]: string; else: string } = {
+import type firebase from "firebase";
+import type { LiteralUnion } from "type-fest";
+
+type FirebaseErrorMessage = `${string}.`;
+
+function buildDefaultMessage(
+  service: "firestore",
+  code: string
+): FirebaseErrorMessage {
+  return `Algo deu errado. Por favor, entre em contato com o administrador do sistema e informe o seguinte código: "${service}/${code}".`;
+}
+
+const firebaseErrorsTranslationMap: Record<
+  LiteralUnion<firebase.firestore.FirestoreErrorCode, string>,
+  FirebaseErrorMessage
+> = {
+  aborted: "Operação abortada.",
+  "already-exists": "Já existe um documento para este ID.",
   "auth/claims-too-large":
     "O payload de declarações fornecido para setCustomUserClaims() excede o tamanho máximo permitido de 1.000 bytes.",
   "auth/email-already-exists":
@@ -59,7 +76,7 @@ const firebaseErrorsTranslationMap: { [key: string]: string; else: string } = {
   "auth/invalid-password-hash":
     "O hash da senha precisa ser um buffer de byte válido.",
   "auth/invalid-password-salt":
-    "O salt da senha precisa ser um buffer de byte válido",
+    "O salt da senha precisa ser um buffer de byte válido.",
   "auth/invalid-phone-number":
     "O valor fornecido para phoneNumber é inválido. Ele precisa ser uma string de identificador compatível com o padrão E.164 não vazio.",
   "auth/invalid-photo-url":
@@ -107,12 +124,40 @@ const firebaseErrorsTranslationMap: { [key: string]: string; else: string } = {
   "auth/user-not-found":
     "Não há registro de usuário existente correspondente ao identificador fornecido.",
   "auth/wrong-password": "Senha inválida.",
-
-  else: "Erro de servidor.",
+  cancelled: "Operação cancelada.",
+  "data-loss": buildDefaultMessage("firestore", "data-loss"),
+  "deadline-exceeded": buildDefaultMessage("firestore", "deadline-exceeded"),
+  "failed-precondition": buildDefaultMessage(
+    "firestore",
+    "failed-precondition"
+  ),
+  internal: buildDefaultMessage("firestore", "internal"),
+  "invalid-argument": buildDefaultMessage("firestore", "invalid-argument"),
+  "not-found":
+    "Não foi encontrado nenhum documento válido para o ID requisitado.",
+  "out-of-range": buildDefaultMessage("firestore", "out-of-range"),
+  "permission-denied": "Acesso negado.",
+  "resource-exhausted": buildDefaultMessage("firestore", "resource-exhausted"),
+  unauthenticated: "Acesso negado.",
+  unavailable:
+    "Sistema temporariamente indisponível — por favor, tente novamente mais tarde.",
+  unimplemented:
+    "A operação requisitada não está disponível ou não foi implementada.",
+  unknown:
+    "Um erro desconhecido ocorreu. Por favor, entre em contato com o administrador do sistema.",
 };
 
-export function translateFirebaseError(code: string): string {
-  return (
-    firebaseErrorsTranslationMap[code] || firebaseErrorsTranslationMap.else
-  );
+export function translateFirebaseError(
+  error: firebase.FirebaseError
+): firebase.FirebaseError;
+export function translateFirebaseError(
+  error: firebase.auth.Error
+): firebase.auth.Error;
+export function translateFirebaseError(
+  error: firebase.auth.Error | firebase.FirebaseError
+): firebase.auth.Error | firebase.FirebaseError {
+  return {
+    ...error,
+    message: firebaseErrorsTranslationMap[error.code] || error.message,
+  };
 }

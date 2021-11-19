@@ -1,11 +1,10 @@
 import type {
-  AutoCompleteProps,
   FormItemProps,
   InputProps,
   RadioChangeEvent,
   SwitchProps,
 } from "antd";
-import { AutoComplete, Form, Input, Radio, Switch } from "antd";
+import { Form, Input, Radio, Switch } from "antd";
 import { nanoid } from "nanoid";
 import React, { useCallback, useEffect, useMemo } from "react";
 import type { UseControllerProps } from "react-hook-form";
@@ -15,6 +14,8 @@ import { isArray, isTouchDevice } from "../../../utils";
 import { FieldHelp } from "../components/FieldHelp/FieldHelp";
 import { FieldLabel } from "../components/FieldLabel/FieldLabel";
 import { FieldPreSuffix } from "../components/FieldPreSuffix/FieldPreSuffix";
+import type { AutoCompleteAsFieldProps } from "../fields/AutoComplete/AutoComplete";
+import { AutoComplete } from "../fields/AutoComplete/AutoComplete";
 import type { InputDateAsFieldProps } from "../fields/InputDate/InputDate";
 import { InputDate } from "../fields/InputDate/InputDate";
 import { InputMask } from "../fields/InputMask/InputMask";
@@ -57,10 +58,6 @@ type InputTextAreaOptionalProps = Omit<
   rows?: { max?: number; min?: number };
 };
 
-type AutoCompleteOptionalProps = Partial<
-  Pick<AutoCompleteProps, "allowClear" | "defaultActiveFirstOption">
->;
-
 type InputNumberOptionalProps = InputBaseOptionalProps & {
   max?: number;
   min?: number;
@@ -99,10 +96,7 @@ export type FormFieldProps = {
   name: string;
   rules: Exclude<UseControllerProps["rules"], undefined> | null;
 } & (
-  | (AutoCompleteOptionalProps &
-      FormFieldBaseProps<"autoComplete", string> & {
-        options: { label: React.ReactNode; value: string }[];
-      })
+  | (AutoCompleteAsFieldProps & FormFieldBaseProps<"autoComplete", string>)
   | (FormFieldBaseProps<"date", string> & InputDateAsFieldProps)
   | (FormFieldBaseProps<"input", string> & InputBaseOptionalProps)
   | (FormFieldBaseProps<"mask", string> &
@@ -438,14 +432,14 @@ export function FormField(props: FormFieldProps): JSX.Element {
       case "autoComplete":
         return (
           <AutoComplete
-            allowClear={props.allowClear}
-            autoFocus={autoFocus}
+            allowClear={props.allowClear ?? true}
+            autoFocus={autoFocus || false}
             defaultActiveFirstOption={props.defaultActiveFirstOption || false}
             disabled={disabled}
-            filterOption={handleFilterSelectOptions}
             id={name}
             onBlur={handleBlur}
             onChange={handleChange}
+            onFilterOptions={handleFilterSelectOptions}
             options={props.options}
             placeholder={placeholder}
             value={typeof value === "string" ? value : ""}

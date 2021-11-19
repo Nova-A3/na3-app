@@ -12,7 +12,7 @@ import {
 } from "../../../components";
 import { useBreadcrumb, usePdf } from "../../../hooks";
 import { useNa3TransfLabelTemplates } from "../../../modules/na3-react";
-import type { ApiLabel } from "../../../modules/na3-types";
+import type { Na3ApiLabel } from "../../../modules/na3-types";
 import type {
   LabelsTransfPrintFormOnSubmitValues,
   PdfGeneratedDoc,
@@ -34,7 +34,7 @@ export function LabelsTransfPrintTemplatePage({
   } = useNa3TransfLabelTemplates();
 
   const [labelConfig, setLabelConfig] = React.useState<
-    ApiLabel<"transf"> & { copies: number }
+    Na3ApiLabel<"transf"> & { copies: number }
   >();
 
   const labelsPdf = usePdf({ format: [106, 152] });
@@ -69,7 +69,7 @@ export function LabelsTransfPrintTemplatePage({
         productUnitAbbreviation,
         batchId,
         invoiceNumber,
-      }: ApiLabel<"transf">,
+      }: Na3ApiLabel<"transf">,
       {
         barcodeDataUrl,
         copies,
@@ -167,7 +167,7 @@ export function LabelsTransfPrintTemplatePage({
 
   const handleSave = useCallback(
     (
-      label: ApiLabel<"transf">,
+      label: Na3ApiLabel<"transf">,
       additionalConfig: {
         barcodeDataUrl: string;
         copies: number;

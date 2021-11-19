@@ -1,50 +1,44 @@
-import type { ApiCompany } from "./ApiCompany";
-import type { ApiDepartment } from "./ApiDepartment";
-import type { ApiDocument } from "./ApiDocument";
-import type { ApiLabelPrintResponse } from "./ApiLabel";
-import type { ApiPerson } from "./ApiPerson";
-import type { ApiProduct } from "./ApiProduct";
-import type { ApiScheduledResult } from "./ApiScheduledResult";
-import type { ApiStatus } from "./ApiStatus";
+import type { Na3ApiCompany } from "./ApiCompany";
+import type { Na3ApiDepartment } from "./ApiDepartment";
+import type { Na3ApiDocument } from "./ApiDocument";
+import type { Na3ApiError } from "./ApiError";
+import type { Na3ApiPerson } from "./ApiPerson";
+import type { Na3ApiProduct } from "./ApiProduct";
+import type { Na3ApiStatus } from "./ApiStatus";
 
-export type ApiError = {
-  code?: string;
-  message: string;
-  name: string;
-  possibleCause?: string;
-  status?: { code: number; text: string };
+export type Na3ApiData =
+  | Na3ApiCompany
+  | Na3ApiCompany[]
+  | Na3ApiDepartment
+  | Na3ApiDepartment[]
+  | Na3ApiDocument
+  | Na3ApiDocument[]
+  | Na3ApiPerson
+  | Na3ApiProduct
+  | Na3ApiStatus;
+
+export type Na3ApiResponseSuccess<Data extends Na3ApiData> = {
+  data: Data;
+  error: null;
 };
 
-export type ApiData =
-  | ApiCompany
-  | ApiCompany[]
-  | ApiDepartment
-  | ApiDepartment[]
-  | ApiDocument
-  | ApiDocument[]
-  | ApiLabelPrintResponse
-  | ApiPerson
-  | ApiProduct
-  | ApiScheduledResult
-  | ApiStatus;
+export type Na3ApiResponseFail = { data: null; error: Na3ApiError };
 
-export type ApiResponseSuccess<T extends ApiData> = { data: T; error: null };
+export type Na3ApiResponse<Data extends Na3ApiData> =
+  | Na3ApiResponseFail
+  | Na3ApiResponseSuccess<Data>;
 
-export type ApiResponseFail = { data: null; error: ApiError };
-
-export type ApiResponse<T extends ApiData> =
-  | ApiResponseFail
-  | ApiResponseSuccess<T>;
-
-export type ApiResponseArray<T extends ApiData> = {
-  data: (T | null)[];
-  errors: (ApiError | null)[];
+export type Na3ApiResponseArray<Data extends Na3ApiData> = {
+  data: (Data | null)[];
+  errors: (Na3ApiError | null)[];
 };
 
-type MakeApiResponseConfig<T extends ApiData = ApiData> =
-  | { data: T; type: "success" }
+/*
+type MakeNa3ApiResponseConfig<Data extends Na3ApiData = Na3ApiData> =
+  | { data: Data; type: "success" }
   | { error: unknown; type: "fail" };
 
-export type MakeApiResponse = <T extends ApiData>(
-  config: MakeApiResponseConfig<T>
-) => ApiResponse<T>;
+export type MakeNa3ApiResponse = <Data extends Na3ApiData>(
+  config: MakeNa3ApiResponseConfig<Data>
+) => Na3ApiResponse<Data>;
+*/

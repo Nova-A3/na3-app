@@ -1,6 +1,6 @@
 import axios from "axios";
 
-import type { ApiData, ApiResponse } from "../../na3-types";
+import type { Na3ApiData, Na3ApiResponse } from "../../na3-types";
 
 export abstract class Na3BaseController {
   private _api = axios.create({
@@ -9,10 +9,10 @@ export abstract class Na3BaseController {
     headers: { "Content-Type": "application/json" },
   });
 
-  protected async getApi<T extends ApiData>(
+  protected async getApi<T extends Na3ApiData>(
     endpoint: `/${string}`
-  ): Promise<ApiResponse<T>> {
-    const { data } = await this._api.get<ApiResponse<T>>(endpoint);
+  ): Promise<Na3ApiResponse<T>> {
+    const { data } = await this._api.get<Na3ApiResponse<T>>(endpoint);
     return data;
   }
 }

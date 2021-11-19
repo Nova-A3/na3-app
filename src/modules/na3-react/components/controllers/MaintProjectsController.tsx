@@ -10,7 +10,7 @@ import {
   setMaintProjectsError,
   setMaintProjectsLoading,
 } from "../../store/actions";
-import { resolveCollectionId } from "../../utils";
+import { resolveCollectionId, translateFirebaseError } from "../../utils";
 
 export function Na3MaintenanceProjectsController(): null {
   const { environment } = useStateSlice("config");
@@ -42,7 +42,13 @@ export function Na3MaintenanceProjectsController(): null {
   }, [dispatch, fbMaintProjectsLoading]);
 
   useEffect(() => {
-    dispatch(setMaintProjectsError(fbMaintProjectsError || null));
+    dispatch(
+      setMaintProjectsError(
+        fbMaintProjectsError
+          ? translateFirebaseError(fbMaintProjectsError)
+          : null
+      )
+    );
   }, [dispatch, fbMaintProjectsError]);
 
   /* Update on auth */

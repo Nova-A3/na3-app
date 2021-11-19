@@ -1,3 +1,3 @@
 export * from "./api";
-export * as BimerTypes from "./bimer";
+export * as Bimer from "./bimer";
 export * from "./na3";

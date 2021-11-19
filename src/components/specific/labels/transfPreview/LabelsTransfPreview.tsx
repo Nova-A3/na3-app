@@ -4,17 +4,17 @@ import QrCode from "qrcode";
 import React, { useCallback, useState } from "react";
 
 import labelLayout from "../../../../assets/labelsTransfLayout.svg";
-import type { ApiLabel } from "../../../../modules/na3-types";
+import type { Na3ApiLabel } from "../../../../modules/na3-types";
 import classes from "./LabelsTransfPreview.module.css";
 import { PreviewData } from "./PreviewData";
 import { PreviewFooter } from "./PreviewFooter";
 
 type LabelsTransfPreviewProps = {
   copies: number | undefined;
-  label: ApiLabel<"transf"> | undefined;
+  label: Na3ApiLabel<"transf"> | undefined;
   onCancel: () => void;
   onPrint: (
-    label: ApiLabel<"transf">,
+    label: Na3ApiLabel<"transf">,
     additionalConfig: {
       barcodeDataUrl: string;
       copies: number;
@@ -22,7 +22,7 @@ type LabelsTransfPreviewProps = {
     }
   ) => void;
   onSave: (
-    label: ApiLabel<"transf">,
+    label: Na3ApiLabel<"transf">,
     additionalConfig: {
       barcodeDataUrl: string;
       copies: number;

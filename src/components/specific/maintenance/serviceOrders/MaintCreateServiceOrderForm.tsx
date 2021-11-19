@@ -5,7 +5,7 @@ import { Redirect } from "react-router";
 
 import { useForm } from "../../../../hooks";
 import { useNa3Auth, useNa3ServiceOrders } from "../../../../modules/na3-react";
-import type { MaintCreateServiceOrderFormValues } from "../../../../types";
+import type { Na3DepartmentId } from "../../../../modules/na3-types";
 import { createErrorNotifier } from "../../../../utils";
 import { Form } from "../../../forms/Form";
 import { FormField } from "../../../forms/FormField/FormField";
@@ -20,6 +20,20 @@ const defaultProps = {
   onSubmit: undefined,
 };
 
+type FormValues = {
+  additionalInfo: string;
+  cause: "" | "eletrica" | "machineAdjustment" | "mecanica";
+  departmentDisplayName: string;
+  departmentId: Na3DepartmentId | "";
+  didStopLine: boolean;
+  didStopMachine: boolean;
+  didStopProduction: boolean;
+  issue: string;
+  machineId: string;
+  maintenanceType: "" | "corretiva" | "preditiva" | "preventiva";
+  team: "" | "eletrica" | "mecanica" | "predial";
+};
+
 export function MaintCreateServiceOrderForm({
   onSubmit,
 }: MaintCreateServiceOrderFormProps): JSX.Element {
@@ -30,7 +44,7 @@ export function MaintCreateServiceOrderForm({
 
   const [didStopMachineDisabled, setDidStopMachineDisabled] = useState(false);
 
-  const form = useForm<MaintCreateServiceOrderFormValues>({
+  const form = useForm<FormValues>({
     defaultValues: {
       additionalInfo: "",
       cause: "",
@@ -47,7 +61,7 @@ export function MaintCreateServiceOrderForm({
   });
 
   const handleSubmit = useCallback(
-    (values: MaintCreateServiceOrderFormValues) => {
+    (values: FormValues) => {
       const notifyError = createErrorNotifier("Erro ao abrir a OS");
 
       const orderId = helpers.getNextId();

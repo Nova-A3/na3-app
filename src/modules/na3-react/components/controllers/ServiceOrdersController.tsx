@@ -10,7 +10,7 @@ import {
   setServiceOrdersError,
   setServiceOrdersLoading,
 } from "../../store/actions";
-import { resolveCollectionId } from "../../utils";
+import { resolveCollectionId, translateFirebaseError } from "../../utils";
 
 export function Na3ServiceOrdersController(): null {
   const { environment } = useStateSlice("config");
@@ -31,6 +31,8 @@ export function Na3ServiceOrdersController(): null {
       idField: "id",
     });
 
+  console.log(fbServiceOrdersError?.message);
+
   /* ServiceOrders state management hooks */
 
   useEffect(() => {
@@ -42,7 +44,13 @@ export function Na3ServiceOrdersController(): null {
   }, [dispatch, fbServiceOrdersLoading]);
 
   useEffect(() => {
-    dispatch(setServiceOrdersError(fbServiceOrdersError || null));
+    dispatch(
+      setServiceOrdersError(
+        fbServiceOrdersError
+          ? translateFirebaseError(fbServiceOrdersError)
+          : null
+      )
+    );
   }, [dispatch, fbServiceOrdersError]);
 
   /* Update on auth */

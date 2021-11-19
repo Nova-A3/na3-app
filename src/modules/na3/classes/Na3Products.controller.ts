@@ -1,4 +1,4 @@
-import type { ApiProduct } from "../../na3-types";
+import type { Na3ApiProduct } from "../../na3-types";
 import type { ControllerResult, Product, ProductsController } from "../types";
 import { formatQueryInput } from "../utils";
 import { Na3BaseController } from "./Na3Base.controller";
@@ -20,7 +20,7 @@ export class Na3ProductsController
   };
 
   async getById(id: string): Promise<ControllerResult<Product>> {
-    const res = await this.getApi<ApiProduct>(
+    const res = await this.getApi<Na3ApiProduct>(
       `/products/${formatQueryInput(id)}`
     );
 
@@ -29,7 +29,7 @@ export class Na3ProductsController
   }
 
   async getByCode(code: string): Promise<ControllerResult<Product>> {
-    const res = await this.getApi<ApiProduct>(
+    const res = await this.getApi<Na3ApiProduct>(
       `/products?code=${formatQueryInput(code)}`
     );
 
@@ -37,7 +37,7 @@ export class Na3ProductsController
     return { data: new Na3Product(res.data), error: null };
   }
 
-  isApiProduct(testProduct: unknown): testProduct is ApiProduct {
+  isApiProduct(testProduct: unknown): testProduct is Na3ApiProduct {
     return (
       testProduct instanceof Object &&
       Object.prototype.hasOwnProperty.call(testProduct, "masterProductId") &&

@@ -1,9 +1,9 @@
-import type { ApiCompany } from "./ApiCompany";
+import type { Na3ApiCompany } from "./ApiCompany";
 
-export type ApiDepartment = {
+export type Na3ApiDepartment = {
   active: boolean;
   code: string;
-  company: ApiCompany;
+  company: Na3ApiCompany;
   description: string;
   id: string;
   note: string | null;

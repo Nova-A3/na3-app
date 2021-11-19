@@ -56,14 +56,7 @@ export function Na3MainController({
 
   useEffect(() => {
     dispatch(
-      setAuthError(
-        fbUserError
-          ? {
-              ...fbUserError,
-              message: translateFirebaseError(fbUserError.code),
-            }
-          : null
-      )
+      setAuthError(fbUserError ? translateFirebaseError(fbUserError) : null)
     );
   }, [dispatch, fbUserError]);
 

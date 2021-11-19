@@ -1,4 +1,4 @@
-import type { ApiProduct } from "../../../na3-types";
+import type { Na3ApiProduct } from "../../../na3-types";
 import type { ControllerResult } from "../utils/ControllerResult";
 import type { Product } from "./Product";
 
@@ -9,7 +9,7 @@ type ControllerUtils = {
 export interface ProductsController {
   readonly getByCode: (code: string) => Promise<ControllerResult<Product>>;
   readonly getById: (id: string) => Promise<ControllerResult<Product>>;
-  readonly isApiProduct: (testProduct: unknown) => testProduct is ApiProduct;
+  readonly isApiProduct: (testProduct: unknown) => testProduct is Na3ApiProduct;
   readonly isDartBagCode: (testCode: unknown) => testCode is `S-${number}`;
   readonly isProductCode: (
     testCode: unknown

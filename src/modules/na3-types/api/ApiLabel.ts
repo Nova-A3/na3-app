@@ -1,8 +1,8 @@
 import type { Na3DepartmentId } from "../na3";
 
-type ApiLabelId = "transf";
+type LabelId = "transf";
 
-export type ApiLabel<Id extends ApiLabelId = ApiLabelId> = {
+export type Na3ApiLabel<Id extends LabelId = LabelId> = {
   transf: {
     barcodeData: string;
     batchId: string;
@@ -20,7 +20,3 @@ export type ApiLabel<Id extends ApiLabelId = ApiLabelId> = {
     transfId: string | null;
   };
 }[Id];
-
-export type ApiLabelPrintResponse =
-  | { failed: false; status: "success" }
-  | { failed: true; status: "fail" };

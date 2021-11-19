@@ -1,10 +1,10 @@
 import { useCallback, useEffect, useState } from "react";
 
-import type { ApiPerson } from "../../../na3-types";
+import type { Na3ApiPerson } from "../../../na3-types";
 import type { ProductData } from "./useNa3Product";
 
 type UseNa3ProductCustomersResult = {
-  data: ApiPerson[] | undefined;
+  data: Na3ApiPerson[] | undefined;
   error: string | undefined;
   loading: boolean;
 };
@@ -12,12 +12,12 @@ type UseNa3ProductCustomersResult = {
 export function useNa3ProductCustomers(
   product: ProductData | null | undefined
 ): UseNa3ProductCustomersResult {
-  const [customers, setCustomers] = useState<ApiPerson[]>();
+  const [customers, setCustomers] = useState<Na3ApiPerson[]>();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string>();
 
   const handleFetchCustomers = useCallback(
-    async (fetchFunction: () => Promise<ApiPerson[]>) => {
+    async (fetchFunction: () => Promise<Na3ApiPerson[]>) => {
       setError(undefined);
       setCustomers(undefined);
       setLoading(true);

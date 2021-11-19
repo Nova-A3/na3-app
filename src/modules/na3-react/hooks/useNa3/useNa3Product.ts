@@ -2,11 +2,11 @@ import { useCallback, useEffect, useState } from "react";
 
 import type { ControllerResult, Na3Product } from "../../../na3";
 import { na3 } from "../../../na3";
-import type { ApiPerson, ApiProduct } from "../../../na3-types";
+import type { Na3ApiPerson, Na3ApiProduct } from "../../../na3-types";
 
-export type ProductData = ApiProduct &
+export type ProductData = Na3ApiProduct &
   Omit<Na3Product, "getCustomers"> & {
-    getCustomers: () => Promise<ApiPerson[]>;
+    getCustomers: () => Promise<Na3ApiPerson[]>;
   };
 
 type UseNa3ProductResult = {

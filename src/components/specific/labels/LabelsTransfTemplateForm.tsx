@@ -10,8 +10,8 @@ import {
   useNa3TransfLabelTemplates,
 } from "../../../modules/na3-react";
 import type {
-  ApiPerson,
-  ApiProduct,
+  Na3ApiPerson,
+  Na3ApiProduct,
   Na3DepartmentId,
   Na3TransfLabelTemplate,
 } from "../../../modules/na3-types";
@@ -58,11 +58,11 @@ export function LabelsTransfTemplateForm({
 
   // API product info for given productCode
   const [productLoading, setProductLoading] = useState(false);
-  const [productData, setProductData] = useState<ApiProduct>();
+  const [productData, setProductData] = useState<Na3ApiProduct>();
 
   // API customers info for given API product
   const [customersLoading, setCustomersLoading] = useState(false);
-  const [customersData, setCustomersData] = useState<ApiPerson[]>();
+  const [customersData, setCustomersData] = useState<Na3ApiPerson[]>();
 
   /*
    * When editing a template, the form has to be initialized upon mounting.

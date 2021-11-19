@@ -1,4 +1,7 @@
-export type ApiProduct = {
+import type { Na3ApiImage } from "./ApiImage";
+import type { Na3ApiProductGrid } from "./ApiProductGrid";
+
+export type Na3ApiProduct = {
   active: boolean;
   application: string | null;
   attributes: { code: string; id: string; name: string }[];
@@ -18,11 +21,10 @@ export type ApiProduct = {
     description: string | null;
     id: string | null;
   } | null;
-  grid: ApiProductGrid | null;
+  grid: Na3ApiProductGrid | null;
   group: { code: string; description: string; id: string } | null;
-  /* From Bimer */
   id: string;
-  images: ApiProductImage[];
+  images: Na3ApiImage[];
   isInventoryProduct: boolean;
   isMexicoProduct: boolean;
   masterProductId: string | null;
@@ -36,33 +38,7 @@ export type ApiProduct = {
     id: string;
     precedingTaxesRate: number;
   } | null;
-
-  /* From Nomus */
   unit: { abbreviation: Uppercase<string>; name: string };
   variants: { code: string; id: string; name: string }[];
-
   weight: { gross: number; net: number };
-};
-
-export type ApiProductImage = {
-  content: string;
-  description: string;
-  type: "bmp" | "jpeg";
-};
-
-export type ApiProductGrid = {
-  horizontal: {
-    abbreviation: string;
-    code: number;
-    id: string;
-    type: { code: string; id: string };
-  };
-  id: string;
-  productName: string;
-  vertical: {
-    abbreviation: string;
-    code: number;
-    id: string;
-    type: { code: string; id: string };
-  };
 };

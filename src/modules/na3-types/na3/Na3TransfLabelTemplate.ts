@@ -1,8 +1,8 @@
-import type { ApiLabel } from "../api/ApiLabel";
-import type { ApiProduct } from "../api/ApiProduct";
+import type { Na3ApiLabel } from "../api/ApiLabel";
+import type { Na3ApiProduct } from "../api/ApiProduct";
 
 export type Na3TransfLabelTemplate = Pick<
-  ApiLabel<"transf">,
+  Na3ApiLabel<"transf">,
   | "batchIdFormat"
   | "customerName"
   | "departmentId"
@@ -15,5 +15,5 @@ export type Na3TransfLabelTemplate = Pick<
   id: string;
   name: string;
   productId: string;
-  productSnapshot: ApiProduct | null;
+  productSnapshot: Na3ApiProduct | null;
 };

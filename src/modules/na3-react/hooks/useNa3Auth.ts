@@ -13,10 +13,10 @@ export type UseNa3AuthResult = {
       dptId: string,
       password: string
     ) => Promise<
-      | { error: firebase.FirebaseError; user: null }
+      | { error: firebase.auth.Error; user: null }
       | { error: null; user: firebase.auth.UserCredential }
     >;
-    signOut: () => Promise<{ error: firebase.FirebaseError } | { error: null }>;
+    signOut: () => Promise<{ error: firebase.auth.Error } | { error: null }>;
   };
   loading: boolean;
 };
@@ -31,11 +31,8 @@ export function useNa3Auth(): UseNa3AuthResult {
         .signInWithEmailAndPassword(`${dptId}@novaa3-app.com.br`, password);
       return { error: null, user };
     } catch (error) {
-      const fbError = error as firebase.FirebaseError;
-      return {
-        error: { ...fbError, message: translateFirebaseError(fbError.code) },
-        user: null,
-      };
+      const fbError = error as firebase.auth.Error;
+      return { error: translateFirebaseError(fbError), user: null };
     }
   }, []);
 
@@ -44,11 +41,8 @@ export function useNa3Auth(): UseNa3AuthResult {
       await firebase.auth().signOut();
       return { error: null };
     } catch (error) {
-      const fbError = error as firebase.FirebaseError;
-      return {
-        error: { ...fbError, message: translateFirebaseError(fbError.code) },
-        user: null,
-      };
+      const fbError = error as firebase.auth.Error;
+      return { error: translateFirebaseError(fbError), user: null };
     }
   }, []);
 

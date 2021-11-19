@@ -10,7 +10,7 @@ import {
   setTransfLabelTemplatesError,
   setTransfLabelTemplatesLoading,
 } from "../../store/actions";
-import { resolveCollectionId } from "../../utils";
+import { resolveCollectionId, translateFirebaseError } from "../../utils";
 
 export function Na3TransfLabelTemplatesController(): null {
   const { environment } = useStateSlice("config");
@@ -50,7 +50,13 @@ export function Na3TransfLabelTemplatesController(): null {
   }, [dispatch, fbTransfLabelTemplatesLoading]);
 
   useEffect(() => {
-    dispatch(setTransfLabelTemplatesError(fbTransfLabelTemplatesError || null));
+    dispatch(
+      setTransfLabelTemplatesError(
+        fbTransfLabelTemplatesError
+          ? translateFirebaseError(fbTransfLabelTemplatesError)
+          : null
+      )
+    );
   }, [dispatch, fbTransfLabelTemplatesError]);
 
   /* Update on auth */

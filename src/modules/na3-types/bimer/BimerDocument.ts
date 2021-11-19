@@ -1,6 +1,6 @@
 import type { BimerBase } from "./BimerBase";
 
-type BimerDocumentItem = {
+type BimerDocItem = {
   Identificador: string;
   IdentificadorProduto: string;
   IdentificadorSetorEntrada?: string;
@@ -16,7 +16,7 @@ type BimerDocumentItem = {
   ValorUnitario: number;
 };
 
-type BimerDocumentPayment = {
+type BimerDocPayment = {
   Aliquota: number;
   AliquotaConvenio: number;
   AliquotaTACConvenio: number;
@@ -47,7 +47,7 @@ type BimerDocumentPayment = {
   ValorTACEmpresa: number;
 };
 
-export type BimerDoc = {
+export type BimerDocument = {
   ChaveAcesso: string;
   CodigoEmpresa: string;
   DataEmissao: string;
@@ -59,13 +59,13 @@ export type BimerDoc = {
   IdentificadorLoteEstoque: string;
   IdentificadorOperacao: string;
   IdentificadorPessoa: string;
-  Itens: BimerDocumentItem[];
+  Itens: BimerDocItem[];
   Liberado: boolean;
   Mensagens?: (BimerBase | null)[];
   NomeEntidadeOrigem?: string;
   Numero: string;
   Observacao: string;
-  Pagamentos: BimerDocumentPayment[];
+  Pagamentos: BimerDocPayment[];
   StatusDocumentoTelecomunicacao: string;
   StatusNotaFiscalEletronica:
     | "A"
