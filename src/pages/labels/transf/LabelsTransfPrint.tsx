@@ -1,4 +1,4 @@
-import React, { useCallback } from "react";
+import React, { useCallback, useMemo } from "react";
 import { useHistory } from "react-router-dom";
 
 import {
@@ -7,12 +7,22 @@ import {
   PageTitle,
 } from "../../../components";
 import { useQuery } from "../../../hooks";
+import { useNa3TransfLabelTemplates } from "../../../modules/na3-react";
 import type { Na3TransfLabelTemplate } from "../../../modules/na3-types";
 import { LabelsTransfPrintTemplatePage } from "./LabelsTransfPrintTemplate";
 
 export function LabelsTransfPrintPage(): JSX.Element {
   const history = useHistory();
   const query = useQuery("modelo");
+
+  const {
+    helpers: { getDepartmentTemplates },
+  } = useNa3TransfLabelTemplates();
+
+  const listData = useMemo(
+    () => getDepartmentTemplates() || [],
+    [getDepartmentTemplates]
+  );
 
   const handleSelectTemplate = useCallback(
     (template: Na3TransfLabelTemplate) => {
@@ -30,7 +40,10 @@ export function LabelsTransfPrintPage(): JSX.Element {
         Selecione um modelo de etiqueta para imprimir.
       </PageDescription>
 
-      <LabelsTransfList onSelectTemplate={handleSelectTemplate} />
+      <LabelsTransfList
+        data={listData}
+        onSelectTemplate={handleSelectTemplate}
+      />
     </>
   );
 }

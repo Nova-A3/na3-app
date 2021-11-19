@@ -19,18 +19,31 @@ export type MaintProjectBuilderData = Required<
 
 export function buildMaintProject(
   internalId: number,
-  data: MaintProjectBuilderData
-): Omit<Na3MaintenanceProject, "id" | "ref"> {
+  data: MaintProjectBuilderData,
+  options?: { skipEvents?: false }
+): Omit<Na3MaintenanceProject, "id" | "ref">;
+export function buildMaintProject(
+  internalId: number,
+  data: MaintProjectBuilderData,
+  options: { skipEvents: true }
+): Omit<Na3MaintenanceProject, "events" | "id" | "ref">;
+export function buildMaintProject(
+  internalId: number,
+  data: MaintProjectBuilderData,
+  options?: { skipEvents?: boolean }
+):
+  | Omit<Na3MaintenanceProject, "events" | "id" | "ref">
+  | Omit<Na3MaintenanceProject, "id" | "ref"> {
   const creationEvent = buildMaintProjectEvents({
     author: data.author,
     type: "create",
   });
-  const project: Omit<Na3MaintenanceProject, "id" | "ref"> = {
+
+  const project: Omit<Na3MaintenanceProject, "events" | "id" | "ref"> = {
     description: data.description.trim(),
     eta: firebase.firestore.Timestamp.fromDate(
       data.eta.clone().endOf("day").toDate()
     ),
-    events: [creationEvent],
     internalId,
     isPredPrev: data.isPredPrev,
     priority: data.priority,
@@ -43,7 +56,11 @@ export function buildMaintProject(
     title: data.title.trim(),
   };
 
-  return project;
+  if (options?.skipEvents) {
+    return project;
+  }
+
+  return { ...project, events: [creationEvent] };
 }
 
 export function buildMaintProjectEvents<

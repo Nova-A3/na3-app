@@ -1,18 +1,25 @@
-import { CheckOutlined, TeamOutlined, UserOutlined } from "@ant-design/icons";
+import {
+  CheckOutlined,
+  EditOutlined,
+  TeamOutlined,
+  UserOutlined,
+} from "@ant-design/icons";
 import { Button, Col, Divider, Grid, Modal, notification, Row } from "antd";
 import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { useHistory } from "react-router-dom";
 
 import {
   DataInfo,
+  MaintCreateProjectForm,
+  MaintEmployeeTag,
   MaintProjectActionModal,
-  MaintProjectPriorityTag,
   MaintProjectStatusBadge,
   MaintProjectTimeline,
   Page,
   PageActionButtons,
   PageDescription,
   PageTitle,
+  PriorityTag,
   Result404,
 } from "../../../components";
 import { useBreadcrumb } from "../../../hooks";
@@ -33,6 +40,7 @@ export function MaintProjectDetails({
   const [actionModalType, setActionModalType] = useState<
     "deliver" | "status"
   >();
+  const [editModalIsOpen, setEditModalIsOpen] = useState(false);
 
   const history = useHistory();
   const breakpoint = Grid.useBreakpoint();
@@ -68,8 +76,16 @@ export function MaintProjectDetails({
     setActionModalType("deliver");
   }, []);
 
+  const handleEditModalOpen = useCallback(() => {
+    setEditModalIsOpen(true);
+  }, []);
+
   const handleActionModalClose = useCallback(() => {
     setActionModalType(undefined);
+  }, []);
+
+  const handleEditModalClose = useCallback(() => {
+    setEditModalIsOpen(false);
   }, []);
 
   const handleProjectDeliver = useCallback(
@@ -183,16 +199,31 @@ export function MaintProjectDetails({
       <PageDescription>{project.description}</PageDescription>
 
       {projectStatus !== "finished" && (
-        <PageActionButtons>
-          <Button onClick={handleActionModalStatusOpen}>Informar status</Button>
-          <Button
-            icon={<CheckOutlined />}
-            onClick={handleActionModalDeliverOpen}
-            type="primary"
-          >
-            Entregar {isPredPrev ? "Pred/Prev" : "projeto"}
-          </Button>
-        </PageActionButtons>
+        <PageActionButtons
+          left={
+            <>
+              <Button onClick={handleActionModalStatusOpen}>
+                Informar status
+              </Button>
+              <Button
+                icon={<CheckOutlined />}
+                onClick={handleActionModalDeliverOpen}
+                type="primary"
+              >
+                Entregar {isPredPrev ? "Pred/Prev" : "projeto"}
+              </Button>
+            </>
+          }
+          right={
+            <Button
+              icon={<EditOutlined />}
+              onClick={handleEditModalOpen}
+              type="link"
+            >
+              Editar
+            </Button>
+          }
+        />
       )}
 
       <Divider />
@@ -209,13 +240,13 @@ export function MaintProjectDetails({
 
         <Col lg={6} xs={12}>
           <DataInfo label="Prioridade">
-            <MaintProjectPriorityTag priority={project.priority} />
+            <PriorityTag priority={project.priority} />
           </DataInfo>
         </Col>
 
         <Col lg={6} xs={12}>
           <DataInfo icon={<UserOutlined />} label="Responsável">
-            <strong>{project.team.manager.trim()}</strong>
+            <MaintEmployeeTag maintainer={project.team.manager.trim()} />
           </DataInfo>
         </Col>
 
@@ -270,6 +301,21 @@ export function MaintProjectDetails({
         project={project}
         type={actionModalType || "status"}
       />
+
+      <Modal
+        destroyOnClose={true}
+        footer={null}
+        onCancel={handleEditModalClose}
+        title="Editar projeto"
+        visible={editModalIsOpen}
+        width={breakpoint.lg ? "65%" : breakpoint.md ? "80%" : undefined}
+      >
+        <MaintCreateProjectForm
+          editingProject={project}
+          isPredPrev={isPredPrev}
+          onSubmit={handleEditModalClose}
+        />
+      </Modal>
     </>
   ) : (
     <Result404

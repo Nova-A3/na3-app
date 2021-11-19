@@ -49,6 +49,7 @@ export function ServiceOrderSolutionActionsModal({
 
   return (
     <Modal
+      destroyOnClose={true}
       footer={null}
       onCancel={onClose}
       title={type === "status" ? "Informar status" : "Transmitir solução"}

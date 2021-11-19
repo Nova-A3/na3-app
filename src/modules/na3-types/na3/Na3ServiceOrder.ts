@@ -7,6 +7,8 @@ export type Na3ServiceOrder = LegacyTicket & {
 
 export type Na3ServiceOrderEvent = Na3ServiceOrder["events"][number];
 
+export type Na3ServiceOrderStatus = Na3ServiceOrder["status"];
+
 /* LegacyTicket */
 
 type LegacyTicketEditedEventChanges = {

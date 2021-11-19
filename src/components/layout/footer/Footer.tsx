@@ -1,8 +1,8 @@
-import { Col, Layout, Row, Typography } from "antd";
+import { Col, Layout, Row, Tooltip, Typography } from "antd";
 import dayjs from "dayjs";
 import React from "react";
 
-import { APP_VERSION } from "../../../constants";
+import { APP_VERSION, APP_VERSION_TIMESTAMP } from "../../../constants";
 import classes from "./Footer.module.css";
 
 export function Footer(): JSX.Element {
@@ -14,9 +14,16 @@ export function Footer(): JSX.Element {
             Nova A3 ©{dayjs().format("YYYY")} Todos os direitos reservados
           </Layout.Footer>
 
-          <Typography.Text italic={true} type="secondary">
-            v{APP_VERSION}
-          </Typography.Text>
+          <Tooltip
+            placement="topRight"
+            title={`Atualizado em: ${dayjs(APP_VERSION_TIMESTAMP).format(
+              "DD/MM/YY HH:mm"
+            )}`}
+          >
+            <Typography.Text italic={true} type="secondary">
+              v{APP_VERSION}
+            </Typography.Text>
+          </Tooltip>
         </div>
       </Col>
     </Row>

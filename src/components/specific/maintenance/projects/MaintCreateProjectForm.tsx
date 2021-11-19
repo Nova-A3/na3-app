@@ -1,10 +1,11 @@
 import { Divider, Grid, Modal, notification } from "antd";
 import dayjs from "dayjs";
-import React, { useCallback } from "react";
+import React, { useCallback, useMemo } from "react";
 
 import { EMPLOYEES } from "../../../../constants";
 import { useForm } from "../../../../hooks";
 import { useNa3MaintProjects } from "../../../../modules/na3-react";
+import type { Na3MaintenanceProject } from "../../../../modules/na3-types";
 import {
   createErrorNotifier,
   maintEmployeeSelectOptions,
@@ -15,11 +16,13 @@ import { FormField } from "../../../forms/FormField/FormField";
 import { SubmitButton } from "../../../forms/SubmitButton";
 
 type MaintCreateProjectFormProps = {
+  editingProject?: Na3MaintenanceProject;
   isPredPrev: boolean;
   onSubmit?: () => void;
 };
 
 const defaultProps = {
+  editingProject: undefined,
   onSubmit: undefined,
 };
 
@@ -36,37 +39,85 @@ type FormValues = {
 export function MaintCreateProjectForm({
   onSubmit,
   isPredPrev,
+  editingProject,
 }: MaintCreateProjectFormProps): JSX.Element {
   const breakpoint = Grid.useBreakpoint();
 
   const { helpers } = useNa3MaintProjects();
 
+  const etaDefaultValue = useMemo((): string => {
+    if (!editingProject) return "";
+
+    const eta = dayjs(editingProject.eta.toDate()).startOf("day");
+    if (eta.isBefore(dayjs().startOf("day"))) {
+      return "";
+    }
+    return eta.format();
+  }, [editingProject]);
+
   const form = useForm<FormValues>({
     defaultValues: {
-      author: "",
-      description: "",
-      eta: "",
-      priority: "",
-      teamManager: "",
-      teamMembers: [],
-      title: "",
+      author: editingProject?.events[0].author || "",
+      description: editingProject?.description || "",
+      eta: etaDefaultValue,
+      priority: editingProject?.priority || "",
+      teamManager: editingProject?.team.manager || "",
+      teamMembers:
+        editingProject?.team.others.split(",").map((member) => member.trim()) ||
+        [],
+      title: editingProject?.title || "",
     },
   });
 
   const handleSubmit = useCallback(
-    (values: FormValues) => {
-      const notifyError = createErrorNotifier("Erro ao abrir o projeto");
+    async (values: FormValues) => {
+      const notifyError = createErrorNotifier(
+        `Erro ao ${editingProject ? "editar" : "criar"} o projeto`
+      );
 
-      const internalId = helpers.getNextInternalId();
+      if (editingProject) {
+        const updateRes = await helpers.update(editingProject.id, {
+          author: values.author,
+          description: values.description,
+          eta: dayjs(values.eta),
+          internalId: editingProject.internalId,
+          isPredPrev,
+          priority: values.priority === "" ? "low" : values.priority,
+          team: {
+            manager: values.teamManager,
+            members: values.teamMembers,
+          },
+          title: values.title,
+        });
 
-      if (!internalId) {
-        notifyError(
-          "Não foi possível vincular um identificador ao projeto. Por favor, recarregue a página ou tente novamente mais tarde."
-        );
-        return;
-      }
+        if (updateRes.error) {
+          notifyError(updateRes.error.message);
+        } else {
+          notification.success({
+            description: (
+              <>
+                {isPredPrev ? "Pred/Prev" : "Projeto"}{" "}
+                {helpers.formatInternalId(editingProject.internalId)}{" "}
+                <em>({values.title.trim()})</em>{" "}
+                {isPredPrev ? "atualizada" : "atualizado"} com sucesso!
+              </>
+            ),
+            message: `${isPredPrev ? "Pred/Prev editada" : "Projeto editado"}`,
+          });
 
-      return new Promise<void>((resolve) => {
+          form.resetForm();
+          onSubmit?.();
+        }
+      } else {
+        const internalId = helpers.getNextInternalId();
+
+        if (!internalId) {
+          notifyError(
+            "Não foi possível vincular um identificador ao projeto. Por favor, recarregue a página ou tente novamente mais tarde."
+          );
+          return;
+        }
+
         const confirmModal = Modal.confirm({
           content: (
             <>
@@ -84,11 +135,10 @@ export function MaintCreateProjectForm({
             </>
           ),
           okText: `Abrir ${isPredPrev ? "Pred/Prev" : "projeto"}`,
-          onCancel: () => resolve(),
           onOk: async () => {
             confirmModal.update({ okText: "Enviando..." });
 
-            const operationRes = await helpers.add(internalId, {
+            const addRes = await helpers.add(internalId, {
               author: values.author,
               description: values.description,
               eta: dayjs(values.eta),
@@ -101,8 +151,8 @@ export function MaintCreateProjectForm({
               title: values.title,
             });
 
-            if (operationRes.error) {
-              notifyError(operationRes.error.message);
+            if (addRes.error) {
+              notifyError(addRes.error.message);
             } else {
               notification.success({
                 description: (
@@ -117,17 +167,16 @@ export function MaintCreateProjectForm({
                   isPredPrev ? "Pred/Prev aberta" : "Projeto aberto"
                 }`,
               });
+
               form.resetForm();
               onSubmit?.();
             }
-
-            resolve();
           },
           title: `Abrir ${isPredPrev ? "Pred/Prev" : "projeto"}?`,
         });
-      });
+      }
     },
-    [form, helpers, onSubmit, isPredPrev]
+    [form, helpers, onSubmit, isPredPrev, editingProject]
   );
 
   const handleDateHelpWhenValid = useCallback((dateString: string): string => {
@@ -143,6 +192,7 @@ export function MaintCreateProjectForm({
   return (
     <Form form={form} onSubmit={handleSubmit}>
       <FormField
+        disabled={!!editingProject}
         label="Autor"
         name="author"
         options={maintEmployeeSelectOptions}
@@ -207,8 +257,16 @@ export function MaintCreateProjectForm({
       />
 
       <SubmitButton
-        label={`Abrir ${isPredPrev ? "Pred/Prev" : "projeto"}`}
-        labelWhenLoading={`Enviando ${isPredPrev ? "Pred/Prev" : "projeto"}...`}
+        label={`${
+          editingProject
+            ? "Salvar alterações"
+            : `Abrir ${isPredPrev ? "Pred/Prev" : "projeto"}`
+        }`}
+        labelWhenLoading={`${
+          editingProject
+            ? "Salvando..."
+            : `Enviando ${isPredPrev ? "Pred/Prev" : "projeto"}...`
+        }`}
       />
     </Form>
   );

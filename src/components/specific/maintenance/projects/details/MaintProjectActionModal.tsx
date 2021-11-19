@@ -1,12 +1,12 @@
 import { Modal } from "antd";
 import React, { useCallback } from "react";
 
-import { useForm } from "../../../../hooks";
-import type { Na3MaintenanceProject } from "../../../../modules/na3-types";
-import { maintEmployeeSelectOptions } from "../../../../utils";
-import { Form } from "../../../forms/Form";
-import { FormField } from "../../../forms/FormField/FormField";
-import { SubmitButton } from "../../../forms/SubmitButton";
+import { useForm } from "../../../../../hooks";
+import type { Na3MaintenanceProject } from "../../../../../modules/na3-types";
+import { maintEmployeeSelectOptions } from "../../../../../utils";
+import { Form } from "../../../../forms/Form";
+import { FormField } from "../../../../forms/FormField/FormField";
+import { SubmitButton } from "../../../../forms/SubmitButton";
 
 type ActionFormType = "deliver" | "status";
 
@@ -46,6 +46,7 @@ export function MaintProjectActionModal<T extends ActionFormType>({
 
   return (
     <Modal
+      destroyOnClose={true}
       footer={null}
       onCancel={onClose}
       title={

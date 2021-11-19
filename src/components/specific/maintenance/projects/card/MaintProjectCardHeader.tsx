@@ -4,8 +4,8 @@ import type {
   Na3MaintenanceProject,
   Na3MaintenanceProjectStatus,
 } from "../../../../../modules/na3-types";
+import { PriorityTag } from "../../../../ui/tags/PriorityTag";
 import classes from "./MaintProjectCardHeader.module.css";
-import { MaintProjectPriorityTag } from "./MaintProjectPriorityTag";
 import { MaintProjectStatusBadge } from "./MaintProjectStatusBadge";
 
 type MaintProjectCardHeaderProps = {
@@ -23,7 +23,7 @@ export function MaintProjectCardHeader({
     <div className={classes.Header}>
       <MaintProjectStatusBadge isPredPrev={isPredPrev} status={status} />
 
-      {status !== "finished" && <MaintProjectPriorityTag priority={priority} />}
+      {status !== "finished" && <PriorityTag priority={priority} />}
     </div>
   );
 }

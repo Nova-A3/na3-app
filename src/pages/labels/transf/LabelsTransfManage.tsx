@@ -76,7 +76,12 @@ export function LabelsTransfManagePage(): JSX.Element {
         ]}
         form={<LabelsTransfTemplateForm />}
         formTitle="Novo modelo"
-        list={<LabelsTransfList onSelectTemplate={handleSelectTemplate} />}
+        list={
+          <LabelsTransfList
+            data={transfLabelTemplates.data || []}
+            onSelectTemplate={handleSelectTemplate}
+          />
+        }
         listTitle="Modelos"
         title="Etiquetas • Transferência"
       />

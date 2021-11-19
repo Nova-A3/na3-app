@@ -1,7 +1,7 @@
 import type { TagProps } from "antd";
 
 export type Employee = {
-  color: TagProps["color"];
+  color: Exclude<TagProps["color"], "blue">;
   name: string;
 };
 

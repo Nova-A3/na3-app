@@ -91,12 +91,11 @@ export function useNa3ServiceOrders(): UseNa3ServiceOrdersResult {
 
   const getDepartmentOrders = useCallback(
     (data?: Na3ServiceOrder[]) =>
-      (department &&
-        ((data || serviceOrders.data)?.filter(
-          (so) => so.username === department.id
-        ) ||
-          [])) ||
-      undefined,
+      department
+        ? (data || serviceOrders.data || []).filter(
+            (so) => so.username === department.id
+          )
+        : undefined,
     [department, serviceOrders.data]
   );
 
@@ -204,7 +203,7 @@ export function useNa3ServiceOrders(): UseNa3ServiceOrdersResult {
     [serviceOrders.data, orderRequiresAction]
   );
 
-  const add = useCallback(
+  const addServiceOrder = useCallback(
     async (
       id: string,
       data: ServiceOrderBuilderData
@@ -322,7 +321,7 @@ export function useNa3ServiceOrders(): UseNa3ServiceOrdersResult {
     [device]
   );
 
-  const confirm = useCallback(
+  const confirmServiceOrder = useCallback(
     async (
       id: string,
       payload: {
@@ -419,7 +418,7 @@ export function useNa3ServiceOrders(): UseNa3ServiceOrdersResult {
     [device]
   );
 
-  const deliver = useCallback(
+  const deliverServiceOrder = useCallback(
     async (
       id: string,
       payload: { assignee: string; solution: string }
@@ -479,9 +478,9 @@ export function useNa3ServiceOrders(): UseNa3ServiceOrdersResult {
     ...serviceOrders,
     helpers: {
       acceptSolution,
-      add,
-      confirm,
-      deliver,
+      add: addServiceOrder,
+      confirm: confirmServiceOrder,
+      deliver: deliverServiceOrder,
       getById,
       getByStatus,
       getDepartmentOrders,

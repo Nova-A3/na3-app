@@ -1,9 +1,11 @@
+import dayjs from "dayjs";
+
 import type { AsyncCommandResult } from "./utils";
 import { execAsync } from "./utils";
 import { editFileAsync, registerCommands } from "./utils";
 
 function replaceMetaVariable(
-  variable: "VERSION",
+  variable: "VERSION_TIMESTAMP" | "VERSION",
   updateOperation: (value: string) => string
 ): Promise<AsyncCommandResult> {
   return editFileAsync("./src/constants/meta.ts", (content) => {
@@ -17,8 +19,8 @@ function replaceMetaVariable(
   });
 }
 
-function incrementMetaVersion(): Promise<AsyncCommandResult> {
-  return replaceMetaVariable("VERSION", (value) => {
+async function incrementMetaVersion(): Promise<AsyncCommandResult> {
+  await replaceMetaVariable("VERSION", (value) => {
     const versionChunks = value.split(".");
     const incrementableChunk = versionChunks[2];
 
@@ -26,6 +28,8 @@ function incrementMetaVersion(): Promise<AsyncCommandResult> {
       parseInt(incrementableChunk) + 1
     }`;
   });
+
+  return replaceMetaVariable("VERSION_TIMESTAMP", () => dayjs().format());
 }
 
 async function gitCommitPush(): Promise<AsyncCommandResult> {

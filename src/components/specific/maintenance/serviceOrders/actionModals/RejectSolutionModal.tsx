@@ -34,6 +34,7 @@ export function RejectSolutionModal({
 
   return (
     <Modal
+      destroyOnClose={true}
       footer={null}
       onCancel={onClose}
       title="Recusar solução"

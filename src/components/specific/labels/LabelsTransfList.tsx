@@ -6,13 +6,15 @@ import { List } from "../../lists/List";
 import { LabelsTransfCard } from "./transfCard/LabelsTransfCard";
 
 type LabelsTransfListProps = {
+  data: Na3TransfLabelTemplate[];
   onSelectTemplate: (template: Na3TransfLabelTemplate) => void;
 };
 
 export function LabelsTransfList({
+  data,
   onSelectTemplate,
 }: LabelsTransfListProps): JSX.Element {
-  const transfLabelTemplates = useNa3TransfLabelTemplates();
+  const { error, loading } = useNa3TransfLabelTemplates();
 
   const handleRenderItem = useCallback(
     (item: Na3TransfLabelTemplate) => (
@@ -23,7 +25,7 @@ export function LabelsTransfList({
 
   const handleFilterItem = useCallback(
     (query: string): Na3TransfLabelTemplate[] =>
-      transfLabelTemplates.data?.filter((template) => {
+      data.filter((template) => {
         const formattedQuery = query.trim().toLowerCase();
         return (
           template.name.toLowerCase().includes(formattedQuery) ||
@@ -32,15 +34,15 @@ export function LabelsTransfList({
           template.customerName.toLowerCase().includes(formattedQuery)
         );
       }) || [],
-    [transfLabelTemplates.data]
+    [data]
   );
 
   return (
     <List
-      data={transfLabelTemplates.data}
-      error={transfLabelTemplates.error?.message}
+      data={data}
+      error={error?.message}
       filterItem={handleFilterItem}
-      isLoading={transfLabelTemplates.loading}
+      isLoading={loading}
       renderItem={handleRenderItem}
       verticalSpacing={8}
     />

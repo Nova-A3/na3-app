@@ -47,6 +47,7 @@ export function ConfirmServiceOrderModal({
 
   return (
     <Modal
+      destroyOnClose={true}
       footer={null}
       onCancel={onClose}
       title="Aceitar OS"

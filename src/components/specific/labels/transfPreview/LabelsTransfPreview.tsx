@@ -84,11 +84,10 @@ export function LabelsTransfPreview({
     onSave(label, { barcodeDataUrl, copies, qrDataUrl });
   }, [onSave, label, copies, qrDataUrl, barcodeDataUrl]);
 
-  if (!label) return null;
-
   return (
     <Modal
       centered={true}
+      destroyOnClose={true}
       footer={
         <PreviewFooter
           onCancel={onCancel}
@@ -101,62 +100,68 @@ export function LabelsTransfPreview({
       visible={!!label}
       width={breakpoint.lg ? "65%" : breakpoint.md ? "80%" : undefined}
     >
-      <div className={classes.LabelPreview}>
-        <img alt="Layout impresso da etiqueta" src={labelLayout} />
+      {label && (
+        <>
+          <div className={classes.LabelPreview}>
+            <img alt="Layout impresso da etiqueta" src={labelLayout} />
 
-        <PreviewData x="32.6%" y="19%">
-          {label.customerName.toUpperCase()}
-        </PreviewData>
+            <PreviewData x="32.6%" y="19%">
+              {label.customerName.toUpperCase()}
+            </PreviewData>
 
-        <PreviewData x="82%" y="19%">
-          {label.date.toUpperCase()}
-        </PreviewData>
+            <PreviewData x="82%" y="19%">
+              {label.date.toUpperCase()}
+            </PreviewData>
 
-        <PreviewData w="70%" x="4.9%" y="45.5%">
-          {label.productCode.toUpperCase()} — {label.productName.toUpperCase()}
-        </PreviewData>
+            <PreviewData w="70%" x="4.9%" y="45.5%">
+              {label.productCode.toUpperCase()} —{" "}
+              {label.productName.toUpperCase()}
+            </PreviewData>
 
-        <PreviewData x="82%" y="45.5%">
-          {label.productQuantity} {label.productUnitAbbreviation.toUpperCase()}
-        </PreviewData>
+            <PreviewData x="82%" y="45.5%">
+              {label.productQuantity}{" "}
+              {label.productUnitAbbreviation.toUpperCase()}
+            </PreviewData>
 
-        <PreviewData x="4.9%" y="78%">
-          {label.batchId.toUpperCase()}
-        </PreviewData>
+            <PreviewData x="4.9%" y="78%">
+              {label.batchId.toUpperCase()}
+            </PreviewData>
 
-        {label.invoiceNumber && (
-          <PreviewData x="29%" y="78%">
-            {label.invoiceNumber.toUpperCase()}
-          </PreviewData>
-        )}
+            {label.invoiceNumber && (
+              <PreviewData x="29%" y="78%">
+                {label.invoiceNumber.toUpperCase()}
+              </PreviewData>
+            )}
 
-        <canvas
-          ref={handleMakeQrCode}
-          style={{
-            left: "54.65%",
-            position: "absolute",
-            top: "72.6%",
-            visibility: breakpoint.md ? "visible" : "hidden",
-          }}
-        />
+            <canvas
+              ref={handleMakeQrCode}
+              style={{
+                left: "54.65%",
+                position: "absolute",
+                top: "72.6%",
+                visibility: breakpoint.md ? "visible" : "hidden",
+              }}
+            />
 
-        <canvas
-          ref={handleMakeBarcode}
-          style={{
-            height: "22.2%",
-            left: "70.35%",
-            position: "absolute",
-            top: "72.6%",
-            width: "20.2%",
-          }}
-        />
-      </div>
+            <canvas
+              ref={handleMakeBarcode}
+              style={{
+                height: "22.2%",
+                left: "70.35%",
+                position: "absolute",
+                top: "72.6%",
+                width: "20.2%",
+              }}
+            />
+          </div>
 
-      <Divider />
+          <Divider />
 
-      <div style={{ textAlign: "right" }}>
-        <Typography.Text>Nº de cópias: {copies}</Typography.Text>
-      </div>
+          <div style={{ textAlign: "right" }}>
+            <Typography.Text>Nº de cópias: {copies}</Typography.Text>
+          </div>
+        </>
+      )}
     </Modal>
   );
 }

@@ -11,16 +11,16 @@ import {
   ConfirmServiceOrderModal,
   DataInfo,
   Divider,
+  MaintEmployeeTag,
   MaintServiceOrderTimelineModal,
   Page,
   PageActionButtons,
   PageDescription,
   PageTitle,
+  PriorityTag,
   RejectSolutionModal,
   Result404,
   ServiceOrderMachineTag,
-  ServiceOrderMaintainerTag,
-  ServiceOrderPriorityTag,
   ServiceOrderSolutionActionsModal,
   ServiceOrderStatusBadge,
 } from "../../../components";
@@ -396,8 +396,8 @@ export function MaintServiceOrderDetailsPage({
             <DataInfo label="Prioridade/Responsável">
               {serviceOrder.priority && serviceOrder.assignedMaintainer ? (
                 <Space>
-                  <ServiceOrderPriorityTag priority={serviceOrder.priority} />
-                  <ServiceOrderMaintainerTag
+                  <PriorityTag priority={serviceOrder.priority} />
+                  <MaintEmployeeTag
                     maintainer={serviceOrder.assignedMaintainer}
                   />
                 </Space>

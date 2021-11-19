@@ -46,6 +46,11 @@ export type UseNa3MaintProjectsResult = {
       sortingOrder: Na3MaintenanceProjectStatus[],
       data?: Na3MaintenanceProject[]
     ) => Na3MaintenanceProject[];
+    update: (
+      projectId: string,
+      updateData: MaintProjectBuilderData &
+        Pick<Na3MaintenanceProject, "internalId">
+    ) => Promise<FirebaseOperationResult<Na3MaintenanceProject>>;
   };
   loading: boolean;
 };
@@ -145,9 +150,10 @@ export function useNa3MaintProjects(): UseNa3MaintProjectsResult {
     [maintProjects.data]
   );
 
-  const add = useCallback(
+  const addProject = useCallback(
     async (internalId: number, projectData: MaintProjectBuilderData) => {
       const project = buildMaintProject(internalId, projectData);
+
       try {
         const docRef = (await fbCollectionRef.current.add(
           project
@@ -217,10 +223,43 @@ export function useNa3MaintProjects(): UseNa3MaintProjectsResult {
     []
   );
 
+  const updateProject = useCallback(
+    async (
+      projectId: string,
+      updateData: MaintProjectBuilderData &
+        Pick<Na3MaintenanceProject, "internalId">
+    ) => {
+      const updated = buildMaintProject(updateData.internalId, updateData, {
+        skipEvents: true,
+      });
+
+      const ev = buildMaintProjectEvents({
+        author: updateData.author,
+        type: "edit",
+      });
+
+      try {
+        const docRef = fbCollectionRef.current.doc(
+          projectId
+        ) as firebase.firestore.DocumentReference<Na3MaintenanceProject>;
+
+        await docRef.update({
+          ...updated,
+          events: firebase.firestore.FieldValue.arrayUnion(ev),
+        });
+
+        return { data: docRef, error: null };
+      } catch (error) {
+        return { data: null, error: error as firebase.FirebaseError };
+      }
+    },
+    []
+  );
+
   return {
     ...maintProjects,
     helpers: {
-      add,
+      add: addProject,
       deliverProject,
       formatInternalId,
       getById,
@@ -231,6 +270,7 @@ export function useNa3MaintProjects(): UseNa3MaintProjectsResult {
       shareProjectStatus,
       sortByPriority,
       sortByStatus,
+      update: updateProject,
     },
   };
 }

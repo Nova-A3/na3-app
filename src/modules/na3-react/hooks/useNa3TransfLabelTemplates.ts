@@ -18,6 +18,9 @@ export type UseNa3TransfLabelTemplatesResult = {
     ) => Promise<FirebaseOperationResult<Na3TransfLabelTemplate>>;
     delete: (templateId: string) => Promise<FirebaseNullOperationResult>;
     getById: (id: string) => Na3TransfLabelTemplate | undefined;
+    getDepartmentTemplates: (
+      data?: Na3TransfLabelTemplate[]
+    ) => Na3TransfLabelTemplate[] | undefined;
     update: (
       templateId: string,
       templateData: Omit<Na3TransfLabelTemplate, "id">
@@ -28,6 +31,7 @@ export type UseNa3TransfLabelTemplatesResult = {
 
 export function useNa3TransfLabelTemplates(): UseNa3TransfLabelTemplatesResult {
   const { environment } = useStateSlice("config");
+  const { department } = useStateSlice("auth");
   const { transf: transfLabelTemplates } = useStateSlice("labelTemplates");
 
   const fbCollectionRef = useRef(
@@ -40,6 +44,18 @@ export function useNa3TransfLabelTemplates(): UseNa3TransfLabelTemplatesResult {
     (id: string): Na3TransfLabelTemplate | undefined =>
       transfLabelTemplates.data?.find((template) => template.id === id),
     [transfLabelTemplates.data]
+  );
+
+  const getDepartmentTemplates = useCallback(
+    (data?: Na3TransfLabelTemplate[]) =>
+      department
+        ? (data || transfLabelTemplates.data || []).filter(
+            (template) =>
+              template.departmentId === null ||
+              template.departmentId === department.id
+          )
+        : undefined,
+    [department, transfLabelTemplates.data]
   );
 
   const add = useCallback(
@@ -91,6 +107,6 @@ export function useNa3TransfLabelTemplates(): UseNa3TransfLabelTemplatesResult {
 
   return {
     ...transfLabelTemplates,
-    helpers: { add, delete: del, getById, update },
+    helpers: { add, delete: del, getById, getDepartmentTemplates, update },
   };
 }

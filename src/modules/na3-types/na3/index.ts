@@ -13,6 +13,10 @@ export type {
   Na3MaintenanceProjectEvent,
   Na3MaintenanceProjectStatus,
 } from "./Na3MaintenanceProject";
-export type { Na3ServiceOrder, Na3ServiceOrderEvent } from "./Na3ServiceOrder";
+export type {
+  Na3ServiceOrder,
+  Na3ServiceOrderEvent,
+  Na3ServiceOrderStatus,
+} from "./Na3ServiceOrder";
 export type { Na3TransfLabelTemplate } from "./Na3TransfLabelTemplate";
 export type { Na3User } from "./Na3User";
