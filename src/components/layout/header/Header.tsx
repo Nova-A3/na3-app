@@ -20,7 +20,7 @@ export function Header(): JSX.Element {
   const handleSignOut = useCallback(async () => {
     await auth.helpers.signOut();
     await message.info("Você saiu");
-    history.push("/entrar");
+    history.push("/");
   }, [auth.helpers, history]);
 
   const handleAuthRedirect = useCallback(() => {

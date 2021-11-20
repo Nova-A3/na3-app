@@ -1,10 +1,11 @@
-import { Alert, Grid, Row } from "antd";
+import { Grid, Row } from "antd";
 import React, { useCallback, useMemo } from "react";
 import { useHistory } from "react-router";
 
 import {
   MaintDashboardColumn,
   MaintServiceOrdersList,
+  PageAlert,
   PageTitle,
 } from "../../../components";
 import { useQuery } from "../../../hooks";
@@ -55,13 +56,9 @@ export function MaintDashboardHomePage(): JSX.Element {
       </PageTitle>
 
       {!breakpoint.lg && (
-        <Alert
-          className={classes.MobileAlert}
-          closable={true}
-          message="Esta página é melhor visualizada no computador."
-          showIcon={true}
-          type="warning"
-        />
+        <PageAlert type="warning">
+          Esta página é melhor visualizada no computador.
+        </PageAlert>
       )}
 
       {breakpoint.lg ? (

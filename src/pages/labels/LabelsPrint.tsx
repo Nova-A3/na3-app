@@ -1,8 +1,7 @@
 import { red } from "@ant-design/colors";
 import React from "react";
-import { IoPricetags } from "react-icons/io5";
+import { IoPricetagsOutline } from "react-icons/io5";
 
-import type { StaticListItemProps } from "../../components";
 import { MenuPage } from "../../components";
 
 export function LabelsPrintPage(): JSX.Element {
@@ -15,12 +14,12 @@ export function LabelsPrintPage(): JSX.Element {
   );
 }
 
-const labelTemplateGroups: StaticListItemProps[] = [
+const labelTemplateGroups = [
   {
-    color: red[2],
+    colors: { background: red[2], foreground: red[8] },
     description: "Imprimir etiquetas de transferência",
     href: "/etiquetas/imprimir/transferencia",
-    icon: <IoPricetags />,
+    icon: <IoPricetagsOutline />,
     title: "Transferência",
   },
 ];

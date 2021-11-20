@@ -380,7 +380,6 @@ export function FormField(props: FormFieldProps): JSX.Element {
             addonAfter={props.addonAfter}
             addonBefore={props.addonBefore}
             allowClear={props.allowClear}
-            autoComplete="current-password"
             autoFocus={autoFocus}
             disabled={disabled}
             id={name}

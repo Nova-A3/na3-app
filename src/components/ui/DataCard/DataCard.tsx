@@ -56,7 +56,9 @@ export function DataCard<T>({
   return (
     <Card
       bodyStyle={cardBodyStyle}
-      className={`${classes.Card} ${className || ""}`}
+      className={`${
+        classes.Card
+      } animate__animated animate__fadeIn animate__faster ${className || ""}`}
       hoverable={!!onClick}
       onClick={handleClick}
     >

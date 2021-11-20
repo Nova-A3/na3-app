@@ -1,33 +1,33 @@
 import { green, red } from "@ant-design/colors";
+import { TagsOutlined } from "@ant-design/icons";
 import React from "react";
-import { IoPricetags, IoPricetagsOutline } from "react-icons/io5";
+import { IoPricetagsOutline } from "react-icons/io5";
 
-import type { StaticListItemProps } from "../../components";
 import { MenuPage } from "../../components";
 
 export function LabelsHomePage(): JSX.Element {
   return (
     <MenuPage
-      icon={<IoPricetagsOutline />}
+      icon={<TagsOutlined />}
       items={labelsPageActions}
       title="Etiquetas"
     />
   );
 }
 
-const labelsPageActions: StaticListItemProps[] = [
+const labelsPageActions = [
   {
-    color: red[2],
+    colors: { background: red[2], foreground: red[8] },
     description: "Imprimir etiquetas a partir dos modelos pré-definidos",
     href: "/etiquetas/imprimir",
-    icon: <IoPricetags />,
+    icon: <IoPricetagsOutline />,
     title: "Imprimir etiquetas",
   },
   {
-    color: green[2],
+    colors: { background: green[2], foreground: green[8] },
     description: "Gerenciar/criar modelos de etiqueta",
     href: "/etiquetas/gerenciar",
-    icon: <IoPricetags />,
+    icon: <IoPricetagsOutline />,
     title: "Gerenciar modelos",
   },
 ];

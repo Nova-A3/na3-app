@@ -33,12 +33,12 @@ export function HomePage(): JSX.Element {
         </Divider>
       </div>
 
-      <Row gutter={12}>
-        {quickLinks.map(({ title, icon, color, description, href }) => (
+      <Row gutter={[12, 8]}>
+        {quickLinks.map(({ title, icon, colors, description, href }) => (
           <Col key={nanoid()} md={8} xs={24}>
             <StaticListItem
               cardClassName={classes.HomeQuickLink}
-              color={color}
+              colors={colors}
               description={description}
               href={href}
               icon={icon}
@@ -53,22 +53,22 @@ export function HomePage(): JSX.Element {
 
 const quickLinks = [
   {
-    color: red[2],
-    description: "Gerencie ou abra uma nova Ordem de Serviço para a Manutenção",
-    href: "/manutencao/os",
+    colors: { background: red[2], foreground: red[8] },
+    description:
+      "Gerencie ou abra ordens de serviço para o setor de Manutenção",
+    href: "/manutencao",
     icon: <SettingOutlined />,
-    title: "Ordens de Serviço",
+    title: "Manutenção",
   },
   {
-    color: blue[2],
-    description:
-      "Imprima etiquetas de Transferência a partir dos modelos disponíveis",
-    href: "/etiquetas/imprimir",
+    colors: { background: green[2], foreground: green[8] },
+    description: "Imprima etiquetas a partir de modelos pré-definidos pelo PCP",
+    href: "/etiquetas",
     icon: <TagsOutlined />,
     title: "Etiquetas",
   },
   {
-    color: green[2],
+    colors: { background: blue[2], foreground: blue[8] },
     description:
       "Emita documentos diversos, como o de Transferência de Materiais",
     href: "/docs",

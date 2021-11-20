@@ -4,6 +4,7 @@ import React, { useCallback, useMemo } from "react";
 import { useHistory } from "react-router";
 
 import type { SelectOptionGroup } from "../../components";
+import { PageAlert } from "../../components";
 import {
   Form,
   FormField,
@@ -111,8 +112,16 @@ export function AuthPage({ authorized, redirectUrl }: AuthProps): JSX.Element {
   return (
     <>
       <PageTitle>Entrar</PageTitle>
+
+      {auth.department && (
+        <PageAlert type="warning">
+          Você não possui acesso a esta área.
+        </PageAlert>
+      )}
+
       <PageDescription>
-        Por favor, autentique-se para continuar.
+        Por favor, {auth.department ? "troque de conta" : "autentique-se"} para
+        continuar.
       </PageDescription>
 
       <Form form={form} onSubmit={handleSubmit}>
@@ -123,7 +132,7 @@ export function AuthPage({ authorized, redirectUrl }: AuthProps): JSX.Element {
           name="dpt"
           options={selectOptions}
           prefix={<UserOutlined />}
-          rules={{ required: "Selecione seu setor" }}
+          rules={{ required: "Selecione o setor" }}
           tooltip={{
             placement: "right",
             title:
@@ -136,7 +145,7 @@ export function AuthPage({ authorized, redirectUrl }: AuthProps): JSX.Element {
                   tem acesso a esta área
                 </>
               ) : (
-                "Selecione seu setor"
+                "Selecione o setor"
               ),
           }}
           type={authorizedDpts.length === 1 ? "input" : "select"}
@@ -148,7 +157,6 @@ export function AuthPage({ authorized, redirectUrl }: AuthProps): JSX.Element {
           name="password"
           prefix={<LockOutlined />}
           rules={{ required: "Digite sua senha" }}
-          tooltip={{ placement: "right", title: "Digite sua senha" }}
           type="password"
         />
 

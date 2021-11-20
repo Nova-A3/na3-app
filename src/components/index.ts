@@ -21,6 +21,7 @@ export type { ListRenderItem } from "./lists/List";
 export { List } from "./lists/List";
 export { StaticList } from "./lists/StaticList";
 export { PageActionButtons } from "./pages/components/PageActionButtons";
+export { PageAlert } from "./pages/components/PageAlert";
 export { PageDescription } from "./pages/components/PageDescription";
 export { PageTitle } from "./pages/components/PageTitle";
 export { Page } from "./pages/Page";

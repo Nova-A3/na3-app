@@ -6,10 +6,12 @@ import {
   UserOutlined,
 } from "@ant-design/icons";
 import React from "react";
+import type { LiteralUnion } from "type-fest";
 
 import type { Na3DepartmentId, Na3DepartmentType } from "../modules/na3-types";
 import {
   AuthPage,
+  DocsHomePage,
   HomePage,
   LabelsHomePage,
   LabelsManagePage,
@@ -45,13 +47,14 @@ export type AppRoute = {
 };
 
 type AppRouteMap<Path extends string> = Readonly<
-  Record<Path | string, AppRoute>
+  Record<LiteralUnion<Path, string>, AppRoute>
 >;
 
 export const ROUTES: AppRouteMap<
   | "/"
   | "/docs"
   | "/docs/comex"
+  | "/docs/modelos"
   | "/docs/transferencia"
   | "/entrar"
   | "/etiquetas"
@@ -77,12 +80,13 @@ export const ROUTES: AppRouteMap<
   },
 
   "/docs": {
-    component: null,
+    component: <DocsHomePage />,
     icon: <FileOutlined />,
     siderConfig: {
       children: [
-        { path: "/docs/comex", title: "Comércio Exterior" },
         { path: "/docs/transferencia", title: "Transferência" },
+        { path: "/docs/comex", title: "Comércio Exterior" },
+        { path: "/docs/modelos", title: "Modelos" },
       ],
     },
     title: "Documentos",
@@ -90,6 +94,10 @@ export const ROUTES: AppRouteMap<
   "/docs/comex": {
     component: null,
     title: "Comércio Exterior",
+  },
+  "/docs/modelos": {
+    component: null,
+    title: "Modelos",
   },
   "/docs/transferencia": {
     component: null,

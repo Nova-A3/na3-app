@@ -6,7 +6,7 @@ import classes from "./StaticListItem.module.css";
 
 export type StaticListItemProps = {
   cardClassName?: string;
-  color: string;
+  colors: { background: string; foreground: string };
   description: React.ReactNode;
   href?: string;
   icon: React.ReactNode;
@@ -18,7 +18,7 @@ export function StaticListItem({
   title,
   description,
   icon,
-  color,
+  colors,
   href,
   onClick,
   cardClassName,
@@ -34,8 +34,8 @@ export function StaticListItem({
   );
 
   const coloredAvatarStyle = useMemo(
-    () => ({ backgroundColor: color }),
-    [color]
+    () => ({ backgroundColor: colors.background, color: colors.foreground }),
+    [colors]
   );
 
   return (

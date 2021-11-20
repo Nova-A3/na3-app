@@ -23,13 +23,13 @@ export function StaticList<Item extends Record<string, unknown>>({
     ({
       title,
       description,
-      color,
+      colors,
       icon,
       href,
       onClick,
     }: StaticListItemProps) => (
       <StaticListItem
-        color={color}
+        colors={colors}
         description={description}
         href={href}
         icon={icon}
