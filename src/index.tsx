@@ -2,14 +2,12 @@ import "animate.css";
 import "./index.css";
 import "web-vitals";
 
-import * as Sentry from "@sentry/browser";
 import {
   CaptureConsole as CaptureConsoleIntegration,
   ExtraErrorData as ExtraErrorDataIntegration,
   Offline as OfflineIntegration,
 } from "@sentry/integrations";
-import * as SentryReact from "@sentry/react";
-import SentryRRWeb from "@sentry/rrweb";
+import * as Sentry from "@sentry/react";
 import { Integrations } from "@sentry/tracing";
 import { ConfigProvider as AntdConfigProvider } from "antd";
 import ptBR from "antd/lib/locale/pt_BR";
@@ -33,17 +31,16 @@ const routerHistory = createBrowserHistory();
 
 Sentry.init({
   autoSessionTracking: true,
-  debug: process.env.NODE_ENV !== "production",
+  debug: false,
   dsn: "https://c384ca31afea4def96034257d183c365@o1073983.ingest.sentry.io/6073606",
   environment: process.env.NODE_ENV,
   integrations: [
     new Integrations.BrowserTracing({
       routingInstrumentation:
-        SentryReact.reactRouterV5Instrumentation(routerHistory),
+        Sentry.reactRouterV5Instrumentation(routerHistory),
     }),
     new OfflineIntegration(),
     new CaptureConsoleIntegration({ levels: ["warn", "error"] }),
-    new SentryRRWeb(),
     new ExtraErrorDataIntegration(),
   ],
   normalizeDepth: 10,
