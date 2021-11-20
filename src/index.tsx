@@ -67,6 +67,8 @@ firebase.initializeApp({
 
 firebase.performance();
 
+firebase.analytics();
+
 function Root(): JSX.Element {
   return (
     <AntdConfigProvider input={{ autoComplete: "off" }} locale={ptBR}>
