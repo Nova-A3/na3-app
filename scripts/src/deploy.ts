@@ -19,8 +19,12 @@ function replaceMetaVariable(
   });
 }
 
+async function updateMetaVersionTimestamp(): Promise<AsyncCommandResult> {
+  return replaceMetaVariable("VERSION_TIMESTAMP", () => dayjs().format());
+}
+
 async function incrementMetaVersion(): Promise<AsyncCommandResult> {
-  await replaceMetaVariable("VERSION", (value) => {
+  return replaceMetaVariable("VERSION", (value) => {
     const versionChunks = value.split(".");
     const incrementableChunk = versionChunks[2];
 
@@ -28,8 +32,6 @@ async function incrementMetaVersion(): Promise<AsyncCommandResult> {
       parseInt(incrementableChunk) + 1
     }`;
   });
-
-  return replaceMetaVariable("VERSION_TIMESTAMP", () => dayjs().format());
 }
 
 async function gitCommitPush(): Promise<AsyncCommandResult> {
@@ -43,12 +45,13 @@ async function gitCommitPush(): Promise<AsyncCommandResult> {
 }
 
 const commands = registerCommands([
-  { command: incrementMetaVersion, name: "update version" },
+  { command: updateMetaVersionTimestamp, name: "update version timestamp" },
   { command: "yarn prettier --write src/", name: "prettier" },
   { command: "yarn eslint src/ --fix --ext .ts,.tsx", name: "eslint" },
   { command: "yarn build", name: "build" },
   { command: "firebase deploy --only hosting:novaa3", name: "deploy" },
   { command: gitCommitPush, name: "git push" },
+  { command: incrementMetaVersion, name: "update version" },
 ]);
 
 void commands.run();

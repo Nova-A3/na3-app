@@ -1,6 +1,12 @@
 import "animate.css";
 import "./index.css";
+import "web-vitals";
 
+import {
+  CaptureConsole as CaptureConsoleIntegration,
+  ExtraErrorData as ExtraErrorDataIntegration,
+  Offline as OfflineIntegration,
+} from "@sentry/integrations";
 import * as Sentry from "@sentry/react";
 import { Integrations } from "@sentry/tracing";
 import { ConfigProvider as AntdConfigProvider } from "antd";
@@ -10,21 +16,35 @@ import dayOfYear from "dayjs/plugin/dayOfYear";
 import timezone from "dayjs/plugin/timezone";
 import utc from "dayjs/plugin/utc";
 import firebase from "firebase";
+import { createBrowserHistory } from "history";
 import React from "react";
 import ReactDOM from "react-dom";
-import { BrowserRouter } from "react-router-dom";
+import { Router } from "react-router-dom";
 
 import { App } from "./App";
 import { APP_VERSION } from "./constants";
 import { BreadcrumbProvider } from "./contexts";
 import { Na3Provider } from "./modules/na3-react";
-// import reportWebVitals from "./reportWebVitals";
 import * as serviceWorkerRegistration from "./serviceWorkerRegistration";
 
-Sentry.init({
-  dsn: "https://c384ca31afea4def96034257d183c365@o1073983.ingest.sentry.io/6073606",
-  integrations: [new Integrations.BrowserTracing()],
+const routerHistory = createBrowserHistory();
 
+Sentry.init({
+  autoSessionTracking: true,
+  debug: process.env.NODE_ENV !== "production",
+  dsn: "https://c384ca31afea4def96034257d183c365@o1073983.ingest.sentry.io/6073606",
+  environment: process.env.NODE_ENV,
+  integrations: [
+    new Integrations.BrowserTracing({
+      routingInstrumentation:
+        Sentry.reactRouterV5Instrumentation(routerHistory),
+    }),
+    new OfflineIntegration(),
+    new CaptureConsoleIntegration({ levels: ["warn", "error"] }),
+    new ExtraErrorDataIntegration(),
+  ],
+  normalizeDepth: 10,
+  release: `na3-app@${APP_VERSION}`,
   tracesSampleRate: 1.0,
 });
 
@@ -48,11 +68,11 @@ function Root(): JSX.Element {
   return (
     <AntdConfigProvider input={{ autoComplete: "off" }} locale={ptBR}>
       <Na3Provider appVersion={APP_VERSION}>
-        <BrowserRouter>
+        <Router history={routerHistory}>
           <BreadcrumbProvider>
             <App />
           </BreadcrumbProvider>
-        </BrowserRouter>
+        </Router>
       </Na3Provider>
     </AntdConfigProvider>
   );
@@ -67,6 +87,3 @@ ReactDOM.render(
 
 // https://cra.link/PWA
 serviceWorkerRegistration.register();
-
-// https://bit.ly/CRA-vitals
-// reportWebVitals();
