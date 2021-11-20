@@ -1,6 +1,8 @@
 import "animate.css";
 import "./index.css";
 
+import * as Sentry from "@sentry/react";
+import { Integrations } from "@sentry/tracing";
 import { ConfigProvider as AntdConfigProvider } from "antd";
 import ptBR from "antd/lib/locale/pt_BR";
 import dayjs from "dayjs";
@@ -18,6 +20,13 @@ import { BreadcrumbProvider } from "./contexts";
 import { Na3Provider } from "./modules/na3-react";
 // import reportWebVitals from "./reportWebVitals";
 import * as serviceWorkerRegistration from "./serviceWorkerRegistration";
+
+Sentry.init({
+  dsn: "https://c384ca31afea4def96034257d183c365@o1073983.ingest.sentry.io/6073606",
+  integrations: [new Integrations.BrowserTracing()],
+
+  tracesSampleRate: 1.0,
+});
 
 dayjs.extend(dayOfYear);
 dayjs.extend(utc);
