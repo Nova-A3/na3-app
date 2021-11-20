@@ -66,13 +66,22 @@ export function ListFormPage({
         </PageActionButtons>
       )}
 
-      <Row className={classes.PageRow} gutter={28}>
+      <Row
+        gutter={28}
+        style={{
+          height: breakpoint.lg
+            ? "calc(100% - 15px)"
+            : actions
+            ? "calc(100% - 95px)"
+            : "calc(100% - 50px)",
+        }}
+      >
         <Col className={classes.PageGridCol} lg={8} xl={7} xs={24} xxl={6}>
           <div className={classes.ListTitle}>
             <Divider orientation="left">{listTitle}</Divider>
           </div>
 
-          <Page additionalPaddingBottom={breakpoint.lg ? 8 : 96}>{list}</Page>
+          <Page>{list}</Page>
         </Col>
 
         {breakpoint.lg && (
