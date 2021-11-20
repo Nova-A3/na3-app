@@ -1,10 +1,14 @@
 import { Input } from "antd";
 import { nanoid } from "nanoid";
-import React, { useCallback, useMemo, useState } from "react";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
+import InfiniteScroll from "react-infinite-scroll-component";
 
+import { useId } from "../../hooks";
 import { Empty } from "../ui/Empty/Empty";
 import { Spinner } from "../ui/Spinner/Spinner";
+import { ListEnd } from "./components/ListEnd";
 import { ListError } from "./components/ListError";
+import { ListLoader } from "./components/ListLoader";
 import classes from "./List.module.css";
 
 export type ListProps<
@@ -27,7 +31,24 @@ export function List<Item extends Record<string, unknown>>({
   verticalSpacing,
   filterItem,
 }: ListProps<Item>): JSX.Element {
+  const listId = useId("list");
+
+  const [loadedData, setLoadedData] = useState<Item[]>([]);
+
   const [searchInput, setSearchInput] = useState("");
+
+  const handleLoadMore = useCallback(() => {
+    if (data) {
+      setLoadedData((currLoaded) =>
+        currLoaded
+          ? [
+              ...currLoaded,
+              ...data.slice(currLoaded.length, currLoaded.length + 15),
+            ]
+          : currLoaded
+      );
+    }
+  }, [data]);
 
   const handleSearchChange = useCallback(
     (eventOrValue: React.ChangeEvent<HTMLInputElement> | string): void => {
@@ -41,8 +62,8 @@ export function List<Item extends Record<string, unknown>>({
   );
 
   const filteredData = useMemo(
-    () => filterItem?.(searchInput) || data,
-    [filterItem, searchInput, data]
+    () => (searchInput ? filterItem?.(searchInput) : loadedData),
+    [filterItem, searchInput, loadedData]
   );
 
   const listStyle = useMemo(
@@ -50,11 +71,17 @@ export function List<Item extends Record<string, unknown>>({
     [verticalSpacing]
   );
 
+  useEffect(() => {
+    if (data && loadedData.length === 0) {
+      setLoadedData(data.slice(0, 15));
+    }
+  }, [data, loadedData.length]);
+
   if (error) {
     return <ListError>{error}</ListError>;
   } else if (isLoading) {
     return <Spinner className={classes.Loading} />;
-  } else if (filteredData) {
+  } else if (data && filteredData) {
     return (
       <div className={classes.ListContainer}>
         {!!filterItem && (
@@ -68,31 +95,45 @@ export function List<Item extends Record<string, unknown>>({
           </div>
         )}
 
-        <div className={classes.List} style={listStyle}>
+        <div className={classes.List} id={listId} style={listStyle}>
           {filteredData.length === 0 ? (
             <Empty description="Nada para mostrar" />
           ) : (
-            filteredData.map((item, index) => (
-              <div
-                key={
-                  (item instanceof Object &&
-                    Object.prototype.hasOwnProperty.call(item, "id") &&
-                    typeof item.id === "string" &&
-                    item.id) ||
-                  nanoid()
-                }
-                style={
-                  verticalSpacing
-                    ? {
-                        marginBottom:
-                          index < filteredData.length - 1 ? verticalSpacing : 0,
-                      }
-                    : undefined
-                }
-              >
-                {renderItem(item)}
-              </div>
-            ))
+            <InfiniteScroll
+              className={classes.InfiniteScroll}
+              dataLength={filteredData.length}
+              endMessage={<ListEnd />}
+              hasMore={!searchInput && filteredData.length < data.length}
+              loader={<ListLoader />}
+              next={handleLoadMore}
+              scrollableTarget={listId}
+            >
+              {filteredData.map((item, index) => (
+                <div
+                  key={
+                    (item instanceof Object &&
+                      Object.prototype.hasOwnProperty.call(item, "id") &&
+                      typeof item.id === "string" &&
+                      item.id) ||
+                    nanoid()
+                  }
+                  style={
+                    verticalSpacing
+                      ? {
+                          marginBottom:
+                            index < data.length - 1
+                              ? index === filteredData.length - 1
+                                ? 21
+                                : verticalSpacing
+                              : 0,
+                        }
+                      : undefined
+                  }
+                >
+                  {renderItem(item)}
+                </div>
+              ))}
+            </InfiniteScroll>
           )}
         </div>
       </div>
