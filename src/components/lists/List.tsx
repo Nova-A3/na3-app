@@ -19,6 +19,7 @@ export type ListProps<
   error: string | null | undefined;
   filterItem?: Data extends Item[] ? (input: string) => Item[] : never;
   isLoading: boolean;
+  isStatic?: boolean;
   renderItem: ListRenderItem<Item>;
   verticalSpacing?: number;
 };
@@ -30,6 +31,7 @@ export function List<Item extends Record<string, unknown>>({
   error,
   verticalSpacing,
   filterItem,
+  isStatic,
 }: ListProps<Item>): JSX.Element {
   const listId = useId("list");
 
@@ -102,8 +104,10 @@ export function List<Item extends Record<string, unknown>>({
             <InfiniteScroll
               className={classes.InfiniteScroll}
               dataLength={filteredData.length}
-              endMessage={<ListEnd />}
-              hasMore={!searchInput && filteredData.length < data.length}
+              endMessage={!isStatic && <ListEnd />}
+              hasMore={
+                !isStatic && !searchInput && filteredData.length < data.length
+              }
               loader={<ListLoader />}
               next={handleLoadMore}
               scrollableTarget={listId}

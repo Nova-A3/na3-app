@@ -45,6 +45,7 @@ export function StaticList<Item extends Record<string, unknown>>({
       data={props.data}
       error={null}
       isLoading={false}
+      isStatic={true}
       renderItem={props.renderItem}
       verticalSpacing={verticalSpacing || 8}
     />
@@ -53,6 +54,7 @@ export function StaticList<Item extends Record<string, unknown>>({
       data={props.data}
       error={null}
       isLoading={false}
+      isStatic={true}
       renderItem={handleRenderDefaultItem}
       verticalSpacing={verticalSpacing || 8}
     />
