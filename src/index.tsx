@@ -18,7 +18,7 @@ import { APP_VERSION } from "./constants";
 import { BreadcrumbProvider } from "./contexts";
 import { Na3Provider } from "./modules/na3-react";
 import * as serviceWorkerRegistration from "./serviceWorkerRegistration";
-import { initFirebase, initSentry } from "./utils";
+import { initFirebaseCore, initFirebaseMessaging, initSentry } from "./utils";
 
 dayjs.extend(dayOfYear);
 dayjs.extend(utc);
@@ -32,7 +32,7 @@ initSentry({
   routerHistory,
 });
 
-void initFirebase({
+void initFirebaseCore({
   apiKey: "AIzaSyAynKF5joA-_wpax9jzatonSZgxSE-MaRQ",
   appId: "1:810900069450:web:0f69447751bb45cac59ab3",
   authDomain: "nova-a3-ind.firebaseapp.com",
@@ -40,8 +40,6 @@ void initFirebase({
   messagingSenderId: "810900069450",
   projectId: "nova-a3-ind",
   storageBucket: "nova-a3-ind.appspot.com",
-  vapidKey:
-    "BHAAggUsRBF-E-GWYHh8vY3A4r6kZMgHwrQ7qs1a6jXtU6tHxLq9WObBW-HalHDzA9YQ74U7mjiu-9nsKb0vabU",
 });
 
 function Root(): JSX.Element {
@@ -66,4 +64,11 @@ ReactDOM.render(
 );
 
 // https://cra.link/PWA
-serviceWorkerRegistration.register();
+serviceWorkerRegistration.register({
+  onSuccess: (registration) =>
+    initFirebaseMessaging({
+      registration,
+      vapidKey:
+        "BHAAggUsRBF-E-GWYHh8vY3A4r6kZMgHwrQ7qs1a6jXtU6tHxLq9WObBW-HalHDzA9YQ74U7mjiu-9nsKb0vabU",
+    }),
+});

@@ -83,7 +83,10 @@ export function UserInfo({ user }: HeaderInfoProps): JSX.Element {
           <Avatar
             icon={<UserOutlined />}
             size="small"
-            style={{ backgroundColor: user.style.colors.background }}
+            style={{
+              backgroundColor: user.style.colors.background,
+              color: user.style.colors.text,
+            }}
           />
         </Badge>
 

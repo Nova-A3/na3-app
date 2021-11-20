@@ -2,6 +2,7 @@ import { LoginOutlined, LogoutOutlined } from "@ant-design/icons";
 import { Button, message, Tooltip } from "antd";
 import React, { useCallback } from "react";
 import { useHistory } from "react-router";
+import { Link } from "react-router-dom";
 
 import { useTheme } from "../../../hooks";
 import { useNa3Auth } from "../../../modules/na3-react";
@@ -33,7 +34,9 @@ export function Header(): JSX.Element {
         {auth.department ? (
           <UserInfo user={auth.department} />
         ) : (
-          <HomeLogo height={24} />
+          <Link to="/">
+            <HomeLogo height={24} />
+          </Link>
         )}
       </div>
 

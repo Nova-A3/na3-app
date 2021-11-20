@@ -1,34 +1,20 @@
-.Logo {
+/* .Logo {
   margin-top: -2px;
 }
 
 .LogoDivider {
   margin-top: 16px;
   margin-bottom: 16px;
-}
+} */
 
-.HomeDescription {
-  margin-top: 18px;
-  text-align: center;
-}
-
-.HomeQuickLink {
-  border-radius: 12px;
+.QuickLink {
   height: 100%;
 }
 
 /* up to md */
 @media screen and (max-width: 768px) {
   .Logo {
-    margin-top: 12px;
-  }
-
-  .LogoDivider {
-    margin-top: 10px;
+    margin-top: 16px;
     margin-bottom: 6px;
-  }
-
-  .QuickLinksDivider {
-    margin-top: calc(18px - 1em) !important;
   }
 }

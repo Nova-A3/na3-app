@@ -8,6 +8,7 @@ import {
 } from "react-icons/io5";
 
 import { MenuPage } from "../../components";
+import type { MenuPageAction } from "../../types";
 
 export function DocsHomePage(): JSX.Element {
   return (
@@ -19,7 +20,7 @@ export function DocsHomePage(): JSX.Element {
   );
 }
 
-const docsPageActions = [
+const docsPageActions: MenuPageAction[] = [
   {
     colors: { background: red[2], foreground: red[8] },
     description: "Emitir documentos de Transferência de Materiais",

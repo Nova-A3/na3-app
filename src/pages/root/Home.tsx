@@ -1,15 +1,17 @@
-import { blue, green, red } from "@ant-design/colors";
+import { blue, green, magenta, red } from "@ant-design/colors";
 import { Col, Divider, Row } from "antd";
 import { nanoid } from "nanoid";
 import React from "react";
 import {
   IoDocumentTextOutline,
+  IoPersonCircleOutline,
   IoPricetagsOutline,
   IoSettingsOutline,
 } from "react-icons/io5";
 
-import { HomeLogo, PageDescription, StaticListItem } from "../../components";
+import { HomeLogo, StaticListItem } from "../../components";
 import { useNa3Auth } from "../../modules/na3-react";
+import type { MenuPageAction } from "../../types";
 import classes from "./Home.module.css";
 
 export function HomePage(): JSX.Element {
@@ -17,45 +19,33 @@ export function HomePage(): JSX.Element {
 
   return (
     <>
-      {department && (
-        <>
-          <HomeLogo className={classes.Logo} />
-
-          <div>
-            <Divider className={classes.LogoDivider} />
-          </div>
-        </>
-      )}
-
-      <PageDescription className={classes.HomeDescription}>
-        Comece selecionando uma aba no menu à esquerda
-      </PageDescription>
+      {department && <HomeLogo className={classes.Logo} />}
 
       <div>
-        <Divider className={classes.QuickLinksDivider} orientation="center">
-          <em>ou</em>
-        </Divider>
+        <Divider orientation="left">Acesso rápido</Divider>
       </div>
 
-      <Row gutter={[12, 8]}>
-        {quickLinks.map(({ title, icon, colors, description, href }) => (
-          <Col key={nanoid()} md={8} xs={24}>
-            <StaticListItem
-              cardClassName={classes.HomeQuickLink}
-              colors={colors}
-              description={description}
-              href={href}
-              icon={icon}
-              title={title}
-            />
-          </Col>
-        ))}
+      <Row gutter={[{ lg: department ? 12 : 8 }, { lg: 16, xs: 8 }]}>
+        {getQuickLinks(!!department).map(
+          ({ title, icon, colors, description, href }) => (
+            <Col key={nanoid()} md={href === "/entrar" ? 24 : 8} xs={24}>
+              <StaticListItem
+                cardClassName={classes.QuickLink}
+                colors={colors}
+                description={description}
+                href={href}
+                icon={icon}
+                title={title}
+              />
+            </Col>
+          )
+        )}
       </Row>
     </>
   );
 }
 
-const quickLinks = [
+const defaultQuickLinks: MenuPageAction[] = [
   {
     colors: { background: red[2], foreground: red[8] },
     description:
@@ -80,3 +70,18 @@ const quickLinks = [
     title: "Documentos",
   },
 ];
+
+const authQuickLink: MenuPageAction = {
+  colors: { background: magenta[2], foreground: magenta[8] },
+  description: "Faça login para usar as funcionalidades exclusivas",
+  href: "/entrar",
+  icon: <IoPersonCircleOutline />,
+  title: "Entrar",
+};
+
+function getQuickLinks(isAuthenticated: boolean): MenuPageAction[] {
+  if (isAuthenticated) {
+    return defaultQuickLinks;
+  }
+  return [authQuickLink, ...defaultQuickLinks];
+}

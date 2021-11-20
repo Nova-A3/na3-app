@@ -9,6 +9,7 @@ import {
 } from "react-icons/io5";
 
 import { MenuPage } from "../../components";
+import type { MenuPageAction } from "../../types";
 
 export function MaintenanceHomePage(): JSX.Element {
   return (
@@ -20,7 +21,7 @@ export function MaintenanceHomePage(): JSX.Element {
   );
 }
 
-const maintenancePageActions = [
+const maintenancePageActions: MenuPageAction[] = [
   {
     colors: { background: red[2], foreground: red[8] },
     description: "Gerenciar/criar ordens de serviço do setor",

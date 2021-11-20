@@ -4,6 +4,7 @@ import React from "react";
 import { IoPricetagsOutline } from "react-icons/io5";
 
 import { MenuPage } from "../../components";
+import type { MenuPageAction } from "../../types";
 
 export function LabelsHomePage(): JSX.Element {
   return (
@@ -15,7 +16,7 @@ export function LabelsHomePage(): JSX.Element {
   );
 }
 
-const labelsPageActions = [
+const labelsPageActions: MenuPageAction[] = [
   {
     colors: { background: red[2], foreground: red[8] },
     description: "Imprimir etiquetas a partir dos modelos pré-definidos",
