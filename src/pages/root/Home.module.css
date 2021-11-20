@@ -4,7 +4,7 @@
 
 .LogoDivider {
   margin-top: 16px;
-  margin-bottom: 6px;
+  margin-bottom: 16px;
 }
 
 .HomeDescription {
@@ -25,9 +25,10 @@
 
   .LogoDivider {
     margin-top: 10px;
+    margin-bottom: 6px;
   }
 
-  .HomeDescription {
-    text-align: left;
+  .QuickLinksDivider {
+    margin-top: calc(18px - 1em) !important;
   }
 }

@@ -2,20 +2,12 @@ import "animate.css";
 import "./index.css";
 import "web-vitals";
 
-import {
-  CaptureConsole as CaptureConsoleIntegration,
-  ExtraErrorData as ExtraErrorDataIntegration,
-  Offline as OfflineIntegration,
-} from "@sentry/integrations";
-import * as Sentry from "@sentry/react";
-import { Integrations } from "@sentry/tracing";
 import { ConfigProvider as AntdConfigProvider } from "antd";
 import ptBR from "antd/lib/locale/pt_BR";
 import dayjs from "dayjs";
 import dayOfYear from "dayjs/plugin/dayOfYear";
 import timezone from "dayjs/plugin/timezone";
 import utc from "dayjs/plugin/utc";
-import firebase from "firebase";
 import { createBrowserHistory } from "history";
 import React from "react";
 import ReactDOM from "react-dom";
@@ -26,33 +18,21 @@ import { APP_VERSION } from "./constants";
 import { BreadcrumbProvider } from "./contexts";
 import { Na3Provider } from "./modules/na3-react";
 import * as serviceWorkerRegistration from "./serviceWorkerRegistration";
-
-const routerHistory = createBrowserHistory();
-
-Sentry.init({
-  autoSessionTracking: true,
-  debug: false,
-  dsn: "https://c384ca31afea4def96034257d183c365@o1073983.ingest.sentry.io/6073606",
-  environment: process.env.NODE_ENV,
-  integrations: [
-    new Integrations.BrowserTracing({
-      routingInstrumentation:
-        Sentry.reactRouterV5Instrumentation(routerHistory),
-    }),
-    new OfflineIntegration(),
-    new CaptureConsoleIntegration({ levels: ["warn", "error"] }),
-    new ExtraErrorDataIntegration(),
-  ],
-  normalizeDepth: 10,
-  release: `na3-app@${APP_VERSION}`,
-  tracesSampleRate: 1.0,
-});
+import { initFirebase, initSentry } from "./utils";
 
 dayjs.extend(dayOfYear);
 dayjs.extend(utc);
 dayjs.extend(timezone);
 
-firebase.initializeApp({
+const routerHistory = createBrowserHistory();
+
+initSentry({
+  appVersion: APP_VERSION,
+  dsn: "https://c384ca31afea4def96034257d183c365@o1073983.ingest.sentry.io/6073606",
+  routerHistory,
+});
+
+void initFirebase({
   apiKey: "AIzaSyAynKF5joA-_wpax9jzatonSZgxSE-MaRQ",
   appId: "1:810900069450:web:0f69447751bb45cac59ab3",
   authDomain: "nova-a3-ind.firebaseapp.com",
@@ -60,11 +40,9 @@ firebase.initializeApp({
   messagingSenderId: "810900069450",
   projectId: "nova-a3-ind",
   storageBucket: "nova-a3-ind.appspot.com",
+  vapidKey:
+    "BHAAggUsRBF-E-GWYHh8vY3A4r6kZMgHwrQ7qs1a6jXtU6tHxLq9WObBW-HalHDzA9YQ74U7mjiu-9nsKb0vabU",
 });
-
-firebase.performance();
-
-firebase.analytics();
 
 function Root(): JSX.Element {
   return (

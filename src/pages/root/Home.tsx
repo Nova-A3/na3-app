@@ -1,8 +1,12 @@
 import { blue, green, red } from "@ant-design/colors";
-import { FileOutlined, SettingOutlined, TagsOutlined } from "@ant-design/icons";
 import { Col, Divider, Row } from "antd";
 import { nanoid } from "nanoid";
 import React from "react";
+import {
+  IoDocumentTextOutline,
+  IoPricetagsOutline,
+  IoSettingsOutline,
+} from "react-icons/io5";
 
 import { HomeLogo, PageDescription, StaticListItem } from "../../components";
 import { useNa3Auth } from "../../modules/na3-react";
@@ -24,7 +28,7 @@ export function HomePage(): JSX.Element {
       )}
 
       <PageDescription className={classes.HomeDescription}>
-        Comece selecionando uma aba no menu à esquerda.
+        Comece selecionando uma aba no menu à esquerda
       </PageDescription>
 
       <div>
@@ -57,14 +61,14 @@ const quickLinks = [
     description:
       "Gerencie ou abra ordens de serviço para o setor de Manutenção",
     href: "/manutencao",
-    icon: <SettingOutlined />,
+    icon: <IoSettingsOutline />,
     title: "Manutenção",
   },
   {
     colors: { background: green[2], foreground: green[8] },
     description: "Imprima etiquetas a partir de modelos pré-definidos pelo PCP",
     href: "/etiquetas",
-    icon: <TagsOutlined />,
+    icon: <IoPricetagsOutline />,
     title: "Etiquetas",
   },
   {
@@ -72,7 +76,7 @@ const quickLinks = [
     description:
       "Emita documentos diversos, como o de Transferência de Materiais",
     href: "/docs",
-    icon: <FileOutlined />,
+    icon: <IoDocumentTextOutline />,
     title: "Documentos",
   },
 ];

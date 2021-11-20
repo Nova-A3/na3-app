@@ -1,4 +1,3 @@
-export { useA2HS } from "./useA2HS";
 export { useBreadcrumb } from "./useBreadcrumb";
 export { useForm } from "./useForm";
 export { useId } from "./useId";
