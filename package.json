@@ -4,6 +4,8 @@
   "private": true,
   "dependencies": {
     "@ryuuji3/react-mask-hook": "^1.0.1",
+    "@sentry/react": "^6.15.0",
+    "@sentry/tracing": "^6.15.0",
     "animate.css": "^4.1.1",
     "antd": "^4.16.13",
     "axios": "^0.24.0",
@@ -24,6 +26,7 @@
     "react-helmet": "^6.1.0",
     "react-hook-form": "^7.19.0",
     "react-icons": "^4.3.1",
+    "react-infinite-scroll-component": "^6.1.0",
     "react-redux": "^7.2.6",
     "react-router-dom": "^5.3.0",
     "react-scripts": "4.0.3",
@@ -61,10 +64,15 @@
     ]
   },
   "devDependencies": {
+    "@testing-library/jest-dom": "^5.11.4",
+    "@testing-library/react": "^11.1.0",
+    "@testing-library/user-event": "^12.1.10",
     "@types/detect-browser": "^4.0.0",
+    "@types/jest": "^26.0.15",
+    "@types/node": "^12.0.0",
     "@types/qrcode": "^1.4.1",
-    "redux-devtools-extension": "^2.13.9",
-    "typescript": "^4.1.2",
+    "@types/react": "^17.0.0",
+    "@types/react-dom": "^17.0.0",
     "@types/react-helmet": "^6.1.4",
     "@types/react-router-dom": "^5.3.2",
     "@typescript-eslint/eslint-plugin": "^5.2.0",
@@ -83,14 +91,9 @@
     "gulp-postcss": "^8.0.0",
     "less-plugin-npm-import": "^2.1.0",
     "prettier": "^2.4.1",
+    "redux-devtools-extension": "^2.13.9",
     "type-fest": "^2.5.2",
-    "utility-types": "^3.10.0",
-    "@testing-library/jest-dom": "^5.11.4",
-    "@testing-library/react": "^11.1.0",
-    "@testing-library/user-event": "^12.1.10",
-    "@types/jest": "^26.0.15",
-    "@types/node": "^12.0.0",
-    "@types/react": "^17.0.0",
-    "@types/react-dom": "^17.0.0"
+    "typescript": "^4.1.2",
+    "utility-types": "^3.10.0"
   }
 }
