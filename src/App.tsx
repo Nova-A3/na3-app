@@ -17,6 +17,7 @@ import {
   Sider,
   Spinner,
 } from "./components";
+import { useA2HS } from "./hooks";
 import { useAppReady } from "./modules/na3-react";
 
 const themes = {
@@ -31,6 +32,8 @@ function Main(): JSX.Element {
   const { status: themeStatus } = useThemeSwitcher();
 
   const connectionStatus = useRef<"offline" | "online">("online");
+
+  const [hasA2HS, promptA2HS] = useA2HS();
 
   useEffect(() => {
     function handleIsOnline(): void {
@@ -59,6 +62,12 @@ function Main(): JSX.Element {
       window.removeEventListener("offline", handleIsOffline);
     };
   }, []);
+
+  useEffect(() => {
+    void promptA2HS();
+  }, [promptA2HS]);
+
+  console.log(hasA2HS);
 
   return (
     <>
