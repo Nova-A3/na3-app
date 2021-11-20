@@ -47,17 +47,15 @@ export function PageTitle({
       <Divider className={classes.Container} orientation="left">
         {icon && <span className={classes.Icon}>{icon}</span>}
 
-        <div>
-          {pre && (
-            <small className={classes.PreTitle}>
-              <Typography.Text italic={true} type="secondary">
-                {pre}
-              </Typography.Text>
-            </small>
-          )}
+        {pre && (
+          <small className={classes.PreTitle}>
+            <Typography.Text italic={true} type="secondary">
+              {pre}
+            </Typography.Text>
+          </small>
+        )}
 
-          {children}
-        </div>
+        {children}
       </Divider>
     </div>
   );

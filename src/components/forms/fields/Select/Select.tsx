@@ -15,7 +15,7 @@ export type SelectOptionBase = {
   value: string;
 };
 
-type SelectOptionGroup = {
+export type SelectOptionGroup = {
   label: React.ReactNode;
   options: SelectOptionBase[];
 };

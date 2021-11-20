@@ -3,6 +3,7 @@ import type { ButtonProps } from "antd";
 import { Button, Col, Divider, Grid, Row } from "antd";
 import { nanoid } from "nanoid";
 import React from "react";
+import type { Falsy } from "utility-types";
 
 import { PageDescription } from "../..";
 import { PageActionButtons } from "../components/PageActionButtons";
@@ -11,12 +12,15 @@ import { Page } from "../Page";
 import classes from "./ListFormPage.module.css";
 
 type ListFormPageProps = {
-  actions: {
-    icon?: React.ReactNode;
-    label: React.ReactNode;
-    onClick: () => void;
-    type?: ButtonProps["type"];
-  }[];
+  actions:
+    | {
+        disabled?: boolean;
+        icon?: React.ReactNode;
+        label: React.ReactNode;
+        onClick: () => void;
+        type?: ButtonProps["type"];
+      }[]
+    | Falsy;
   description?: React.ReactNode;
   form: React.ReactNode;
   formTitle: React.ReactNode;
@@ -46,10 +50,11 @@ export function ListFormPage({
 
       {description && <PageDescription>{description}</PageDescription>}
 
-      {!breakpoint.lg && (
+      {!breakpoint.lg && actions && (
         <PageActionButtons>
           {actions.map(({ onClick, ...action }) => (
             <Button
+              disabled={action.disabled}
               icon={action.icon || <PlusCircleOutlined />}
               key={nanoid()}
               onClick={onClick}

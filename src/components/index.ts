@@ -2,6 +2,7 @@ export { FormCollapse } from "./forms/components/FormCollapse/FormCollapse";
 export type { AutoCompleteOptionBase } from "./forms/fields/AutoComplete/AutoComplete";
 export type {
   SelectOptionBase,
+  SelectOptionGroup,
   SelectAsFieldProps as SelectProps,
 } from "./forms/fields/Select/Select";
 export type { HandleSubmit, HandleSubmitFailed } from "./forms/Form";

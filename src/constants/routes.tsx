@@ -158,7 +158,7 @@ export const ROUTES: AppRouteMap<
     title: "Dashboard",
   },
   "/manutencao/os": {
-    authorized: ["shop-floor"],
+    authorized: ["shop-floor", "manutencao"],
     component: <MaintServiceOrdersHomePage />,
     title: "Ordens de Serviço",
   },

@@ -7,7 +7,7 @@ import {
   MaintServiceOrdersList,
 } from "../../../components";
 import { useQuery } from "../../../hooks";
-import { useNa3ServiceOrders } from "../../../modules/na3-react";
+import { useNa3Auth, useNa3ServiceOrders } from "../../../modules/na3-react";
 import type { Na3ServiceOrder } from "../../../modules/na3-types";
 import { MaintServiceOrderDetailsPage } from "./MaintServiceOrderDetails";
 
@@ -15,6 +15,7 @@ export function MaintServiceOrdersHomePage(): JSX.Element {
   const history = useHistory();
   const query = useQuery("numero");
 
+  const { department } = useNa3Auth();
   const serviceOrders = useNa3ServiceOrders();
 
   const userOrders = useMemo(
@@ -23,16 +24,29 @@ export function MaintServiceOrdersHomePage(): JSX.Element {
   );
 
   const listData = useMemo(
-    () => [
-      ...serviceOrders.helpers.sortByStatus(["solved"], userOrders).reverse(),
-      ...serviceOrders.helpers.sortByPriority(
-        serviceOrders.helpers.sortByStatus(["solving"], userOrders)
-      ),
-      ...serviceOrders.helpers
-        .sortByStatus(["closed", "pending"], userOrders)
-        .reverse(),
-    ],
-    [serviceOrders.helpers, userOrders]
+    () =>
+      department?.type === "shop-floor"
+        ? [
+            ...serviceOrders.helpers
+              .sortByStatus(["solved"], userOrders)
+              .reverse(),
+            ...serviceOrders.helpers.sortByPriority(
+              serviceOrders.helpers.sortByStatus(["solving"], userOrders)
+            ),
+            ...serviceOrders.helpers
+              .sortByStatus(["closed", "pending"], userOrders)
+              .reverse(),
+          ]
+        : [
+            ...serviceOrders.helpers.sortByStatus(["pending"]).reverse(),
+            ...serviceOrders.helpers.sortByPriority(
+              serviceOrders.helpers.sortByStatus(["solving"])
+            ),
+            ...serviceOrders.helpers
+              .sortByStatus(["closed", "solved"], userOrders)
+              .reverse(),
+          ],
+    [serviceOrders.helpers, userOrders, department]
   );
 
   const handleCreateServiceOrderClick = useCallback(() => {
@@ -53,16 +67,23 @@ export function MaintServiceOrdersHomePage(): JSX.Element {
     />
   ) : (
     <ListFormPage
-      actions={[{ label: "Abrir OS", onClick: handleCreateServiceOrderClick }]}
+      actions={
+        department?.type === "shop-floor" && [
+          { label: "Abrir OS", onClick: handleCreateServiceOrderClick },
+        ]
+      }
       form={<MaintCreateServiceOrderForm />}
       formTitle="Abrir OS"
       list={
         <MaintServiceOrdersList
+          cardRenderOptions={{
+            hideUrgencyRibbon: department?.type !== "shop-floor",
+          }}
           data={listData}
           onSelectOrder={handleOrderSelect}
         />
       }
-      listTitle="Suas OS"
+      listTitle={department?.type === "shop-floor" ? "Suas OS" : "Todas as OS"}
       title="Manutenção • Ordens de Serviço"
     />
   );

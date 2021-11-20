@@ -20,6 +20,10 @@ export type UseNa3DepartmentsResult = {
     getByType: <T extends Na3DepartmentType>(
       type: T
     ) => Na3Department<T>[] | undefined;
+    getDptTypeName: (
+      type: Na3DepartmentType
+    ) => "Fábrica" | "Filial" | "Setores";
+    isDptType: (type: unknown) => type is Na3DepartmentType;
   };
   loading: boolean;
 };
@@ -64,8 +68,36 @@ export function useNa3Departments(): UseNa3DepartmentsResult {
     [departments.data]
   );
 
+  const getDptTypeName = useCallback(
+    (type: Na3DepartmentType): "Fábrica" | "Filial" | "Setores" => {
+      switch (type) {
+        case "shop-floor":
+          return "Setores";
+        case "factory-adm":
+          return "Fábrica";
+        case "office":
+          return "Filial";
+      }
+    },
+    []
+  );
+
+  const isDptType = useCallback((type: unknown): type is Na3DepartmentType => {
+    return (
+      typeof type === "string" &&
+      ["factory-adm", "office", "shop-floor"].includes(type)
+    );
+  }, []);
+
   return {
     ...departments,
-    helpers: { getByDisplayName, getById, getByIdsOrTypes, getByType },
+    helpers: {
+      getByDisplayName,
+      getById,
+      getByIdsOrTypes,
+      getByType,
+      getDptTypeName,
+      isDptType,
+    },
   };
 }

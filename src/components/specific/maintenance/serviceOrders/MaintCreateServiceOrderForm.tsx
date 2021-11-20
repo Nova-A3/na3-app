@@ -1,7 +1,6 @@
 import { InfoCircleOutlined } from "@ant-design/icons";
 import { Col, Divider, Grid, Modal, notification, Row } from "antd";
 import React, { useCallback, useState } from "react";
-import { Redirect } from "react-router";
 
 import { useForm } from "../../../../hooks";
 import { useNa3Auth, useNa3ServiceOrders } from "../../../../modules/na3-react";
@@ -10,6 +9,7 @@ import { createErrorNotifier } from "../../../../utils";
 import { Form } from "../../../forms/Form";
 import { FormField } from "../../../forms/FormField/FormField";
 import { SubmitButton } from "../../../forms/SubmitButton";
+import { Result } from "../../../ui/Result/Result";
 import classes from "./MaintCreateServiceOrderForm.module.css";
 
 type MaintCreateServiceOrderFormProps = {
@@ -134,7 +134,13 @@ export function MaintCreateServiceOrderForm({
   );
 
   if (!department || department.type !== "shop-floor") {
-    return <Redirect to="/manutencao" />;
+    return (
+      <Result
+        description="Sua conta não possui as permissões necessárias."
+        status="error"
+        title="Formulário desabilitado"
+      />
+    );
   }
 
   return (

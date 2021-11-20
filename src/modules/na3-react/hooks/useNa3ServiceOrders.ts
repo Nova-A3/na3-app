@@ -41,9 +41,7 @@ export type UseNa3ServiceOrdersResult = {
       status: Na3ServiceOrder["status"] | Na3ServiceOrder["status"][],
       data?: Na3ServiceOrder[]
     ) => Na3ServiceOrder[];
-    getDepartmentOrders: (
-      data?: Na3ServiceOrder[]
-    ) => Na3ServiceOrder[] | undefined;
+    getDepartmentOrders: (data?: Na3ServiceOrder[]) => Na3ServiceOrder[];
     getNextId: () => string | undefined;
     getOrderMachine: (serviceOrder: Na3ServiceOrder) => Na3Machine | undefined;
     getWithActionRequired: (data?: Na3ServiceOrder[]) => Na3ServiceOrder[];
@@ -91,11 +89,13 @@ export function useNa3ServiceOrders(): UseNa3ServiceOrdersResult {
 
   const getDepartmentOrders = useCallback(
     (data?: Na3ServiceOrder[]) =>
-      department
-        ? (data || serviceOrders.data || []).filter(
-            (so) => so.username === department.id
-          )
-        : undefined,
+      department && serviceOrders.data
+        ? department.type === "shop-floor"
+          ? (data || serviceOrders.data).filter(
+              (so) => so.username === department.id
+            )
+          : serviceOrders.data
+        : [],
     [department, serviceOrders.data]
   );
 

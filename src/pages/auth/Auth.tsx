@@ -3,6 +3,7 @@ import { message } from "antd";
 import React, { useCallback, useMemo } from "react";
 import { useHistory } from "react-router";
 
+import type { SelectOptionGroup } from "../../components";
 import {
   Form,
   FormField,
@@ -80,6 +81,33 @@ export function AuthPage({ authorized, redirectUrl }: AuthProps): JSX.Element {
     [form, auth.helpers, departments.helpers, redirectUrl, history]
   );
 
+  const selectOptions = useMemo(() => {
+    const optionGroups: (Pick<SelectOptionGroup, "options"> & {
+      label: "Fábrica" | "Filial" | "Setores";
+    })[] = [];
+
+    authorizedDpts.forEach((dpt) => {
+      const dptTypeName = departments.helpers.getDptTypeName(dpt.type);
+      const group = optionGroups.find((g) => g.label === dptTypeName);
+      const option = {
+        label: dpt.displayName.toUpperCase(),
+        value: dpt.displayName.toUpperCase(),
+      };
+
+      if (group) {
+        group.options.push(option);
+      } else {
+        optionGroups.push({ label: dptTypeName, options: [option] });
+      }
+    });
+
+    const groupLabelMap = { Filial: 3, Fábrica: 2, Setores: 1 };
+
+    return [...optionGroups].sort(
+      (a, b) => groupLabelMap[a.label] - groupLabelMap[b.label]
+    );
+  }, [authorizedDpts, departments.helpers]);
+
   return (
     <>
       <PageTitle>Entrar</PageTitle>
@@ -93,10 +121,7 @@ export function AuthPage({ authorized, redirectUrl }: AuthProps): JSX.Element {
           label="Setor"
           labelCol={{ span: 6 }}
           name="dpt"
-          options={authorizedDpts.map((dpt) => ({
-            label: dpt.displayName.toUpperCase(),
-            value: dpt.displayName.toUpperCase(),
-          }))}
+          options={selectOptions}
           prefix={<UserOutlined />}
           rules={{ required: "Selecione seu setor" }}
           tooltip={{
