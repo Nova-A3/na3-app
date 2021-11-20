@@ -2,12 +2,14 @@ import "animate.css";
 import "./index.css";
 import "web-vitals";
 
+import * as Sentry from "@sentry/browser";
 import {
   CaptureConsole as CaptureConsoleIntegration,
   ExtraErrorData as ExtraErrorDataIntegration,
   Offline as OfflineIntegration,
 } from "@sentry/integrations";
-import * as Sentry from "@sentry/react";
+import * as SentryReact from "@sentry/react";
+import SentryRRWeb from "@sentry/rrweb";
 import { Integrations } from "@sentry/tracing";
 import { ConfigProvider as AntdConfigProvider } from "antd";
 import ptBR from "antd/lib/locale/pt_BR";
@@ -37,10 +39,11 @@ Sentry.init({
   integrations: [
     new Integrations.BrowserTracing({
       routingInstrumentation:
-        Sentry.reactRouterV5Instrumentation(routerHistory),
+        SentryReact.reactRouterV5Instrumentation(routerHistory),
     }),
     new OfflineIntegration(),
     new CaptureConsoleIntegration({ levels: ["warn", "error"] }),
+    new SentryRRWeb(),
     new ExtraErrorDataIntegration(),
   ],
   normalizeDepth: 10,
