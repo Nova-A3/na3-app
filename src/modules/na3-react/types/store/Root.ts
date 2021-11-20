@@ -4,6 +4,7 @@ import type { DepartmentsState } from "./Departments";
 import type { GlobalState } from "./Global";
 import type { LabelTemplatesState } from "./LabelTemplates";
 import type { MaintProjectsState } from "./MaintProjects";
+import type { Na3PeopleState } from "./Na3People";
 import type { ServiceOrdersState } from "./ServiceOrders";
 
 export type RootState = {
@@ -13,5 +14,6 @@ export type RootState = {
   global: GlobalState;
   labelTemplates: LabelTemplatesState;
   maintProjects: MaintProjectsState;
+  na3People: Na3PeopleState;
   serviceOrders: ServiceOrdersState;
 };

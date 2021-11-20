@@ -1,5 +1,9 @@
 export { FormCollapse } from "./forms/components/FormCollapse/FormCollapse";
-export type { SelectAsFieldProps as SelectProps } from "./forms/fields/Select/Select";
+export type { AutoCompleteOptionBase } from "./forms/fields/AutoComplete/AutoComplete";
+export type {
+  SelectOptionBase,
+  SelectAsFieldProps as SelectProps,
+} from "./forms/fields/Select/Select";
 export type { HandleSubmit, HandleSubmitFailed } from "./forms/Form";
 export { Form } from "./forms/Form";
 export { FormField } from "./forms/FormField/FormField";

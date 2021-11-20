@@ -31,8 +31,6 @@ export function Na3ServiceOrdersController(): null {
       idField: "id",
     });
 
-  console.log(fbServiceOrdersError?.message);
-
   /* ServiceOrders state management hooks */
 
   useEffect(() => {

@@ -7,6 +7,7 @@ import { useForm } from "../../../hooks";
 import na3 from "../../../modules/na3";
 import {
   useNa3Departments,
+  useNa3People,
   useNa3TransfLabelTemplates,
 } from "../../../modules/na3-react";
 import type {
@@ -15,7 +16,11 @@ import type {
   Na3DepartmentId,
   Na3TransfLabelTemplate,
 } from "../../../modules/na3-types";
-import { createErrorNotifier, formatProductUnit } from "../../../utils";
+import {
+  createErrorNotifier,
+  formatProductUnit,
+  generateSelectOptions,
+} from "../../../utils";
 import { FormCollapse } from "../../forms/components/FormCollapse/FormCollapse";
 import { Form } from "../../forms/Form";
 import { FormField } from "../../forms/FormField/FormField";
@@ -63,6 +68,8 @@ export function LabelsTransfTemplateForm({
   // API customers info for given API product
   const [customersLoading, setCustomersLoading] = useState(false);
   const [customersData, setCustomersData] = useState<Na3ApiPerson[]>();
+
+  const na3People = useNa3People();
 
   /*
    * When editing a template, the form has to be initialized upon mounting.
@@ -298,10 +305,20 @@ export function LabelsTransfTemplateForm({
         isLoading={customersLoading}
         label="Cliente"
         name="customerName"
-        options={(customersData || []).map((customer) => ({
-          label: customer.name.trim().toUpperCase(),
-          value: customer.name.trim().toUpperCase(),
-        }))}
+        options={[
+          {
+            label: "Sugeridos",
+            options: generateSelectOptions(customersData, (item) =>
+              item.name.trim().toUpperCase()
+            ),
+          },
+          {
+            label: "Todos",
+            options: generateSelectOptions(na3People.data, (item) =>
+              item.name.trim().toUpperCase()
+            ),
+          },
+        ]}
         rules={{ required: "Selecione ou defina um cliente" }}
         type="autoComplete"
       />

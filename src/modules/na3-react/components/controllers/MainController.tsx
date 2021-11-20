@@ -18,11 +18,15 @@ import {
   setGlobalLoading,
 } from "../../store/actions";
 import type { ConfigState } from "../../types";
-import { getDevice, translateFirebaseError } from "../../utils";
+import {
+  getDevice,
+  resolveCollectionId,
+  translateFirebaseError,
+} from "../../utils";
 
 type Na3MainControllerProps = {
   appVersion: string;
-  env: ConfigState["environment"] | undefined;
+  env: ConfigState["environment"];
 };
 
 export function Na3MainController({
@@ -35,13 +39,17 @@ export function Na3MainController({
 
   const [fbDepartments, fbDepartmentsLoading, fbDepartmentsError] =
     useCollectionData<Na3Department>(
-      firebase.firestore().collection("departments")
+      firebase
+        .firestore()
+        .collection(
+          resolveCollectionId("departments", env, { forceProduction: true })
+        )
     );
 
   /* Config state management hook */
 
   useEffect(() => {
-    if (env) dispatch(setConfigEnvironment(env));
+    dispatch(setConfigEnvironment(env));
   }, [dispatch, env]);
 
   /* Auth state management hooks */

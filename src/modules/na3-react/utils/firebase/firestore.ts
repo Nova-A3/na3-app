@@ -1,8 +1,16 @@
 import type { ConfigState } from "../../types";
 
 export function resolveCollectionId(
-  collectionId: "manut-projects" | "tickets" | "transf-label-templates",
-  environment: ConfigState["environment"]
+  collectionId:
+    | "API-PEOPLE"
+    | "departments"
+    | "manut-projects"
+    | "tickets"
+    | "transf-label-templates",
+  environment: ConfigState["environment"],
+  options?: { forceProduction?: boolean }
 ): string {
-  return environment === "production" ? collectionId : `TEST-${collectionId}`;
+  return environment === "production" || options?.forceProduction
+    ? collectionId
+    : `TEST-${collectionId}`;
 }

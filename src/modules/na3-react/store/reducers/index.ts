@@ -6,6 +6,7 @@ import { departmentsReducer } from "./departments";
 import { globalReducer } from "./global";
 import { labelTemplatesReducer } from "./labelTemplates";
 import { maintProjectsReducer } from "./maintProjects";
+import { na3PeopleReducer } from "./na3/people";
 import { serviceOrdersReducer } from "./serviceOrders";
 
 export const rootReducer = combineReducers({
@@ -15,5 +16,6 @@ export const rootReducer = combineReducers({
   global: globalReducer,
   labelTemplates: labelTemplatesReducer,
   maintProjects: maintProjectsReducer,
+  na3People: na3PeopleReducer,
   serviceOrders: serviceOrdersReducer,
 });

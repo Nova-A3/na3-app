@@ -1,6 +1,7 @@
 import type { SelectProps as AntdSelectProps, TagProps } from "antd";
 import { Tag } from "antd";
 import { Select as AntdSelect } from "antd";
+import { nanoid } from "nanoid";
 import React, { useCallback } from "react";
 
 import { isArray } from "../../../../utils";
@@ -8,49 +9,60 @@ import classes from "./Select.module.css";
 
 type SelectValue = string[] | string;
 
+export type SelectOptionBase = {
+  label: React.ReactNode;
+  labelWhenSelected?: React.ReactNode;
+  value: string;
+};
+
+type SelectOptionGroup = {
+  label: React.ReactNode;
+  options: SelectOptionBase[];
+};
+
+type SelectOption = SelectOptionBase | SelectOptionGroup;
+
 type SelectTagProps = Pick<TagProps, "color" | "style"> & {
   containerStyle?: React.CSSProperties;
 };
 
-type RenderTagHandler = Exclude<
-  AntdSelectProps<SelectValue>["tagRender"],
+type RenderTagHandler<Value extends SelectValue = SelectValue> = Exclude<
+  AntdSelectProps<Value>["tagRender"],
   undefined
 >;
 
-export type SelectAsFieldProps = Partial<
-  Pick<
-    AntdSelectProps<SelectValue>,
-    | "allowClear"
-    | "autoFocus"
-    | "defaultActiveFirstOption"
-    | "disabled"
-    | "showSearch"
-  >
-> & {
-  multiple?: boolean;
-  onTagProps?:
-    | ((value: Parameters<RenderTagHandler>[0]["value"]) => SelectTagProps)
-    | null;
-  options: {
-    label: React.ReactNode;
-    labelWhenSelected?: React.ReactNode;
-    value: string;
-  }[];
-};
+export type SelectAsFieldProps<Value extends SelectValue = SelectValue> =
+  Partial<
+    Pick<
+      AntdSelectProps<Value>,
+      | "allowClear"
+      | "autoFocus"
+      | "defaultActiveFirstOption"
+      | "disabled"
+      | "showSearch"
+    >
+  > & {
+    multiple?: boolean;
+    onTagProps?:
+      | ((
+          value: Parameters<RenderTagHandler<Value>>[0]["value"]
+        ) => SelectTagProps)
+      | null;
+    options: SelectOption[];
+  };
 
-type SelectProps = Required<SelectAsFieldProps> & {
+type SelectProps<Value extends SelectValue> = Required<
+  SelectAsFieldProps<Value>
+> & {
   id: string;
   onBlur: () => void;
-  onChange: (value: SelectValue) => void;
-  onFilterOptions: (
-    input: string,
-    option?: { label?: unknown; value?: unknown }
-  ) => boolean;
+  onChange: (value: Value) => void;
+  onFilterOptions: AntdSelectProps<Value>["filterOption"];
   placeholder: string;
-  value: SelectValue | undefined;
+  value: Value | undefined;
 };
 
-export function Select({
+export function Select<Value extends SelectValue>({
   id,
   autoFocus,
   allowClear,
@@ -65,7 +77,7 @@ export function Select({
   defaultActiveFirstOption,
   showSearch,
   value: valueOrValues,
-}: SelectProps): JSX.Element {
+}: SelectProps<Value>): JSX.Element {
   const handleRenderTag: RenderTagHandler = useCallback(
     ({ value: optionValue, label, closable, onClose }) => {
       return (
@@ -106,18 +118,11 @@ export function Select({
       onBlur={onBlur}
       onChange={onChange}
       optionLabelProp="labelWhenSelected"
-      options={options.map((opt) => ({
-        label: opt.label,
-        labelWhenSelected:
-          multiple || onTagProps || !opt.labelWhenSelected ? (
-            opt.label
-          ) : (
-            <div className={classes.LabelWhenSelected}>
-              {opt.labelWhenSelected}
-            </div>
-          ),
-        value: opt.value,
-      }))}
+      options={options.map((opt) =>
+        generateOption(opt, {
+          preventLabelWhenSelected: !!(multiple || onTagProps),
+        })
+      )}
       placeholder={placeholder}
       showSearch={showSearch || multiple || !!onTagProps}
       tagRender={handleRenderTag}
@@ -125,4 +130,41 @@ export function Select({
       value={valueOrValues}
     />
   );
+}
+
+export function generateOption(
+  option: SelectOptionBase,
+  config: { preventLabelWhenSelected: boolean }
+): SelectOptionBase & { key: string };
+export function generateOption(
+  option: SelectOptionGroup,
+  config: { preventLabelWhenSelected: boolean }
+): SelectOptionGroup;
+export function generateOption(
+  option: SelectOption,
+  config: { preventLabelWhenSelected: boolean }
+): SelectOption;
+export function generateOption(
+  option: SelectOption | SelectOptionBase | SelectOptionGroup,
+  config: { preventLabelWhenSelected: boolean }
+): SelectOption | SelectOptionGroup | (SelectOptionBase & { key: string }) {
+  if ("options" in option) {
+    return {
+      ...option,
+      options: option.options.map((opt) => generateOption(opt, config)),
+    };
+  } else {
+    return {
+      ...option,
+      key: nanoid(),
+      labelWhenSelected:
+        config.preventLabelWhenSelected || !option.labelWhenSelected ? (
+          option.label
+        ) : (
+          <div className={classes.LabelWhenSelected}>
+            {option.labelWhenSelected}
+          </div>
+        ),
+    };
+  }
 }
