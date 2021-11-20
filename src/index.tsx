@@ -33,6 +33,8 @@ firebase.initializeApp({
   storageBucket: "nova-a3-ind.appspot.com",
 });
 
+firebase.performance();
+
 function Root(): JSX.Element {
   return (
     <AntdConfigProvider input={{ autoComplete: "off" }} locale={ptBR}>
