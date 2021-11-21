@@ -8,11 +8,20 @@
 // You can also remove this file if you'd prefer not to use a
 // service worker, and the Workbox build step will be skipped.
 
+import firebase from "firebase";
 import { clientsClaim } from "workbox-core";
 import { ExpirationPlugin } from "workbox-expiration";
 import { createHandlerBoundToURL, precacheAndRoute } from "workbox-precaching";
 import { registerRoute } from "workbox-routing";
 import { StaleWhileRevalidate } from "workbox-strategies";
+
+// Import and configure the Firebase SDK
+// These scripts are made available when the app is served or deployed on Firebase Hosting
+importScripts("/__/firebase/9.2.0/firebase-app-compat.js");
+importScripts("/__/firebase/9.2.0/firebase-messaging-compat.js");
+importScripts("/__/firebase/init.js");
+
+const messaging = firebase.messaging();
 
 declare const self: ServiceWorkerGlobalScope;
 
@@ -79,3 +88,22 @@ self.addEventListener("message", (event) => {
 });
 
 // Any other custom service worker logic can go here.
+messaging.onBackgroundMessage(function (payload) {
+  console.log(
+    "[firebase-messaging-sw.js] Received background message ",
+    payload
+  );
+
+  // Customize notification here
+  const notificationTitle =
+    payload.notification?.title || "Background Notification";
+  const notificationOptions = {
+    body: payload.notification?.body || "Background Notification Body",
+    icon: payload.notification?.image,
+  };
+
+  void self.registration.showNotification(
+    notificationTitle,
+    notificationOptions
+  );
+});

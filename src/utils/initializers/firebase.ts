@@ -41,24 +41,6 @@ export async function initFirebaseMessaging({
 
     if (messagingToken) {
       console.log(messagingToken);
-
-      messaging.onBackgroundMessage(function (payload) {
-        console.log(
-          "[firebase-messaging-sw.js] Received background message ",
-          payload
-        );
-        // Customize notification here
-        const notificationTitle = "Background Message Title";
-        const notificationOptions = {
-          body: "Background Message body.",
-          icon: "/firebase-logo.png",
-        };
-
-        void registration.showNotification(
-          notificationTitle,
-          notificationOptions
-        );
-      });
     } else {
       console.log(
         "No registration token available. Request permission to generate one."
