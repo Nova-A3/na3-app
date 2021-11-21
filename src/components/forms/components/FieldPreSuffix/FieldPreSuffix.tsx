@@ -15,7 +15,11 @@ const defaultProps = {
 export function FieldPreSuffix({
   children,
   isPrefix,
-}: FieldPreSuffixProps): JSX.Element {
+}: FieldPreSuffixProps): JSX.Element | null {
+  if (!children) {
+    return null;
+  }
+
   return (
     <div className={isPrefix ? classes.IsPrefix : undefined}>
       {typeof children === "string" ? (

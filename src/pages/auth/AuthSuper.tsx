@@ -2,8 +2,9 @@ import {
   LockOutlined,
   LoginOutlined,
   MailOutlined,
-  StarOutlined,
+  StarFilled,
 } from "@ant-design/icons";
+import { message } from "antd";
 import React, { useCallback } from "react";
 
 import {
@@ -24,32 +25,7 @@ export function AuthSuperPage(): JSX.Element {
   });
 
   const handleSubmit = useCallback(({ email, password }: FormValues): void => {
-    /*
-      function setSignInError(message: string): void {
-        form.setError("password", { message });
-      }
-
-      const parsedDepartment = departments.helpers.getByDisplayName(dpt);
-
-      if (!parsedDepartment) {
-        return setSignInError(
-          `Nenhuma conta encontrada para o setor "${dpt}".`
-        );
-      }
-
-      const signInResult = await auth.helpers.signIn(
-        parsedDepartment.id,
-        password
-      );
-
-      if (signInResult.error) {
-        setSignInError(signInResult.error.message);
-      } else {
-        void message.success("Autenticado!");
-        if (redirectUrl) history.replace(redirectUrl);
-      }
-      */
-
+    void message.error("Acesso negado");
     return;
   }, []);
 
@@ -59,8 +35,8 @@ export function AuthSuperPage(): JSX.Element {
       <PageDescription>
         Se você for um usuário do tipo{" "}
         <span className={classes.SuperText}>
-          <StarOutlined /> Super,
-        </span>
+          <StarFilled /> Super,
+        </span>{" "}
         autentique-se para continuar.
       </PageDescription>
 
@@ -75,7 +51,7 @@ export function AuthSuperPage(): JSX.Element {
             arrowPointAtCenter: true,
             placement: "topLeft",
             title:
-              "Para solicitar uma conta, entre em contato com o administrador do sistema.",
+              "Para solicitar uma conta, entre em contato com o administrador do sistema",
           }}
           type="input"
         />

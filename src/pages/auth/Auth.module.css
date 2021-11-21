@@ -4,12 +4,9 @@
 
 .SuperButtonContainer {
   text-align: right;
-  margin-bottom: 8px;
+  margin-bottom: 28px;
 }
 
-/* md and up */
-@media screen and (min-width: 768px) {
-  .SuperButtonContainer {
-    margin-bottom: 28px;
-  }
+.SuperButton {
+  font-style: italic;
 }

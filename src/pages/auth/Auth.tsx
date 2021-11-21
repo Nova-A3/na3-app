@@ -88,6 +88,10 @@ export function AuthPage({ authorized, redirectUrl }: AuthProps): JSX.Element {
     [form, auth.helpers, departments.helpers, redirectUrl, history]
   );
 
+  const handleAuthSuperRedirect = useCallback(() => {
+    history.push("/entrar/super");
+  }, [history]);
+
   const selectOptions = useMemo(() => {
     const optionGroups: (Pick<SelectOptionGroup, "options"> & {
       label: "Fábrica" | "Filial" | "Setores";
@@ -176,8 +180,14 @@ export function AuthPage({ authorized, redirectUrl }: AuthProps): JSX.Element {
       </Form>
 
       <div className={classes.SuperButtonContainer}>
-        <Button icon={<StarOutlined />} size="small" type="link">
-          Entrar como Super
+        <Button
+          className={classes.SuperButton}
+          icon={<StarOutlined />}
+          onClick={handleAuthSuperRedirect}
+          size="small"
+          type="link"
+        >
+          Super
         </Button>
       </div>
     </>
