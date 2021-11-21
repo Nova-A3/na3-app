@@ -7,6 +7,8 @@ export type {
   Na3DepartmentLocationMap,
   Na3DepartmentType,
 } from "./Na3Department";
+export type { Na3Employee } from "./Na3Employee";
+export type { Na3Event } from "./Na3Event";
 export type { Na3Machine } from "./Na3Machine";
 export type {
   Na3MaintenanceProject,
