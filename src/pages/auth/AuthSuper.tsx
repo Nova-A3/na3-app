@@ -24,7 +24,7 @@ export function AuthSuperPage(): JSX.Element {
     defaultValues: { email: "", password: "" },
   });
 
-  const handleSubmit = useCallback(({ email, password }: FormValues): void => {
+  const handleSubmit = useCallback((): void => {
     void message.error("Acesso negado");
     return;
   }, []);
