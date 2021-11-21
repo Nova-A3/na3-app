@@ -1,5 +1,10 @@
-import { LockOutlined, LoginOutlined, UserOutlined } from "@ant-design/icons";
-import { message } from "antd";
+import {
+  LockOutlined,
+  LoginOutlined,
+  StarOutlined,
+  UserOutlined,
+} from "@ant-design/icons";
+import { Button, message } from "antd";
 import React, { useCallback, useMemo } from "react";
 import { useHistory } from "react-router";
 
@@ -15,6 +20,7 @@ import {
 import { useForm } from "../../hooks";
 import { useNa3Auth, useNa3Departments } from "../../modules/na3-react";
 import type { Na3Department } from "../../modules/na3-types";
+import classes from "./Auth.module.css";
 
 type AuthProps = {
   authorized: Na3Department[] | "all";
@@ -124,7 +130,7 @@ export function AuthPage({ authorized, redirectUrl }: AuthProps): JSX.Element {
         continuar.
       </PageDescription>
 
-      <Form form={form} onSubmit={handleSubmit}>
+      <Form className={classes.Form} form={form} onSubmit={handleSubmit}>
         <FormField
           disabled={authorizedDpts.length === 1}
           label="Setor"
@@ -134,7 +140,8 @@ export function AuthPage({ authorized, redirectUrl }: AuthProps): JSX.Element {
           prefix={<UserOutlined />}
           rules={{ required: "Selecione o setor" }}
           tooltip={{
-            placement: "right",
+            arrowPointAtCenter: true,
+            placement: "topLeft",
             title:
               authorizedDpts.length === 1 ? (
                 <>
@@ -167,6 +174,12 @@ export function AuthPage({ authorized, redirectUrl }: AuthProps): JSX.Element {
           wrapperCol={{ sm: { offset: 6, span: 18 }, xs: { span: 24 } }}
         />
       </Form>
+
+      <div className={classes.SuperButtonContainer}>
+        <Button icon={<StarOutlined />} size="small" type="link">
+          Entrar como Super
+        </Button>
+      </div>
     </>
   );
 }

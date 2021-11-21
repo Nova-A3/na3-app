@@ -8,7 +8,6 @@
 
 import { clientsClaim } from "workbox-core";
 import { ExpirationPlugin } from "workbox-expiration";
-import * as googleAnalytics from "workbox-google-analytics";
 import { createHandlerBoundToURL, precacheAndRoute } from "workbox-precaching";
 import { registerRoute } from "workbox-routing";
 import { StaleWhileRevalidate } from "workbox-strategies";
@@ -79,12 +78,6 @@ self.addEventListener("message", (event) => {
 });
 
 /*
- * === GOOGLE ANALYTICS ===
- */
-
-googleAnalytics.initialize();
-
-/*
  * === FIREBASE CLOUD MESSAGING ===
  */
 
@@ -140,14 +133,13 @@ const messaging = firebase.messaging();
 
 // https://firebase.google.com/docs/cloud-messaging/concept-options
 messaging.onBackgroundMessage(function (payload) {
-  console.log(
-    "[firebase-messaging-sw.js] Received background message ",
-    payload
-  );
+  console.info("[SW-FCM] onBackgroundMessage", payload);
 
-  const title = payload.notification?.title || "Background Notification";
+  const title = payload.notification?.title || "Nova A3";
   const options = {
-    body: payload.notification?.body || "Background Notification Body",
+    body:
+      payload.notification?.body ||
+      "Você tem uma nova mensagem. Abra o app para ver.",
     icon: payload.notification?.image,
   };
 

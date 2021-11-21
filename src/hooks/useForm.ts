@@ -1,4 +1,4 @@
-import { useCallback } from "react";
+import { useCallback, useMemo } from "react";
 import type {
   FieldValues,
   Path,
@@ -17,10 +17,15 @@ type UseFormConfig<
   Context extends Record<string, unknown> = Record<string, unknown>
 > = Required<Pick<UseFormOriginalProps<Fields, Context>, "defaultValues">>;
 
+type FieldNames<Fields extends FieldValues> = {
+  readonly [FieldName in keyof Fields]: Fields[FieldName];
+};
+
 type UseFormReturn<
   Fields extends FieldValues = FieldValues,
   Context extends Record<string, unknown> = Record<string, unknown>
 > = UseFormOriginalReturn<Fields, Context> & {
+  fieldNames: FieldNames<Fields>;
   resetForm: () => void;
 };
 
@@ -38,6 +43,15 @@ export function useForm<
     ...options,
   });
 
+  const fieldNames = useMemo(
+    () =>
+      Object.keys(config.defaultValues).reduce(
+        (obj, key) => ({ ...obj, [key]: key }),
+        {} as FieldNames<Fields>
+      ),
+    [config.defaultValues]
+  );
+
   const resetForm = useCallback(() => {
     const formValues = form.getValues();
 
@@ -49,5 +63,5 @@ export function useForm<
     });
   }, [config.defaultValues, form]);
 
-  return { ...form, resetForm };
+  return { ...form, fieldNames, resetForm };
 }

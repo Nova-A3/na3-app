@@ -1,19 +1,32 @@
 import { Typography } from "antd";
 import React from "react";
 
+import classes from "./FieldPreSuffix.module.css";
+
 type FieldPreSuffixProps = {
   children: React.ReactNode;
+  isPrefix?: boolean;
 };
 
-export function FieldPreSuffix({ children }: FieldPreSuffixProps): JSX.Element {
-  if (typeof children === "string") {
-    return (
-      <Typography.Text italic={true} type="secondary">
-        {children}
-      </Typography.Text>
-    );
-  }
+const defaultProps = {
+  isPrefix: undefined,
+};
 
-  // eslint-disable-next-line react/jsx-no-useless-fragment
-  return <>{children}</>;
+export function FieldPreSuffix({
+  children,
+  isPrefix,
+}: FieldPreSuffixProps): JSX.Element {
+  return (
+    <div className={isPrefix ? classes.IsPrefix : undefined}>
+      {typeof children === "string" ? (
+        <Typography.Text italic={true} type="secondary">
+          {children}
+        </Typography.Text>
+      ) : (
+        children
+      )}
+    </div>
+  );
 }
+
+FieldPreSuffix.defaultProps = defaultProps;

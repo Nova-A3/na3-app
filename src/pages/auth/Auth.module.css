@@ -1,0 +1,15 @@
+.Form {
+  flex: 1;
+}
+
+.SuperButtonContainer {
+  text-align: right;
+  margin-bottom: 8px;
+}
+
+/* md and up */
+@media screen and (min-width: 768px) {
+  .SuperButtonContainer {
+    margin-bottom: 28px;
+  }
+}

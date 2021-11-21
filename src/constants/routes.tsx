@@ -2,6 +2,7 @@ import {
   FileOutlined,
   HomeOutlined,
   SettingOutlined,
+  StarOutlined,
   TagsOutlined,
   UserOutlined,
 } from "@ant-design/icons";
@@ -11,7 +12,9 @@ import type { LiteralUnion } from "type-fest";
 import type { Na3DepartmentId, Na3DepartmentType } from "../modules/na3-types";
 import {
   AuthPage,
+  AuthSuperPage,
   DocsHomePage,
+  DocTransfHomePage,
   HomePage,
   LabelsHomePage,
   LabelsManagePage,
@@ -56,7 +59,9 @@ export const ROUTES: AppRouteMap<
   | "/docs/comex"
   | "/docs/modelos"
   | "/docs/transferencia"
+  | "/docs/transferencia/nova"
   | "/entrar"
+  | "/entrar/super"
   | "/etiquetas"
   | "/etiquetas/gerenciar"
   | "/etiquetas/gerenciar/transferencia"
@@ -100,14 +105,23 @@ export const ROUTES: AppRouteMap<
     title: "Modelos",
   },
   "/docs/transferencia": {
-    component: null,
+    component: <DocTransfHomePage />,
     title: "Transferência",
+  },
+  "/docs/transferencia/nova": {
+    component: null,
+    title: "Nova Transferência",
   },
 
   "/entrar": {
     component: <AuthPage authorized="all" redirectUrl="/" />,
     icon: <UserOutlined />,
     title: "Entrar",
+  },
+  "/entrar/super": {
+    component: <AuthSuperPage />,
+    icon: <StarOutlined />,
+    title: "Super",
   },
 
   "/etiquetas": {

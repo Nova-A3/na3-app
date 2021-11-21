@@ -43,12 +43,10 @@ export function register(config?: Config): void {
         // This is running on localhost. Let's check if a service worker still exists or not.
         checkValidServiceWorker(swUrl, config);
 
-        // Add some additional logging to localhost, pointing developers to the
-        // service worker/PWA documentation.
         void navigator.serviceWorker.ready.then(() => {
-          console.log(
-            "This web app is being served cache-first by a service " +
-              "worker. To learn more, visit https://cra.link/PWA"
+          console.info(
+            "[SW-READY]",
+            "This web app is being served cache-first by a service worker."
           );
         });
       } else {
@@ -74,9 +72,9 @@ function registerValidSW(swUrl: string, config?: Config): void {
               // At this point, the updated precached content has been fetched,
               // but the previous service worker will still serve the older
               // content until all client tabs are closed.
-              console.log(
-                "New content is available and will be used when all " +
-                  "tabs for this page are closed. See https://cra.link/PWA."
+              console.info(
+                "[SW-UPDATE]",
+                "New content is available and will be used when all tabs for this page are closed."
               );
 
               // Execute callback
@@ -87,7 +85,10 @@ function registerValidSW(swUrl: string, config?: Config): void {
               // At this point, everything has been precached.
               // It's the perfect time to display a
               // "Content is cached for offline use." message.
-              console.log("Content is cached for offline use.");
+              console.info(
+                "[SW-REGISTER]",
+                "Content is cached for offline use."
+              );
 
               // Execute callback
               if (config?.onSuccess) {
@@ -127,7 +128,8 @@ function checkValidServiceWorker(swUrl: string, config?: Config): void {
       }
     })
     .catch(() => {
-      console.log(
+      console.info(
+        "[SW-OFFLINE]",
         "No internet connection found. App is running in offline mode."
       );
     });

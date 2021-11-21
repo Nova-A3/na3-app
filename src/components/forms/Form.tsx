@@ -21,12 +21,14 @@ type FormProps<
   Context extends Record<string, unknown> = Record<string, unknown>
 > = {
   children: React.ReactNode;
+  className?: string;
   form: UseFormReturn<Fields, Context>;
   onSubmit: HandleSubmit<Fields>;
   onSubmitFailed?: HandleSubmitFailed<Fields>;
 };
 
-const defaultProps: Omit<FormProps, "children" | "form" | "onSubmit"> = {
+const defaultProps = {
+  className: undefined,
   onSubmitFailed: undefined,
 };
 
@@ -53,6 +55,7 @@ export function Form<
   children,
   onSubmit,
   onSubmitFailed,
+  className,
 }: FormProps<Fields, Context>): JSX.Element {
   const handleSubmitFailed: SubmitErrorHandler<Fields> = useCallback(
     (errors, event) => {
@@ -79,7 +82,11 @@ export function Form<
       unregister={unregister}
       watch={watch}
     >
-      <Spinner spinning={formState.isSubmitting} text={null}>
+      <Spinner
+        spinning={formState.isSubmitting}
+        text={null}
+        wrapperClassName={className}
+      >
         <AntdForm onFinish={handleSubmit(onSubmit, handleSubmitFailed)}>
           {children}
         </AntdForm>

@@ -1,5 +1,7 @@
 export { AuthPage } from "./auth/Auth";
+export { AuthSuperPage } from "./auth/AuthSuper";
 export { DocsHomePage } from "./docs/DocsHome";
+export { DocTransfHomePage } from "./docs/transf/DocTransfHome";
 export { NoMatchPage } from "./error/NoMatch";
 export { NotImplementedPage } from "./error/NotImplemented";
 export { LabelsHomePage } from "./labels/LabelsHome";

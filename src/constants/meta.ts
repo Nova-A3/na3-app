@@ -1,4 +1,4 @@
 /* DO **NOT** EDIT THIS FILE. */
 
-export const APP_VERSION = "1.0.45";
-export const APP_VERSION_TIMESTAMP = "2021-11-20T21:31:13-03:00";
+export const APP_VERSION = "1.0.46";
+export const APP_VERSION_TIMESTAMP = "2021-11-20T23:21:04-03:00";

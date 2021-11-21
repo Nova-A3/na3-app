@@ -49,10 +49,10 @@ const defaultQuickLinks: MenuPageAction[] = [
   {
     colors: { background: red[2], foreground: red[8] },
     description:
-      "Gerencie ou abra ordens de serviço para o setor de Manutenção",
-    href: "/manutencao",
-    icon: <IoSettingsOutline />,
-    title: "Manutenção",
+      "Emita documentos diversos, como o de Transferência de Materiais",
+    href: "/docs",
+    icon: <IoDocumentTextOutline />,
+    title: "Documentos",
   },
   {
     colors: { background: green[2], foreground: green[8] },
@@ -64,10 +64,10 @@ const defaultQuickLinks: MenuPageAction[] = [
   {
     colors: { background: blue[2], foreground: blue[8] },
     description:
-      "Emita documentos diversos, como o de Transferência de Materiais",
-    href: "/docs",
-    icon: <IoDocumentTextOutline />,
-    title: "Documentos",
+      "Gerencie ou abra ordens de serviço para o setor de Manutenção",
+    href: "/manutencao",
+    icon: <IoSettingsOutline />,
+    title: "Manutenção",
   },
 ];
 

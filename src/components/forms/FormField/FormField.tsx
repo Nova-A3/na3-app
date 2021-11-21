@@ -369,7 +369,9 @@ export function FormField(props: FormFieldProps): JSX.Element {
             onBlur={handleBlur}
             onChange={handleChange}
             placeholder={placeholder}
-            prefix={<FieldPreSuffix>{props.prefix}</FieldPreSuffix>}
+            prefix={
+              <FieldPreSuffix isPrefix={true}>{props.prefix}</FieldPreSuffix>
+            }
             suffix={<FieldPreSuffix>{props.suffix}</FieldPreSuffix>}
             value={typeof value === "string" ? value : ""}
           />
@@ -387,7 +389,9 @@ export function FormField(props: FormFieldProps): JSX.Element {
             onBlur={handleBlur}
             onChange={handleChange}
             placeholder={placeholder}
-            prefix={<FieldPreSuffix>{props.prefix}</FieldPreSuffix>}
+            prefix={
+              <FieldPreSuffix isPrefix={true}>{props.prefix}</FieldPreSuffix>
+            }
             suffix={<FieldPreSuffix>{props.suffix}</FieldPreSuffix>}
             value={typeof value === "string" ? value : ""}
           />
@@ -423,7 +427,9 @@ export function FormField(props: FormFieldProps): JSX.Element {
             maskPlaceholder={props.maskPlaceholder || "_"}
             onBlur={handleBlur}
             onChange={handleChange}
-            prefix={<FieldPreSuffix>{props.prefix}</FieldPreSuffix>}
+            prefix={
+              <FieldPreSuffix isPrefix={true}>{props.prefix}</FieldPreSuffix>
+            }
             suffix={<FieldPreSuffix>{props.suffix}</FieldPreSuffix>}
             value={typeof value === "string" ? value : ""}
           />

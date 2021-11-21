@@ -1,7 +1,7 @@
-import { Tag } from "antd";
 import React, { useMemo } from "react";
 
 import { EMPLOYEES } from "../../../constants";
+import { Tag } from "./Tag";
 
 type MaintEmployeeTagProps = {
   maintainer: string;
@@ -19,11 +19,5 @@ export function MaintEmployeeTag({
     [maintainer]
   );
 
-  return (
-    <Tag color={employeeColor}>
-      <small>
-        <strong>{maintainer}</strong>
-      </small>
-    </Tag>
-  );
+  return <Tag color={employeeColor}>{maintainer}</Tag>;
 }

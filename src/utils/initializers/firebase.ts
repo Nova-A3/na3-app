@@ -40,11 +40,9 @@ export async function initFirebaseMessaging({
     });
 
     if (messagingToken) {
-      console.log(messagingToken);
+      console.info("[FCM-TOKEN-SUCCESS]", messagingToken);
     } else {
-      console.log(
-        "No registration token available. Request permission to generate one."
-      );
+      console.info("[FCM-TOKEN-FAIL]", "No registration token available.");
     }
   } catch (err) {
     console.error(err);
